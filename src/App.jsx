@@ -22,7 +22,7 @@ export default function App() {
   const [activePage, setActivePage] = useState(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '');
-      if (['home', 'portfolio', 'renovation', 'contact'].includes(hash)) {
+      if (['home', 'portfolio', 'renovation', 'contact', 'preview-why'].includes(hash)) {
         return hash;
       }
     }
@@ -41,7 +41,7 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['home', 'portfolio', 'renovation', 'contact'].includes(hash)) {
+      if (['home', 'portfolio', 'renovation', 'contact', 'preview-why'].includes(hash)) {
         setActivePage(hash);
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
@@ -91,6 +91,11 @@ export default function App() {
 
       {/* Main Content */}
       <main>
+        {activePage === 'preview-why' && (
+          <div style={{ backgroundColor: '#F8F9FA' }}>
+            <WhyChooseUs onStartProject={handleOpenQuote} />
+          </div>
+        )}
         {activePage === 'home' && (
           <div>
             {/* 1. Hero Section */}

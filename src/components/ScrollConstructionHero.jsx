@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowDown, ArrowUpRight, Hammer, Layers } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Hammer } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,42 +13,6 @@ const getFramePath = (index) => {
   return `/images/homepage/ezgif-frame-${frameNumber}.jpg`;
 };
 
-// Construction stage metadata according to user specifications
-const getStageInfo = (frameIndex) => {
-  const frame = frameIndex + 1;
-  if (frame <= 10) {
-    return {
-      stageNum: '01',
-      title: 'Foundation Preparation & Groundwork',
-      desc: 'Excavation, soil compaction, and subterranean anti-settlement foundation grid.',
-    };
-  } else if (frame <= 20) {
-    return {
-      stageNum: '02',
-      title: 'Structural Pillars & High-Yield Framework',
-      desc: 'Monolithic seismic reinforced columns, shear walls, and core skeletal beams.',
-    };
-  } else if (frame <= 30) {
-    return {
-      stageNum: '03',
-      title: 'Main Structure & Cantilevered Roof Formation',
-      desc: 'Post-tensioned floor slabs, upper cantilevered volumes, and aerodynamic overhangs.',
-    };
-  } else if (frame <= 40) {
-    return {
-      stageNum: '04',
-      title: 'Exterior Walls, Glass Glazing & Architectural Finishes',
-      desc: 'Double-glazed thermal curtain walls, ventilated stone facade, and precision balconies.',
-    };
-  } else {
-    return {
-      stageNum: '05',
-      title: 'Completed Modern Luxury House & Final Handover',
-      desc: 'Turnkey architectural villa completed with landscaping, illumination, and bespoke interiors.',
-    };
-  }
-};
-
 export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -58,11 +22,9 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [isReady, setIsReady] = useState(false);
-  const [currentStage, setCurrentStage] = useState(getStageInfo(0));
-  const [displayFrame, setDisplayFrame] = useState(1);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // High-Performance Canvas Renderer (Contain scaling)
+  // High-Precision Canvas Renderer (Guaranteed Proper View with Strict Contain Scaling)
   const renderFrame = (frameIndex) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -74,30 +36,82 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
 
-    if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+    const targetWidth = Math.round(w * dpr);
+    const targetHeight = Math.round(h * dpr);
+
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
     }
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const w = rect.width;
-    const h = rect.height;
+    // 1. Strict CONTAIN scaling calculation: ensures the whole house fits properly without being cropped
+    const isMobile = w < 768;
+    const padTop = isMobile ? 80 : 85;
+    const padBottom = isMobile ? 30 : 25;
+    const padHorizontal = isMobile ? 16 : 36;
 
-    // Clear canvas to maintain transparent background
-    ctx.clearRect(0, 0, w, h);
+    const availW = Math.max(100, w - padHorizontal * 2);
+    const availH = Math.max(100, h - padTop - padBottom);
 
-    // Full-width edge-to-edge scaling (spans 100% of the screen width with no side gaps or borders)
     const imgW = 1920;
     const imgH = 1080;
-    const scale = Math.max(w / imgW, h / imgH);
+
+    // Guaranteed contain scaling - whole 1920x1080 frame fits completely with zero cropping
+    const scale = Math.min(availW / imgW, availH / imgH);
     const drawW = imgW * scale;
     const drawH = imgH * scale;
-    const drawX = (w - drawW) / 2;
-    const drawY = (h - drawH) / 2;
 
+    // Center horizontally and vertically within available space
+    const drawX = (w - drawW) / 2;
+    const drawY = padTop + (availH - drawH) / 2;
+
+    // 2. Smooth vertical gradient matching the render studio background exactly
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+    bgGrad.addColorStop(0, '#D6D2C6');
+    bgGrad.addColorStop(0.5, '#E2DED2');
+    bgGrad.addColorStop(1, '#D8D0C2');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 3. Subtle soft ambient foundation ground shadow
+    ctx.save();
+    const shadowY = drawY + drawH * 0.94;
+    const shadowGrad = ctx.createRadialGradient(
+      drawX + drawW * 0.5, shadowY, drawW * 0.1,
+      drawX + drawW * 0.5, shadowY, drawW * 0.45
+    );
+    shadowGrad.addColorStop(0, 'rgba(40, 32, 20, 0.15)');
+    shadowGrad.addColorStop(0.6, 'rgba(40, 32, 20, 0.04)');
+    shadowGrad.addColorStop(1, 'rgba(40, 32, 20, 0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(drawX + drawW * 0.5, shadowY, drawW * 0.45, drawH * 0.06, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // 4. Draw the house frame
     ctx.drawImage(img, drawX, drawY, drawW, drawH);
+
+    // 5. Soft feather blend on left & right edges if canvas is wider than frame
+    if (drawX > 2) {
+      const leftFade = ctx.createLinearGradient(drawX, 0, drawX + 18, 0);
+      leftFade.addColorStop(0, '#E2DED2');
+      leftFade.addColorStop(1, 'rgba(226, 222, 210, 0)');
+      ctx.fillStyle = leftFade;
+      ctx.fillRect(drawX - 1, drawY, 19, drawH);
+
+      const rightFade = ctx.createLinearGradient(drawX + drawW, 0, drawX + drawW - 18, 0);
+      rightFade.addColorStop(0, '#E2DED2');
+      rightFade.addColorStop(1, 'rgba(226, 222, 210, 0)');
+      ctx.fillStyle = rightFade;
+      ctx.fillRect(drawX + drawW - 18, drawY, 19, drawH);
+    }
+
     currentFrameRef.current = frameIndex;
   };
 
@@ -145,36 +159,36 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
     };
   }, []);
 
-  // 3. GSAP ScrollTrigger Scroll-Controlled Frame Scrubbing
+  // 2. GSAP ScrollTrigger Scroll-Controlled Frame Scrubbing
   useEffect(() => {
     if (!containerRef.current || !canvasRef.current) return;
 
     // Initial render
     renderFrame(currentFrameRef.current);
 
-    // Pinning the hero section for 2500px of fluid scroll progress
+    // Pinning the hero section for fluid scroll progress
     triggerRef.current = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
-      end: '+=2500',
+      end: '+=2600',
       pin: true,
-      scrub: 0.45, // Ultra-smooth responsive scrubbing
+      scrub: 0.45,
       anticipatePin: 1,
       onUpdate: (self) => {
         const progress = Math.max(0, Math.min(1, self.progress));
         setScrollProgress(progress);
 
-        // Map scroll progress 0..1 to frame index 0..49
+        // Scrub frames from 0% to 85% scroll progress, then hold on the completed frame 50
+        // from 85% to 100% so the user has comfortable scroll cushion to admire the full completed house
+        const scrubProgress = Math.min(1, progress / 0.85);
         const targetFrame = Math.min(
           TOTAL_FRAMES - 1,
-          Math.floor(progress * (TOTAL_FRAMES - 0.001))
+          Math.floor(scrubProgress * (TOTAL_FRAMES - 0.001))
         );
 
         if (targetFrame !== currentFrameRef.current) {
           requestAnimationFrame(() => {
             renderFrame(targetFrame);
-            setDisplayFrame(targetFrame + 1);
-            setCurrentStage(getStageInfo(targetFrame));
           });
         }
       },
@@ -197,32 +211,53 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
 
   return (
     <section
+      id="construction-experience"
       ref={containerRef}
       style={{
         position: 'relative',
         width: '100%',
         height: '100vh',
         overflow: 'hidden',
-        backgroundColor: 'transparent',
-        background: 'transparent',
+        backgroundColor: '#E2DED2',
         color: '#000000',
-        display: 'flex',
-        flexDirection: 'column',
+        userSelect: 'none',
       }}
     >
+      {/* 1. Full-Viewport Canvas (Layer 1: Behind UI) */}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          display: 'block',
+          background: 'transparent',
+          border: 'none',
+          outline: 'none',
+          zIndex: 1,
+        }}
+      />
 
-      {/* 2. Top Header Area (Above the construction platform) */}
+      {/* 2. Top Header Narrative (Visible at start, fades smoothly as construction begins) */}
       <div
         className="app-container"
         style={{
-          position: 'relative',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
           zIndex: 10,
-          paddingTop: '85px',
+          paddingTop: '88px', // Proper clearance below the 70px fixed navbar
           paddingBottom: '10px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           textAlign: 'center',
+          opacity: Math.max(0, 1 - scrollProgress * 5),
+          transform: `translateY(-${scrollProgress * 30}px)`,
+          pointerEvents: scrollProgress > 0.08 ? 'none' : 'auto',
+          transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
         }}
       >
         {/* Architectural pill */}
@@ -231,13 +266,13 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.75)',
+            backgroundColor: 'rgba(255, 255, 255, 0.90)',
             backdropFilter: 'blur(10px)',
             border: 'none',
-            padding: '6px 18px',
+            padding: '5px 16px',
             borderRadius: '9999px',
             boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-            marginBottom: '10px',
+            marginBottom: '8px',
           }}
         >
           <div
@@ -263,38 +298,39 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
           </span>
         </div>
 
-        {/* User Required Main Heading */}
-        <h1
+        {/* Main Heading */}
+        <h2
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(1.9rem, 3.8vw, 3.2rem)',
+            fontSize: 'clamp(1.7rem, 3.2vw, 2.7rem)',
             fontWeight: 900,
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
             color: '#000000',
             margin: '0 0 8px 0',
             textTransform: 'uppercase',
-            maxWidth: '950px',
+            maxWidth: '920px',
           }}
         >
           BUILDING YOUR DREAMS, <br />
           <span style={{ color: '#000000' }}>CREATING YOUR FUTURE.</span>
-        </h1>
+        </h2>
 
-        {/* User Required Description */}
+        {/* Description */}
         <p
           style={{
-            fontSize: 'clamp(0.85rem, 1.2vw, 1.0rem)',
+            fontSize: 'clamp(0.85rem, 1.1vw, 0.96rem)',
             color: '#475569',
             maxWidth: '680px',
             lineHeight: 1.5,
             margin: '0 0 14px 0',
+            fontWeight: 500,
           }}
         >
-          From the first foundation t1 the final finish, we bring your vision to life with precision, quality and innovation.
+          From the first foundation to the final finish, we bring your vision to life with precision, quality and innovation.
         </p>
 
-        {/* User Required CTAs */}
+        {/* CTA Buttons */}
         <div
           style={{
             display: 'flex',
@@ -330,198 +366,51 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
         </div>
       </div>
 
-      {/* 3. Full-Width Canvas Container */}
-      <div
-        style={{
-          position: 'relative',
-          flex: 1,
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 5,
-          padding: 0,
-          margin: 0,
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'block',
-            background: 'transparent',
-            border: 'none',
-            outline: 'none',
-          }}
-        />
-
-        {/* Preload Status Bar (Shown only during initial load) */}
-        {!isReady && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              backgroundColor: 'rgba(0, 0, 0, 0.85)',
-              color: '#FFFFFF',
-              padding: '16px 28px',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '10px',
-              zIndex: 30,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-              backdropFilter: 'blur(10px)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 800, letterSpacing: '0.1em' }}>
-              <Hammer size={16} color="#F9DF04" />
-              <span>PRELOADING 3D ARCHITECTURAL FRAMES ({loadedCount}/{TOTAL_FRAMES})</span>
-            </div>
-            <div
-              style={{
-                width: '200px',
-                height: '4px',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                borderRadius: '9999px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  height: '100%',
-                  width: `${(loadedCount / TOTAL_FRAMES) * 100}%`,
-                  backgroundColor: '#F9DF04',
-                  transition: 'width 0.15s ease-out',
-                }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* 4. Bottom Architectural Stage HUD Bar */}
-      <div
-        className="app-container"
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          paddingBottom: '22px',
-          width: '100%',
-        }}
-      >
+      {/* 3. Preload Status Bar (Shown only during initial frame download) */}
+      {!isReady && (
         <div
           style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: 'none',
-            borderRadius: '14px',
-            padding: '12px 24px',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            color: '#FFFFFF',
+            padding: '16px 28px',
+            borderRadius: '12px',
             display: 'flex',
-            flexWrap: 'wrap',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+            gap: '10px',
+            zIndex: 30,
+            boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+            backdropFilter: 'blur(10px)',
           }}
         >
-          {/* Left: Dynamic Stage Info */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div
-              style={{
-                backgroundColor: '#F9DF04',
-                color: '#000000',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 900,
-                fontSize: '0.92rem',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              <Layers size={14} />
-              <span>STAGE {currentStage.stageNum}</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.92rem', color: '#000000' }}>
-                {currentStage.title}
-              </div>
-              <div style={{ fontSize: '0.76rem', color: '#64748B', display: 'none', smDisplay: 'block' }}>
-                {currentStage.desc}
-              </div>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 800, letterSpacing: '0.1em' }}>
+            <Hammer size={16} color="#F9DF04" />
+            <span>PRELOADING 3D ARCHITECTURAL FRAMES ({loadedCount}/{TOTAL_FRAMES})</span>
           </div>
-
-          {/* Right: Frame Counter & Interactive Scroll Indicator */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            {/* Scroll Progress Bar */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: '130px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontWeight: 800, color: '#334155' }}>
-                <span>PROGRESS</span>
-                <span>{Math.round(scrollProgress * 100)}%</span>
-              </div>
-              <div
-                style={{
-                  width: '100%',
-                  height: '5px',
-                  backgroundColor: '#E2E8F0',
-                  borderRadius: '9999px',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    height: '100%',
-                    width: `${scrollProgress * 100}%`,
-                    backgroundColor: '#000000',
-                    transition: 'width 0.05s linear',
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Frame Badge */}
+          <div
+            style={{
+              width: '200px',
+              height: '4px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '9999px',
+              overflow: 'hidden',
+            }}
+          >
             <div
               style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '0.82rem',
-                fontWeight: 800,
-                color: '#0F172A',
-                backgroundColor: 'rgba(0, 0, 0, 0.06)',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
+                height: '100%',
+                width: `${(loadedCount / TOTAL_FRAMES) * 100}%`,
+                backgroundColor: '#F9DF04',
+                transition: 'width 0.15s ease-out',
               }}
-            >
-              FRAME {String(displayFrame).padStart(3, '0')} / 050
-            </div>
-
-            {/* Scroll Direction Cue */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                color: '#64748B',
-                letterSpacing: '0.04em',
-              }}
-            >
-              <div className="animate-bounce">
-                <ArrowDown size={14} color="#000000" />
-              </div>
-              <span>SCROLL TO BUILD</span>
-            </div>
+            />
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
