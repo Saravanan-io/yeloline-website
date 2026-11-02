@@ -20,10 +20,10 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
   }, []);
 
   const navLinks = [
-    { id: 'home', label: 'Home Page' },
-    { id: 'portfolio', label: 'Site Portfolio' },
+    { id: 'home', label: 'Home' },
+    { id: 'portfolio', label: 'Portfolio' },
     { id: 'renovation', label: 'Renovation' },
-    { id: 'contact', label: 'Contact Us' },
+    { id: 'contact', label: 'Contact' },
   ];
 
   return (
@@ -35,12 +35,12 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
           left: 0,
           right: 0,
           zIndex: 90,
-          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.98)' : '#FFFFFF',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid #E2E8F0',
-          boxShadow: scrolled ? '0 4px 16px rgba(0, 0, 0, 0.04)' : 'none',
+          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+          borderBottom: scrolled ? '1px solid rgba(0, 0, 0, 0.06)' : '1px solid transparent',
+          boxShadow: scrolled ? '0 4px 30px rgba(0, 0, 0, 0.04)' : 'none',
         }}
       >
         <div
@@ -49,7 +49,7 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: '70px',
+            height: '72px',
           }}
         >
           {/* Logo - Modern Architectural Brand */}
@@ -66,17 +66,17 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
               textDecoration: 'none',
             }}
           >
-            {/* Geometric Yellow Mark */}
+            {/* Geometric Yellow Mark - Rounded */}
             <div
               style={{
-                width: '34px',
-                height: '34px',
-                backgroundColor: '#F9DF04',
-                borderRadius: '4px',
+                width: '36px',
+                height: '36px',
+                background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)',
+                borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(249, 223, 4, 0.3)',
+                boxShadow: '0 3px 12px rgba(249, 223, 4, 0.3)',
               }}
             >
               <span
@@ -99,10 +99,10 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
                   alignItems: 'center',
                   gap: '4px',
                   fontFamily: 'var(--font-heading)',
-                  fontSize: '1.2rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.04em',
-                  color: '#000000',
+                  fontSize: '1.18rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.02em',
+                  color: '#0F172A',
                   lineHeight: 1,
                 }}
               >
@@ -110,12 +110,13 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
               </div>
               <span
                 style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '0.62rem',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '0.58rem',
                   letterSpacing: '0.22em',
-                  color: '#64748B',
-                  fontWeight: 700,
+                  color: '#94A3B8',
+                  fontWeight: 600,
                   marginTop: '2px',
+                  textTransform: 'uppercase',
                 }}
               >
                 CONSTRUCTION
@@ -123,16 +124,17 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             </div>
           </a>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links - Modern Pill Style */}
           <nav
             style={{
               display: 'none',
               alignItems: 'center',
               gap: '4px',
-              background: '#F8FAFC',
-              padding: '4px 6px',
-              borderRadius: '9999px',
-              border: '1px solid #E2E8F0',
+              background: 'rgba(248, 250, 252, 0.8)',
+              padding: '5px 6px',
+              borderRadius: 'var(--radius-full)',
+              border: '1px solid rgba(0, 0, 0, 0.06)',
+              backdropFilter: 'blur(10px)',
             }}
             className="desktop-nav"
           >
@@ -148,19 +150,20 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
                     handlePageChange(link.id);
                   }}
                   style={{
-                    color: isActive ? '#000000' : '#475569',
+                    color: isActive ? '#000000' : '#64748B',
                     backgroundColor: isActive ? '#F9DF04' : 'transparent',
-                    borderRadius: '9999px',
-                    padding: isActive ? '7px 18px' : '7px 14px',
+                    borderRadius: 'var(--radius-full)',
+                    padding: isActive ? '8px 20px' : '8px 16px',
                     textDecoration: 'none',
                     fontSize: '0.84rem',
-                    fontWeight: isActive ? 800 : 600,
-                    fontFamily: 'var(--font-heading)',
-                    transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                    boxShadow: isActive ? '0 2px 8px rgba(249, 223, 4, 0.35)' : 'none',
+                    fontWeight: isActive ? 700 : 500,
+                    fontFamily: 'var(--font-body)',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                    boxShadow: isActive ? '0 2px 12px rgba(249, 223, 4, 0.3)' : 'none',
+                    letterSpacing: '0.01em',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.backgroundColor = '#EDF2F7';
+                    if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
@@ -180,16 +183,16 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
                 display: 'none',
                 alignItems: 'center',
                 gap: '6px',
-                color: '#0F172A',
+                color: '#475569',
                 textDecoration: 'none',
                 fontSize: '0.84rem',
-                fontWeight: 700,
-                fontFamily: 'var(--font-heading)',
+                fontWeight: 600,
+                fontFamily: 'var(--font-body)',
                 transition: 'color 0.2s',
               }}
               className="desktop-phone"
             >
-              <Phone size={14} color="#000000" />
+              <Phone size={14} color="#64748B" />
               <span>+91 98765 43210</span>
             </a>
 
@@ -199,7 +202,7 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
               id="cta-desktop"
               style={{
                 display: 'none',
-                padding: '8px 18px',
+                padding: '9px 20px',
                 fontSize: '0.82rem',
               }}
             >
@@ -215,13 +218,14 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '40px',
-                height: '40px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(0, 0, 0, 0.06)',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-                color: '#000000',
+                width: '42px',
+                height: '42px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                border: '1px solid rgba(0, 0, 0, 0.06)',
+                color: '#0F172A',
                 cursor: 'pointer',
+                transition: 'all 0.2s',
               }}
               className="mobile-hamburger"
             >
@@ -230,17 +234,18 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
           </div>
         </div>
 
-        {/* Mobile slide-down menu */}
+        {/* Mobile slide-down menu - Modern */}
         {mobileMenuOpen && (
           <div
             style={{
-              background: '#F9DF04',
-              borderBottom: '1px solid rgba(0, 0, 0, 0.15)',
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(24px)',
+              borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
               padding: '16px 20px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+              gap: '8px',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.08)',
             }}
           >
             {navLinks.map((link) => {
@@ -256,20 +261,22 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
                     setMobileMenuOpen(false);
                   }}
                   style={{
-                    color: isActive ? '#F9DF04' : '#000000',
-                    backgroundColor: isActive ? '#000000' : 'rgba(0, 0, 0, 0.05)',
+                    color: isActive ? '#000000' : '#475569',
+                    backgroundColor: isActive ? '#F9DF04' : 'rgba(0, 0, 0, 0.03)',
                     textDecoration: 'none',
                     fontSize: '0.95rem',
-                    fontWeight: isActive ? 800 : 700,
+                    fontWeight: isActive ? 700 : 500,
+                    fontFamily: 'var(--font-body)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    transition: 'all 0.2s',
                   }}
                 >
                   <span>{link.label}</span>
-                  <ChevronRight size={16} color={isActive ? '#F9DF04' : '#000000'} />
+                  <ChevronRight size={16} color={isActive ? '#000000' : '#94A3B8'} />
                 </a>
               );
             })}

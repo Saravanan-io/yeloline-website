@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { 
   Building, 
   Briefcase, 
@@ -10,6 +10,9 @@ import {
 } from 'lucide-react';
 
 export default function OurServices({ onSelectService }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
+
   const services = [
     {
       id: 'residential',
@@ -91,12 +94,29 @@ export default function OurServices({ onSelectService }) {
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.96 },
+    visible: { 
+      opacity: 1, y: 0, scale: 1, 
+      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
   return (
     <section
       id="services"
+      ref={ref}
       style={{
         backgroundColor: '#FFFFFF',
-        padding: '100px 0',
+        padding: '110px 0',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -109,7 +129,20 @@ export default function OurServices({ onSelectService }) {
         SERVICES
       </div>
 
-      {/* Floating Geometric Accents from Reference Style */}
+      {/* Ambient gradient */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '10%',
+          left: 0,
+          width: '40%',
+          height: '50%',
+          background: 'radial-gradient(ellipse at 20% 30%, rgba(249, 223, 4, 0.04) 0%, transparent 60%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Floating Geometric Accents */}
       <div
         className="geo-ring"
         style={{
@@ -131,12 +164,18 @@ export default function OurServices({ onSelectService }) {
         }}
       />
 
-      <div className="app-container" style={{ position: 'relative', zIndex: 10 }}>
+      <motion.div 
+        className="app-container" 
+        style={{ position: 'relative', zIndex: 10 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+      >
         {/* Section Header */}
-        <div style={{ marginBottom: '48px' }}>
-          <div className="badge-gold" style={{ marginBottom: '14px' }}>
-            <Building size={13} color="#000000" />
-            <span>04 // COMPREHENSIVE EXPERTISE • OUR SERVICES</span>
+        <motion.div variants={itemVariants} style={{ marginBottom: '52px' }}>
+          <div className="badge-gold" style={{ marginBottom: '16px' }}>
+            <Building size={13} color="#92750a" />
+            <span>04 // Comprehensive Expertise • Our Services</span>
           </div>
 
           <div
@@ -152,11 +191,10 @@ export default function OurServices({ onSelectService }) {
               <h2
                 style={{
                   fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-                  fontWeight: 900,
-                  color: '#000000',
-                  letterSpacing: '-0.02em',
-                  textTransform: 'uppercase',
-                  marginBottom: '10px',
+                  fontWeight: 800,
+                  color: '#0F172A',
+                  letterSpacing: '-0.03em',
+                  marginBottom: '12px',
                   fontFamily: 'var(--font-heading)',
                 }}
               >
@@ -164,12 +202,12 @@ export default function OurServices({ onSelectService }) {
               </h2>
               <p
                 style={{
-                  color: '#475569',
+                  color: '#64748B',
                   fontSize: '1rem',
                   maxWidth: '680px',
-                  lineHeight: 1.6,
+                  lineHeight: 1.7,
                   margin: 0,
-                  fontWeight: 500,
+                  fontWeight: 400,
                 }}
               >
                 From visionary architectural blueprinting to turnkey structural delivery, our integrated engineering
@@ -177,14 +215,14 @@ export default function OurServices({ onSelectService }) {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Services Grid Layout with Reference Card Styling */}
+        {/* Services Grid Layout - Modern Rounded Cards */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '26px',
+            gap: '24px',
           }}
         >
           {services.map((service, idx) => {
@@ -193,51 +231,65 @@ export default function OurServices({ onSelectService }) {
             return (
               <motion.div
                 key={service.id}
-                whileHover={{ y: -4 }}
+                variants={itemVariants}
+                whileHover={{ y: -6, scale: 1.01 }}
                 style={{
                   backgroundColor: '#FFFFFF',
-                  borderRadius: '4px',
-                  border: '1px solid #E2E8F0',
-                  borderTop: '3px solid #000000',
-                  padding: '28px 24px',
+                  borderRadius: 'var(--radius-xl)',
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
+                  padding: '30px 26px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  boxShadow: '0 4px 20px -4px rgba(0, 0, 0, 0.04)',
-                  transition: 'all 0.25s ease',
+                  boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.04)',
+                  transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
                   position: 'relative',
+                  overflow: 'hidden',
+                  cursor: 'default',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#000000';
-                  e.currentTarget.style.borderTopColor = '#F9DF04';
-                  e.currentTarget.style.boxShadow = '0 12px 30px -4px rgba(0, 0, 0, 0.09)';
+                  e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.12)';
+                  e.currentTarget.style.boxShadow = '0 16px 40px -8px rgba(0, 0, 0, 0.08)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#E2E8F0';
-                  e.currentTarget.style.borderTopColor = '#000000';
-                  e.currentTarget.style.boxShadow = '0 4px 20px -4px rgba(0, 0, 0, 0.04)';
+                  e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.06)';
+                  e.currentTarget.style.boxShadow = '0 4px 24px -4px rgba(0, 0, 0, 0.04)';
                 }}
               >
-                <div>
-                  {/* Top Bar: Black/Yellow Icon & Index */}
+                {/* Subtle gradient background on hover */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: '50%',
+                    height: '50%',
+                    background: 'radial-gradient(ellipse at 100% 0%, rgba(249, 223, 4, 0.04) 0%, transparent 70%)',
+                    pointerEvents: 'none',
+                  }}
+                />
+
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  {/* Top Bar: Icon & Index */}
                   <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      marginBottom: '20px',
+                      marginBottom: '22px',
                     }}
                   >
                     <div
                       style={{
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '3px',
-                        backgroundColor: '#000000',
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: 'var(--radius-md)',
+                        background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
                         color: '#F9DF04',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                       }}
                     >
                       <IconComp size={22} />
@@ -247,9 +299,9 @@ export default function OurServices({ onSelectService }) {
                       style={{
                         fontFamily: 'var(--font-heading)',
                         fontSize: '0.85rem',
-                        fontWeight: 900,
-                        color: '#CBD5E1',
-                        letterSpacing: '0.05em',
+                        fontWeight: 800,
+                        color: '#E2E8F0',
+                        letterSpacing: '0.04em',
                       }}
                     >
                       0{idx + 1}
@@ -259,11 +311,10 @@ export default function OurServices({ onSelectService }) {
                   <h3
                     style={{
                       fontFamily: 'var(--font-heading)',
-                      fontSize: '1.28rem',
-                      fontWeight: 900,
-                      color: '#000000',
-                      textTransform: 'uppercase',
-                      letterSpacing: '-0.01em',
+                      fontSize: '1.25rem',
+                      fontWeight: 800,
+                      color: '#0F172A',
+                      letterSpacing: '-0.02em',
                       marginBottom: '6px',
                     }}
                   >
@@ -272,13 +323,12 @@ export default function OurServices({ onSelectService }) {
 
                   <div
                     style={{
-                      fontFamily: 'var(--font-heading)',
+                      fontFamily: 'var(--font-body)',
                       fontSize: '0.8rem',
-                      fontWeight: 700,
-                      color: '#B45309',
+                      fontWeight: 600,
+                      color: '#92750a',
                       letterSpacing: '0.02em',
-                      textTransform: 'uppercase',
-                      marginBottom: '12px',
+                      marginBottom: '14px',
                     }}
                   >
                     {service.tagline}
@@ -289,15 +339,16 @@ export default function OurServices({ onSelectService }) {
                       fontFamily: 'var(--font-body)',
                       fontSize: '0.9rem',
                       color: '#64748B',
-                      lineHeight: 1.6,
-                      marginBottom: '20px',
+                      lineHeight: 1.65,
+                      marginBottom: '22px',
+                      fontWeight: 400,
                     }}
                   >
                     {service.description}
                   </p>
 
-                  {/* Features list with Reference yellow-dash prefix */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+                  {/* Features list */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '26px' }}>
                     {service.features.map((feat, fIdx) => (
                       <div key={fIdx} className="ref-bullet" style={{ fontSize: '0.86rem', color: '#334155' }}>
                         {feat}
@@ -306,11 +357,11 @@ export default function OurServices({ onSelectService }) {
                   </div>
                 </div>
 
-                {/* Footer spec bar & Action Button styled like Reference */}
+                {/* Footer spec bar & Action Button */}
                 <div
                   style={{
-                    paddingTop: '16px',
-                    borderTop: '1px solid #F1F5F9',
+                    paddingTop: '18px',
+                    borderTop: '1px solid rgba(0, 0, 0, 0.05)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -320,29 +371,30 @@ export default function OurServices({ onSelectService }) {
                   <span
                     style={{
                       fontSize: '0.78rem',
-                      fontWeight: 700,
-                      color: '#64748B',
-                      textTransform: 'uppercase',
+                      fontWeight: 600,
+                      color: '#94A3B8',
                       letterSpacing: '0.02em',
                     }}
                   >
                     {service.spec}
                   </span>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => onSelectService?.(service.title)}
                     className="btn-yellow-ref"
-                    style={{ padding: '7px 14px', fontSize: '0.75rem' }}
+                    style={{ padding: '8px 16px', fontSize: '0.75rem' }}
                   >
                     <span>Inquire</span>
-                    <span style={{ fontSize: '0.85rem' }}>↓</span>
-                  </button>
+                    <span style={{ fontSize: '0.85rem' }}>→</span>
+                  </motion.button>
                 </div>
               </motion.div>
             );
           })}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

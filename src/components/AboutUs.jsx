@@ -1,8 +1,11 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Compass, ShieldCheck, Award, CheckCircle2, ArrowUpRight } from 'lucide-react';
 
 export default function AboutUs({ onStartProject }) {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+
   const pillars = [
     {
       icon: ShieldCheck,
@@ -21,41 +24,78 @@ export default function AboutUs({ onStartProject }) {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.96 },
+    visible: { 
+      opacity: 1, y: 0, scale: 1, 
+      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
   return (
     <section
       id="about"
+      ref={ref}
       style={{
         backgroundColor: '#FFFFFF',
         color: '#000000',
-        padding: '90px 0',
+        padding: '110px 0',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Background Watermark (Exact Reference Style) */}
+      {/* Background Watermark (Modern Style) */}
       <div className="watermark-bg" style={{ top: '15px' }}>
         PHILOSOPHY
       </div>
+
+      {/* Subtle gradient overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '50%',
+          height: '100%',
+          background: 'radial-gradient(ellipse at 80% 30%, rgba(249, 223, 4, 0.04) 0%, transparent 60%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
 
       {/* Floating Geometric Shapes */}
       <div className="geo-ring" style={{ top: '60px', left: '5%' }} />
       <div className="geo-diamond" style={{ bottom: '40px', right: '8%' }} />
 
-      <div className="app-container" style={{ position: 'relative', zIndex: 1 }}>
+      <motion.div 
+        className="app-container" 
+        style={{ position: 'relative', zIndex: 1 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+      >
         {/* Section Header */}
-        <div style={{ marginBottom: '40px' }}>
-          <div style={{ marginBottom: '8px' }}>
+        <motion.div variants={itemVariants} style={{ marginBottom: '48px' }}>
+          <div style={{ marginBottom: '12px' }}>
             <span
               style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '0.74rem',
-                fontWeight: 800,
-                letterSpacing: '0.12em',
-                color: '#64748B',
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.76rem',
+                fontWeight: 600,
+                letterSpacing: '0.14em',
+                color: '#94A3B8',
                 textTransform: 'uppercase',
               }}
             >
-              // 02 • ABOUT YELOLINE • ARCHITECTURAL STUDIO
+              03 • About Yeloline • Architectural Studio
             </span>
           </div>
 
@@ -65,33 +105,33 @@ export default function AboutUs({ onStartProject }) {
               flexWrap: 'wrap',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
-              gap: '20px',
+              gap: '24px',
             }}
           >
             <div>
               <h2
                 style={{
                   fontSize: 'clamp(2rem, 3.4vw, 2.9rem)',
-                  fontWeight: 900,
-                  color: '#000000',
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.15,
+                  fontWeight: 800,
+                  color: '#0F172A',
+                  letterSpacing: '-0.03em',
+                  lineHeight: 1.1,
                   fontFamily: 'var(--font-heading)',
                   maxWidth: '750px',
                   margin: 0,
-                  textTransform: 'uppercase',
                 }}
               >
                 We Build More Than Structures.
               </h2>
               <p
                 style={{
-                  color: '#475569',
-                  fontSize: '0.98rem',
-                  lineHeight: 1.6,
+                  color: '#64748B',
+                  fontSize: '1rem',
+                  lineHeight: 1.7,
                   maxWidth: '680px',
-                  marginTop: '8px',
+                  marginTop: '12px',
                   fontFamily: 'var(--font-body)',
+                  fontWeight: 400,
                 }}
               >
                 A building is a lifelong dream shaped by dedication, perseverance, and technical mastery.
@@ -99,38 +139,43 @@ export default function AboutUs({ onStartProject }) {
               </p>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={onStartProject}
               className="btn-yellow-ref"
               id="about-cta-btn"
             >
               <span>Start Your Project</span>
               <ArrowUpRight size={15} />
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Main Content: Photographic Showcase & Narrative */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '40px',
+            gap: '48px',
             alignItems: 'center',
           }}
         >
-          {/* Left Photographic Showcase with Black Backing Block (Reference Block 2 Style) */}
-          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
-            {/* The Solid Black Backdrop Block */}
+          {/* Left Photographic Showcase with Modern Rounded Design */}
+          <motion.div 
+            variants={itemVariants}
+            style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}
+          >
+            {/* Gradient Backdrop Block */}
             <div
               style={{
                 position: 'absolute',
-                top: '-14px',
+                top: '-12px',
                 left: '-10px',
                 width: '85%',
                 height: '92%',
-                backgroundColor: '#111111',
-                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                borderRadius: 'var(--radius-xl)',
                 zIndex: 0,
               }}
             />
@@ -140,11 +185,10 @@ export default function AboutUs({ onStartProject }) {
                 position: 'relative',
                 zIndex: 1,
                 width: '100%',
-                borderRadius: '8px',
+                borderRadius: 'var(--radius-xl)',
                 overflow: 'hidden',
-                boxShadow: '0 16px 36px -10px rgba(0, 0, 0, 0.2)',
-                border: '1px solid #E2E8F0',
-                backgroundColor: '#111111',
+                boxShadow: '0 20px 50px -12px rgba(0, 0, 0, 0.2)',
+                border: '1px solid rgba(0, 0, 0, 0.06)',
               }}
             >
               <img
@@ -152,7 +196,7 @@ export default function AboutUs({ onStartProject }) {
                 alt="Yeloline Architectural Engineering Craftsmanship"
                 style={{
                   width: '100%',
-                  height: '380px',
+                  height: '400px',
                   objectFit: 'cover',
                   display: 'block',
                 }}
@@ -160,80 +204,92 @@ export default function AboutUs({ onStartProject }) {
             </div>
 
             {/* Overlapping Precision Spec Card */}
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+              transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 position: 'absolute',
-                bottom: '-14px',
+                bottom: '-16px',
                 right: '10px',
                 zIndex: 2,
-                backgroundColor: '#000000',
+                background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
                 color: '#FFFFFF',
-                padding: '12px 18px',
-                borderRadius: '6px',
-                border: '1.5px solid #F9DF04',
-                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.3)',
+                padding: '14px 20px',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid rgba(249, 223, 4, 0.3)',
+                boxShadow: '0 12px 30px rgba(0, 0, 0, 0.25)',
                 maxWidth: '240px',
+                backdropFilter: 'blur(10px)',
               }}
             >
-              <div style={{ fontSize: '0.66rem', color: '#CBD5E1', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.68rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                 CERTIFIED STANDARDS
               </div>
-              <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#F9DF04' }}>
+              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#F9DF04', marginTop: '2px' }}>
                 IS 456 &amp; IS 1893
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '2px' }}>
+              <div style={{ fontSize: '0.74rem', color: '#94A3B8', marginTop: '3px', fontWeight: 400 }}>
                 Structural Stability Code Compliance
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Narrative & Compact Pillars */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-            <p
+          <motion.div 
+            variants={containerVariants}
+            style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
+          >
+            <motion.p
+              variants={itemVariants}
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '0.98rem',
-                lineHeight: 1.7,
-                color: '#334155',
+                fontSize: '1rem',
+                lineHeight: 1.75,
+                color: '#475569',
                 margin: 0,
+                fontWeight: 400,
               }}
             >
               At Yeloline, we approach construction not merely as pouring concrete and stacking masonry,
               but as the rigorous discipline of giving physical form to human aspirations. Every cantilever,
               every span, and every facade we engineer is built to outlast generations with zero structural compromise.
-            </p>
+            </motion.p>
 
             {/* Compact Pillars List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {pillars.map((pillar, idx) => {
                 const IconComponent = pillar.icon;
                 return (
                   <motion.div
                     key={idx}
-                    whileHover={{ x: 4 }}
+                    variants={itemVariants}
+                    whileHover={{ x: 6, scale: 1.01 }}
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
-                      gap: '14px',
-                      padding: '14px 18px',
-                      backgroundColor: '#FFFFFF',
-                      borderRadius: '8px',
-                      border: '1px solid #E2E8F0',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.03)',
-                      transition: 'border-color 0.2s',
+                      gap: '16px',
+                      padding: '18px 20px',
+                      backgroundColor: 'rgba(248, 250, 252, 0.8)',
+                      borderRadius: 'var(--radius-lg)',
+                      border: '1px solid rgba(0, 0, 0, 0.05)',
+                      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.03)',
+                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                      cursor: 'default',
                     }}
                   >
                     <div
                       style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '6px',
-                        backgroundColor: '#000000',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: 'var(--radius-md)',
+                        background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
                         color: '#F9DF04',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
                       }}
                     >
                       <IconComponent size={18} />
@@ -242,10 +298,10 @@ export default function AboutUs({ onStartProject }) {
                       <h4
                         style={{
                           fontFamily: 'var(--font-heading)',
-                          fontSize: '0.98rem',
+                          fontSize: '0.96rem',
                           fontWeight: 700,
-                          color: '#000000',
-                          marginBottom: '2px',
+                          color: '#0F172A',
+                          marginBottom: '3px',
                         }}
                       >
                         {pillar.title}
@@ -255,8 +311,9 @@ export default function AboutUs({ onStartProject }) {
                           fontFamily: 'var(--font-body)',
                           fontSize: '0.84rem',
                           color: '#64748B',
-                          lineHeight: 1.45,
+                          lineHeight: 1.5,
                           margin: 0,
+                          fontWeight: 400,
                         }}
                       >
                         {pillar.desc}
@@ -268,13 +325,14 @@ export default function AboutUs({ onStartProject }) {
             </div>
 
             {/* Quality Checklist */}
-            <div
+            <motion.div
+              variants={itemVariants}
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: '10px',
-                paddingTop: '14px',
-                borderTop: '1px solid #E2E8F0',
+                gap: '12px',
+                paddingTop: '16px',
+                borderTop: '1px solid rgba(0, 0, 0, 0.06)',
               }}
             >
               {[
@@ -283,24 +341,24 @@ export default function AboutUs({ onStartProject }) {
                 'Dual-Layer Waterproofing',
                 'Single-Point Contact',
               ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                  <CheckCircle2 size={15} color="#000000" />
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <CheckCircle2 size={15} color="#10B981" />
                   <span
                     style={{
-                      fontFamily: 'var(--font-heading)',
+                      fontFamily: 'var(--font-body)',
                       fontSize: '0.82rem',
-                      fontWeight: 700,
-                      color: '#000000',
+                      fontWeight: 600,
+                      color: '#334155',
                     }}
                   >
                     {item}
                   </span>
                 </div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

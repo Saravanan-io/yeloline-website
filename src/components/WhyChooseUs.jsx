@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { 
-  ShieldCheck, 
-  CircleDollarSign, 
-  Building2, 
-  Layers, 
-  Award, 
-  CheckCircle2, 
-  Mouse 
+import {
+  ShieldCheck,
+  CircleDollarSign,
+  Building2,
+  Layers,
+  Award,
+  CheckCircle2,
+  Mouse
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,11 +17,13 @@ gsap.registerPlugin(ScrollTrigger);
  * WhyChooseUs Component
  * 
  * Scroll-Controlled 3D Curved Coverflow Carousel:
+ * - Perfectly balanced vertical rhythm within the 100vh viewport
+ * - Standard site container alignment (app-container)
  * - GSAP ScrollTrigger pin & scrub across a 3D cylindrical perspective arc
  * - Scrolling down glides through all 6 milestone metric cards
  * - Real-time continuous 3D transforms: rotation, depth, scale, and active golden halo
  * - Illuminated glowing pedestal beneath the center active card
- * - Synchronized interactive pagination dots, arrows, and direct click-to-focus
+ * - Synchronized interactive pagination dots and direct click-to-focus
  */
 export default function WhyChooseUs() {
   const containerRef = useRef(null);
@@ -83,7 +85,6 @@ export default function WhyChooseUs() {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Ensure triggers are evaluated in proper document DOM order
     if (typeof ScrollTrigger !== 'undefined') {
       ScrollTrigger.sort();
     }
@@ -103,7 +104,6 @@ export default function WhyChooseUs() {
       },
     });
 
-    // Refresh after DOM and preceding dynamic sections settle
     const refreshTimer1 = setTimeout(() => {
       ScrollTrigger.sort();
       ScrollTrigger.refresh();
@@ -115,7 +115,9 @@ export default function WhyChooseUs() {
     }, 1500);
 
     const handleResize = () => {
-      ScrollTrigger.refresh();
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -171,17 +173,17 @@ export default function WhyChooseUs() {
     const diff = index - currentPos;
     const absDiff = Math.abs(diff);
 
-    // Dynamic curve parameters
+    // Uniform fanning with clear visibility for numbers and text
     const sign = Math.sign(diff);
-    const x = sign * Math.pow(absDiff, 0.88) * 195;
-    const z = Math.max(-190, 95 - absDiff * 85);
-    const rotY = Math.max(-50, Math.min(50, -diff * 19));
-    const scale = Math.max(0.68, 1.08 - absDiff * 0.14);
-    const opacity = Math.max(0, 1 - absDiff * 0.28);
+    const x = sign * (absDiff * 215 + Math.pow(absDiff, 1.05) * 15);
+    const z = Math.max(-210, 100 - absDiff * 95);
+    const rotY = Math.max(-48, Math.min(48, -diff * 18));
+    const scale = Math.max(0.72, 1.06 - absDiff * 0.12);
+    const opacity = Math.max(0.18, 1 - absDiff * 0.22);
     const zIndex = Math.round(20 - absDiff * 3);
 
     // Active center glow proximity (1 at dead center, 0 when moved away)
-    const proximity = Math.max(0, 1 - absDiff * 1.6);
+    const proximity = Math.max(0, 1 - absDiff * 1.5);
     const isCenter = absDiff < 0.45;
 
     return {
@@ -189,14 +191,14 @@ export default function WhyChooseUs() {
       zIndex,
       opacity,
       border: proximity > 0.2
-        ? `2px solid rgba(249, 223, 4, ${0.4 + proximity * 0.6})`
+        ? `2px solid rgba(249, 223, 4, ${0.5 + proximity * 0.5})`
         : '1px solid rgba(0, 0, 0, 0.08)',
       boxShadow: proximity > 0.2
-        ? `0 ${10 + proximity * 12}px ${28 + proximity * 20}px -8px rgba(249, 223, 4, ${proximity * 0.45}), 0 6px 20px rgba(0, 0, 0, 0.06)`
-        : '0 4px 16px rgba(0, 0, 0, 0.04)',
-      pointerEvents: opacity > 0.35 ? 'auto' : 'none',
+        ? `0 ${12 + proximity * 16}px ${30 + proximity * 22}px -8px rgba(249, 223, 4, ${proximity * 0.45}), 0 8px 22px rgba(0, 0, 0, 0.06)`
+        : '0 4px 18px rgba(0, 0, 0, 0.04)',
+      pointerEvents: opacity > 0.25 ? 'auto' : 'none',
       cursor: isCenter ? 'default' : 'pointer',
-      transition: 'border 0.15s ease, box-shadow 0.15s ease',
+      transition: 'border 0.2s ease, box-shadow 0.2s ease',
     };
   };
 
@@ -213,11 +215,8 @@ export default function WhyChooseUs() {
         position: 'relative',
         overflow: 'hidden',
         color: '#0F172A',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        paddingTop: '76px', // Clearance below the 70px fixed navbar
-        paddingBottom: '16px',
+        paddingTop: '80px', // Clearance below the 70px fixed navbar
+        paddingBottom: '20px',
       }}
     >
       {/* 1. Giant Faint Watermark Typography "ADVANTAGES" */}
@@ -225,10 +224,11 @@ export default function WhyChooseUs() {
         className="select-none pointer-events-none"
         style={{
           position: 'absolute',
-          top: '25px',
-          left: '30%',
+          top: '30px',
+          left: '50%',
+          transform: 'translateX(-50%)',
           fontFamily: 'var(--font-heading)',
-          fontSize: 'clamp(5rem, 11vw, 10.5rem)',
+          fontSize: 'clamp(5.5rem, 12vw, 11rem)',
           fontWeight: 900,
           letterSpacing: '0.08em',
           color: 'rgba(15, 23, 42, 0.03)',
@@ -240,54 +240,37 @@ export default function WhyChooseUs() {
         ADVANTAGES
       </div>
 
-      <div className="app-container" style={{ position: 'relative', zIndex: 10, width: '100%' }}>
+      {/* Neat & Clean Vertically Balanced Container */}
+      <div
+        className="app-container"
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxSizing: 'border-box',
+          paddingBottom: '8px'
+        }}
+      >
         {/* 2. Header Section */}
-        <div style={{ maxWidth: '820px', marginBottom: '10px' }}>
-          {/* Top Tag with Yellow Line */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginBottom: '6px',
-            }}
-          >
-            <div
-              style={{
-                width: '32px',
-                height: '3px',
-                backgroundColor: '#F9DF04',
-                borderRadius: '2px',
-              }}
-            />
-            <span
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '0.76rem',
-                fontWeight: 900,
-                letterSpacing: '0.14em',
-                color: '#0F172A',
-                textTransform: 'uppercase',
-              }}
-            >
-              06 / UNCOMPROMISING ADVANTAGES
-            </span>
-          </div>
-
+        <div style={{ maxWidth: '780px', paddingTop: '6px' }}>
           {/* Main Headline: Two-tone WHY CHOOSE YELOLINE */}
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(1.85rem, 3.2vw, 2.75rem)',
+              fontSize: 'clamp(1.9rem, 3.4vw, 2.85rem)',
               fontWeight: 900,
               letterSpacing: '-0.03em',
               lineHeight: 1.05,
-              margin: '0 0 6px 0',
+              margin: '0 0 8px 0',
               textTransform: 'uppercase',
             }}
           >
-            <span style={{ color: '#0F172A', display: 'block' }}>WHY CHOOSE</span>
-            <span style={{ color: '#F9DF04', display: 'block' }}>YELOLINE</span>
+            <span style={{ color: '#0F172A', display: 'inline', marginRight: '14px' }}>WHY CHOOSE</span>
+            <span style={{ color: '#F9DF04', display: 'inline' }}>YELOLINE</span>
           </h2>
 
           {/* Description Subtext */}
@@ -296,7 +279,7 @@ export default function WhyChooseUs() {
               fontFamily: 'var(--font-body)',
               fontSize: 'clamp(0.85rem, 0.95vw, 0.94rem)',
               color: '#64748B',
-              lineHeight: 1.45,
+              lineHeight: 1.5,
               margin: 0,
               fontWeight: 500,
               maxWidth: '660px',
@@ -318,6 +301,8 @@ export default function WhyChooseUs() {
             flexDirection: 'column',
             alignItems: 'center',
             userSelect: 'none',
+            flex: 1,
+            justifyContent: 'center',
           }}
         >
           {/* 3D Stage Viewport */}
@@ -325,7 +310,7 @@ export default function WhyChooseUs() {
             style={{
               position: 'relative',
               width: '100%',
-              height: '345px',
+              height: '360px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -338,7 +323,7 @@ export default function WhyChooseUs() {
             <div
               style={{
                 position: 'absolute',
-                bottom: '12px',
+                bottom: '8px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 width: '320px',
@@ -354,7 +339,7 @@ export default function WhyChooseUs() {
             <div
               style={{
                 position: 'absolute',
-                bottom: '18px',
+                bottom: '14px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 width: '190px',
@@ -379,37 +364,39 @@ export default function WhyChooseUs() {
                   onClick={() => scrollToCard(idx)}
                   style={{
                     position: 'absolute',
-                    width: '230px',
+                    width: '235px',
                     height: '315px',
-                    borderRadius: '18px',
+                    borderRadius: '20px',
                     backgroundColor: '#FFFFFF',
-                    padding: '22px 18px',
+                    padding: '24px 18px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     textAlign: 'center',
                     justifyContent: 'space-between',
+                    boxSizing: 'border-box',
+                    backdropFilter: 'blur(10px)',
                     ...dynamicStyle,
                   }}
                 >
-                  <div>
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     {/* Top Circular Icon with Soft Yellow Aura */}
                     <div
                       style={{
-                        width: '48px',
-                        height: '48px',
+                        width: '50px',
+                        height: '50px',
                         borderRadius: '50%',
                         backgroundColor: isCenter ? 'rgba(249, 223, 4, 0.22)' : 'rgba(249, 223, 4, 0.12)',
-                        border: isCenter ? '1.5px solid #F9DF04' : '1px solid rgba(249, 223, 4, 0.6)',
+                        border: isCenter ? '1.5px solid #F9DF04' : '1px solid rgba(249, 223, 4, 0.5)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        margin: '0 auto 10px auto',
-                        boxShadow: isCenter ? '0 0 14px rgba(249, 223, 4, 0.35)' : 'none',
+                        margin: '0 auto 12px auto',
+                        boxShadow: isCenter ? '0 0 16px rgba(249, 223, 4, 0.35)' : 'none',
                         transition: 'all 0.2s ease',
                       }}
                     >
-                      <IconComponent size={23} color="#000000" strokeWidth={1.9} />
+                      <IconComponent size={24} color="#000000" strokeWidth={1.9} />
                     </div>
 
                     {/* Big Stat Typography */}
@@ -458,51 +445,9 @@ export default function WhyChooseUs() {
                     </p>
                   </div>
 
-                  {/* Active Indicator Dot */}
-                  <div
-                    style={{
-                      width: '6px',
-                      height: '6px',
-                      borderRadius: '50%',
-                      backgroundColor: isCenter ? '#F9DF04' : 'transparent',
-                      boxShadow: isCenter ? '0 0 8px #F9DF04' : 'none',
-                      marginTop: '8px',
-                    }}
-                  />
                 </div>
               );
             })}
-          </div>
-
-          {/* Navigation Controls: Clean Minimal Pagination Dots */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              marginTop: '12px',
-              zIndex: 10,
-            }}
-          >
-            {carouselItems.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => scrollToCard(i)}
-                aria-label={`Go to card ${i + 1}`}
-                style={{
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  height: '8px',
-                  width: i === activeIntIndex ? '26px' : '8px',
-                  borderRadius: '4px',
-                  backgroundColor: i === activeIntIndex ? '#F9DF04' : '#CBD5E1',
-                  boxShadow: i === activeIntIndex ? '0 0 10px rgba(249, 223, 4, 0.6)' : 'none',
-                  transition: 'all 0.25s ease',
-                }}
-              />
-            ))}
           </div>
         </div>
 
@@ -518,7 +463,7 @@ export default function WhyChooseUs() {
             fontWeight: 800,
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            marginTop: '8px',
+            paddingTop: '6px',
             pointerEvents: 'none',
           }}
         >

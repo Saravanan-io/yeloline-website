@@ -5,10 +5,10 @@ import { ArrowUpRight } from 'lucide-react';
 import Navbar from './components/Navbar';
 import ScrollConstructionHero from './components/ScrollConstructionHero';
 import Hero from './components/Hero';
+import LegacyHero from './components/LegacyHero';
 import AboutUs from './components/AboutUs';
 import ConstructionProcess from './components/ConstructionProcess';
 import WhyChooseUs from './components/WhyChooseUs';
-import Achievements from './components/Achievements';
 import Testimonials from './components/Testimonials';
 import SitePortfolio from './components/SitePortfolio';
 import OurServices from './components/OurServices';
@@ -75,8 +75,8 @@ export default function App() {
           left: 0,
           right: 0,
           height: '3px',
-          backgroundColor: '#000000',
-          boxShadow: '0 0 10px rgba(0, 0, 0, 0.4)',
+          background: 'linear-gradient(90deg, #F9DF04 0%, #E5CC00 50%, #F9DF04 100%)',
+          boxShadow: '0 0 12px rgba(249, 223, 4, 0.6)',
           transformOrigin: '0%',
           zIndex: 9999,
         }}
@@ -98,13 +98,21 @@ export default function App() {
         )}
         {activePage === 'home' && (
           <div>
-            {/* 1. Hero Section */}
+            {/* 1. Hero Video Section */}
             <Hero
               onExploreProjects={handleExploreProjects}
               onGetQuote={handleOpenQuote}
             />
 
-            {/* 2. About Yeloline */}
+            {/* 2. Architectural Excellence (Building Dreams with 3D Floating Island) */}
+            <LegacyHero
+              onExploreProjects={handleExploreProjects}
+              onGetQuote={handleOpenQuote}
+            />
+
+            <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.06)', width: '100%' }} />
+
+            {/* 3. About Yeloline */}
             <AboutUs onStartProject={handleOpenQuote} />
 
             <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)', width: '100%' }} />
@@ -121,42 +129,42 @@ export default function App() {
             {/* 5. Why Choose Us */}
             <WhyChooseUs onStartProject={handleOpenQuote} />
 
-            {/* 6. Achievements */}
-            <Achievements />
-
             {/* 7. Testimonials */}
             <Testimonials />
 
             {/* Discovery / Specialties Section */}
             <section
               style={{
-                backgroundColor: '#F8FAFC',
-                padding: '75px 0',
-                borderTop: '1px solid #E2E8F0',
+                background: 'linear-gradient(180deg, #FAFBFC 0%, #F1F5F9 100%)',
+                padding: '90px 0',
+                borderTop: '1px solid rgba(0,0,0,0.06)',
               }}
             >
               <div className="app-container">
-                <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 36px' }}>
+                <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 44px' }}>
                   <span
                     style={{
-                      fontSize: '0.78rem',
-                      fontWeight: 900,
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
                       letterSpacing: '0.14em',
-                      color: '#64748B',
+                      color: '#94A3B8',
                       textTransform: 'uppercase',
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
-                    // DISCOVER DEDICATED SECTIONS
+                    Discover Dedicated Sections
                   </span>
                   <h3
                     style={{
                       fontFamily: 'var(--font-heading)',
-                      fontSize: 'clamp(1.6rem, 3vw, 2.1rem)',
-                      fontWeight: 900,
-                      marginTop: '8px',
+                      fontSize: 'clamp(1.7rem, 3vw, 2.2rem)',
+                      fontWeight: 800,
+                      marginTop: '10px',
+                      color: '#0F172A',
+                      letterSpacing: '-0.02em',
                     }}
                   >
-                    EXPLORE YELOLINE BY SPECIALTY
+                    Explore Yeloline By Specialty
                   </h3>
                 </div>
 
@@ -164,37 +172,41 @@ export default function App() {
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '22px',
+                    gap: '20px',
                   }}
                 >
                   <div
                     onClick={() => navigateTo('portfolio')}
                     style={{
                       backgroundColor: '#FFFFFF',
-                      borderRadius: '16px',
-                      padding: '30px',
-                      border: '1px solid #E2E8F0',
+                      borderRadius: 'var(--radius-xl)',
+                      padding: '32px',
+                      border: '1px solid rgba(0,0,0,0.06)',
                       cursor: 'pointer',
-                      transition: 'all 0.25s',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+                      transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#000000';
-                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.borderColor = 'rgba(0,0,0,0.12)';
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#E2E8F0';
+                      e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)';
                       e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)';
                     }}
                   >
                     <span
                       style={{
-                        fontSize: '0.74rem',
-                        fontWeight: 800,
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
                         color: '#000000',
-                        backgroundColor: '#F9DF04',
-                        padding: '4px 10px',
-                        borderRadius: '4px',
+                        background: 'linear-gradient(135deg, #F9DF04, #E5CC00)',
+                        padding: '5px 14px',
+                        borderRadius: 'var(--radius-full)',
+                        fontFamily: 'var(--font-heading)',
+                        letterSpacing: '0.04em',
                       }}
                     >
                       SITE PORTFOLIO
@@ -202,15 +214,17 @@ export default function App() {
                     <h4
                       style={{
                         fontFamily: 'var(--font-heading)',
-                        fontSize: '1.25rem',
-                        fontWeight: 900,
-                        marginTop: '14px',
+                        fontSize: '1.2rem',
+                        fontWeight: 800,
+                        marginTop: '16px',
                         marginBottom: '8px',
+                        color: '#0F172A',
+                        letterSpacing: '-0.01em',
                       }}
                     >
                       Architectural Builds →
                     </h4>
-                    <p style={{ fontSize: '0.86rem', color: '#64748B', lineHeight: 1.55 }}>
+                    <p style={{ fontSize: '0.87rem', color: '#64748B', lineHeight: 1.6, fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       Browse our complete catalog of luxury villas, modern residences, and commercial landmark blueprints.
                     </p>
                   </div>
@@ -219,30 +233,34 @@ export default function App() {
                     onClick={() => navigateTo('renovation')}
                     style={{
                       backgroundColor: '#FFFFFF',
-                      borderRadius: '16px',
-                      padding: '30px',
-                      border: '1px solid #E2E8F0',
+                      borderRadius: 'var(--radius-xl)',
+                      padding: '32px',
+                      border: '1px solid rgba(0,0,0,0.06)',
                       cursor: 'pointer',
-                      transition: 'all 0.25s',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+                      transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#000000';
-                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.borderColor = 'rgba(0,0,0,0.12)';
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#E2E8F0';
+                      e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)';
                       e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)';
                     }}
                   >
                     <span
                       style={{
-                        fontSize: '0.74rem',
-                        fontWeight: 800,
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
                         color: '#FFFFFF',
-                        backgroundColor: '#000000',
-                        padding: '4px 10px',
-                        borderRadius: '4px',
+                        background: 'linear-gradient(135deg, #0F172A, #1E293B)',
+                        padding: '5px 14px',
+                        borderRadius: 'var(--radius-full)',
+                        fontFamily: 'var(--font-heading)',
+                        letterSpacing: '0.04em',
                       }}
                     >
                       RENOVATION
@@ -250,15 +268,17 @@ export default function App() {
                     <h4
                       style={{
                         fontFamily: 'var(--font-heading)',
-                        fontSize: '1.25rem',
-                        fontWeight: 900,
-                        marginTop: '14px',
+                        fontSize: '1.2rem',
+                        fontWeight: 800,
+                        marginTop: '16px',
                         marginBottom: '8px',
+                        color: '#0F172A',
+                        letterSpacing: '-0.01em',
                       }}
                     >
                       Before & After Transformations →
                     </h4>
-                    <p style={{ fontSize: '0.86rem', color: '#64748B', lineHeight: 1.55 }}>
+                    <p style={{ fontSize: '0.87rem', color: '#64748B', lineHeight: 1.6, fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       Interactive before/after engineering comparisons, structural retrofitting, and seismic reinforcement.
                     </p>
                   </div>
@@ -266,29 +286,33 @@ export default function App() {
                   <div
                     onClick={() => navigateTo('contact')}
                     style={{
-                      backgroundColor: '#F9DF04',
-                      borderRadius: '16px',
-                      padding: '30px',
-                      border: '1px solid #E2E8F0',
+                      background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)',
+                      borderRadius: 'var(--radius-xl)',
+                      padding: '32px',
+                      border: '1px solid rgba(249,223,4,0.3)',
                       cursor: 'pointer',
-                      transition: 'all 0.25s',
-                      boxShadow: '0 6px 22px rgba(249, 223, 4, 0.3)',
+                      transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                      boxShadow: '0 8px 28px rgba(249, 223, 4, 0.25)',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 16px 40px rgba(249, 223, 4, 0.35)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 8px 28px rgba(249, 223, 4, 0.25)';
                     }}
                   >
                     <span
                       style={{
-                        fontSize: '0.74rem',
-                        fontWeight: 800,
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
                         color: '#FFFFFF',
-                        backgroundColor: '#000000',
-                        padding: '4px 10px',
-                        borderRadius: '4px',
+                        background: 'linear-gradient(135deg, #0F172A, #1E293B)',
+                        padding: '5px 14px',
+                        borderRadius: 'var(--radius-full)',
+                        fontFamily: 'var(--font-heading)',
+                        letterSpacing: '0.04em',
                       }}
                     >
                       FREE CONSULTATION
@@ -296,16 +320,17 @@ export default function App() {
                     <h4
                       style={{
                         fontFamily: 'var(--font-heading)',
-                        fontSize: '1.25rem',
-                        fontWeight: 900,
-                        marginTop: '14px',
+                        fontSize: '1.2rem',
+                        fontWeight: 800,
+                        marginTop: '16px',
                         marginBottom: '8px',
                         color: '#000000',
+                        letterSpacing: '-0.01em',
                       }}
                     >
                       Get A Free Quote →
                     </h4>
-                    <p style={{ fontSize: '0.86rem', color: '#1E293B', lineHeight: 1.55 }}>
+                    <p style={{ fontSize: '0.87rem', color: '#1E293B', lineHeight: 1.6, fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       Receive a comprehensive 100% fixed-price line-item BOQ and book an on-site geotechnical inspection.
                     </p>
                   </div>
@@ -318,9 +343,9 @@ export default function App() {
         {activePage === 'portfolio' && (
           <div style={{ paddingTop: '30px' }}>
             <SitePortfolio onSelectProject={(proj) => setSelectedProject(proj)} />
-            <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)', width: '100%' }} />
+            <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.05)', width: '100%' }} />
             <OurServices onSelectService={() => navigateTo('contact')} />
-            <section style={{ backgroundColor: '#000000', color: '#FFFFFF', padding: '60px 0' }}>
+            <section style={{ background: 'linear-gradient(145deg, #0B0F17 0%, #0F172A 100%)', color: '#FFFFFF', padding: '72px 0' }}>
               <div
                 className="app-container"
                 style={{
@@ -328,39 +353,41 @@ export default function App() {
                   flexWrap: 'wrap',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '24px',
+                  gap: '28px',
                 }}
               >
                 <div>
                   <span
                     style={{
                       color: '#F9DF04',
-                      fontSize: '0.78rem',
-                      fontWeight: 900,
-                      letterSpacing: '0.12em',
+                      fontSize: '0.76rem',
+                      fontWeight: 600,
+                      letterSpacing: '0.14em',
                       textTransform: 'uppercase',
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
-                    // READY TO BUILD YOUR LANDMARK?
+                    Ready to Build Your Landmark?
                   </span>
                   <h3
                     style={{
                       fontFamily: 'var(--font-heading)',
                       fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-                      fontWeight: 900,
-                      marginTop: '6px',
+                      fontWeight: 800,
+                      marginTop: '8px',
+                      letterSpacing: '-0.02em',
                     }}
                   >
                     Book A Geotechnical Site Inspection & Feasibility Study
                   </h3>
-                  <p style={{ color: '#94A3B8', fontSize: '0.92rem', maxWidth: '620px', marginTop: '6px' }}>
+                  <p style={{ color: '#64748B', fontSize: '0.94rem', maxWidth: '620px', marginTop: '8px', fontWeight: 400, lineHeight: 1.65 }}>
                     Speak directly with our chief structural engineers to evaluate plot suitability, soil load-bearing capacity, and receive an itemized architectural estimate.
                   </p>
                 </div>
                 <button
                   onClick={() => navigateTo('contact')}
                   className="btn-yellow-ref"
-                  style={{ padding: '12px 24px', fontSize: '0.9rem' }}
+                  style={{ padding: '13px 26px', fontSize: '0.9rem' }}
                 >
                   <span>Request Free Quote</span>
                   <ArrowUpRight size={16} />
@@ -373,7 +400,7 @@ export default function App() {
         {activePage === 'renovation' && (
           <div style={{ paddingTop: '30px' }}>
             <Renovation onGetQuote={() => navigateTo('contact')} />
-            <section style={{ backgroundColor: '#F9DF04', color: '#000000', padding: '60px 0' }}>
+            <section style={{ background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)', color: '#000000', padding: '72px 0' }}>
               <div
                 className="app-container"
                 style={{
@@ -381,39 +408,41 @@ export default function App() {
                   flexWrap: 'wrap',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '24px',
+                  gap: '28px',
                 }}
               >
                 <div>
                   <span
                     style={{
-                      color: '#000000',
-                      fontSize: '0.78rem',
-                      fontWeight: 900,
-                      letterSpacing: '0.12em',
+                      color: 'rgba(0,0,0,0.6)',
+                      fontSize: '0.76rem',
+                      fontWeight: 600,
+                      letterSpacing: '0.14em',
                       textTransform: 'uppercase',
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
-                    // NON-DESTRUCTIVE TESTING & RETROFITTING
+                    Non-Destructive Testing & Retrofitting
                   </span>
                   <h3
                     style={{
                       fontFamily: 'var(--font-heading)',
                       fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-                      fontWeight: 900,
-                      marginTop: '6px',
+                      fontWeight: 800,
+                      marginTop: '8px',
+                      letterSpacing: '-0.02em',
                     }}
                   >
                     Schedule A Structural Audit For Your Property
                   </h3>
-                  <p style={{ color: '#334155', fontSize: '0.92rem', maxWidth: '620px', marginTop: '6px' }}>
+                  <p style={{ color: 'rgba(0,0,0,0.65)', fontSize: '0.94rem', maxWidth: '620px', marginTop: '8px', fontWeight: 400, lineHeight: 1.65 }}>
                     Rebound hammer tests, ultrasonic pulse velocity, core extraction, and carbonation depth analysis by licensed structural engineers.
                   </p>
                 </div>
                 <button
                   onClick={() => navigateTo('contact')}
                   className="btn-black-ref"
-                  style={{ padding: '12px 24px', fontSize: '0.9rem' }}
+                  style={{ padding: '13px 26px', fontSize: '0.9rem' }}
                 >
                   <span>Book Structural Audit</span>
                   <ArrowUpRight size={16} />

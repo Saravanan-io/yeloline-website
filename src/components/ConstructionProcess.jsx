@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { 
   PencilRuler, 
   Shovel, 
@@ -8,11 +8,14 @@ import {
   Sparkles, 
   CheckCircle2, 
   ArrowRight,
+  ArrowLeft,
   Clock
 } from 'lucide-react';
 
 export default function ConstructionProcess() {
   const [activeStep, setActiveStep] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
 
   const stages = [
     {
@@ -116,14 +119,32 @@ export default function ConstructionProcess() {
   const current = stages[activeStep];
   const CurrentIcon = current.icon;
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, y: 0, 
+      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
   return (
     <section
       id="process"
+      ref={ref}
       style={{
         backgroundColor: '#FFFFFF',
-        padding: '100px 0',
+        padding: '110px 0',
         position: 'relative',
         overflow: 'hidden',
+        width: '100%',
       }}
     >
       {/* Background Watermark Typography */}
@@ -134,7 +155,20 @@ export default function ConstructionProcess() {
         PROCESS
       </div>
 
-      {/* Floating Geometric Accents from Reference Style */}
+      {/* Subtle ambient gradient */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '60%',
+          height: '50%',
+          background: 'radial-gradient(ellipse at 20% 100%, rgba(249, 223, 4, 0.03) 0%, transparent 60%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Floating Geometric Accents */}
       <div
         className="geo-diamond"
         style={{
@@ -156,12 +190,18 @@ export default function ConstructionProcess() {
         }}
       />
 
-      <div className="app-container" style={{ position: 'relative', zIndex: 10 }}>
+      <motion.div 
+        className="app-container"
+        style={{ position: 'relative', zIndex: 10 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+      >
         {/* Section Header */}
-        <div style={{ marginBottom: '40px' }}>
-          <div className="badge-gold" style={{ marginBottom: '14px' }}>
-            <Layers size={13} color="#000000" />
-            <span>05 // SYSTEMATIC METHODOLOGY • HOW WE BUILD</span>
+        <motion.div variants={itemVariants} style={{ marginBottom: '44px' }}>
+          <div className="badge-gold" style={{ marginBottom: '16px' }}>
+            <Layers size={13} color="#92750a" />
+            <span>04 // Systematic Methodology • How We Build</span>
           </div>
 
           <div
@@ -177,11 +217,10 @@ export default function ConstructionProcess() {
               <h2
                 style={{
                   fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-                  fontWeight: 900,
-                  color: '#000000',
-                  letterSpacing: '-0.02em',
-                  textTransform: 'uppercase',
-                  marginBottom: '10px',
+                  fontWeight: 800,
+                  color: '#0F172A',
+                  letterSpacing: '-0.03em',
+                  marginBottom: '12px',
                   fontFamily: 'var(--font-heading)',
                 }}
               >
@@ -189,12 +228,12 @@ export default function ConstructionProcess() {
               </h2>
               <p
                 style={{
-                  color: '#475569',
+                  color: '#64748B',
                   fontSize: '1rem',
                   maxWidth: '680px',
-                  lineHeight: 1.6,
+                  lineHeight: 1.7,
                   margin: 0,
-                  fontWeight: 500,
+                  fontWeight: 400,
                 }}
               >
                 A transparent, rigorous 6-stage engineering roadmap engineered for flawless precision,
@@ -202,46 +241,51 @@ export default function ConstructionProcess() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Stage Navigation Pills styled like reference */}
-        <div
+        {/* Modern Stage Navigation Pills */}
+        <motion.div
+          variants={itemVariants}
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-            gap: '8px',
-            backgroundColor: '#F8FAFC',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #E2E8F0',
-            marginBottom: '32px',
+            gap: '10px',
+            backgroundColor: 'rgba(248, 250, 252, 0.8)',
+            padding: '10px',
+            borderRadius: 'var(--radius-xl)',
+            border: '1px solid rgba(0, 0, 0, 0.06)',
+            marginBottom: '36px',
+            backdropFilter: 'blur(10px)',
           }}
         >
           {stages.map((st, i) => {
             const isActive = activeStep === i;
             return (
-              <button
+              <motion.button
                 key={i}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveStep(i)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '10px 14px',
-                  borderRadius: '3px',
-                  backgroundColor: isActive ? '#000000' : 'transparent',
+                  padding: '12px 16px',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: isActive ? '#0F172A' : 'transparent',
                   color: isActive ? '#FFFFFF' : '#334155',
-                  border: isActive ? '1px solid #000000' : '1px solid transparent',
+                  border: 'none',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease',
+                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                   textAlign: 'left',
+                  boxShadow: isActive ? '0 4px 16px rgba(0, 0, 0, 0.15)' : 'none',
                 }}
               >
                 <span
                   style={{
                     fontFamily: 'var(--font-heading)',
                     fontSize: '0.8rem',
-                    fontWeight: 900,
+                    fontWeight: 800,
                     color: isActive ? '#F9DF04' : '#94A3B8',
                   }}
                 >
@@ -250,8 +294,8 @@ export default function ConstructionProcess() {
                 <span
                   style={{
                     fontFamily: 'var(--font-heading)',
-                    fontSize: '0.8rem',
-                    fontWeight: isActive ? 800 : 600,
+                    fontSize: '0.78rem',
+                    fontWeight: isActive ? 700 : 600,
                     lineHeight: 1.2,
                     color: isActive ? '#FFFFFF' : '#0F172A',
                     textTransform: 'uppercase',
@@ -259,47 +303,47 @@ export default function ConstructionProcess() {
                 >
                   {st.subtitle}
                 </span>
-              </button>
+              </motion.button>
             );
           })}
-        </div>
+        </motion.div>
 
-        {/* Active Stage Showcase with Offset Backdrop Block */}
-        <div style={{ position: 'relative' }}>
-          {/* Yellow Backdrop Offset Block (Signature Reference Element) */}
+        {/* Active Stage Showcase */}
+        <motion.div variants={itemVariants} style={{ position: 'relative' }}>
+          {/* Gradient Backdrop */}
           <div
             style={{
               position: 'absolute',
-              top: '-12px',
-              right: '-12px',
-              width: '60%',
-              height: '80%',
-              backgroundColor: '#F9DF04',
-              borderRadius: '4px',
+              top: '-10px',
+              right: '-10px',
+              width: '55%',
+              height: '75%',
+              background: 'linear-gradient(135deg, rgba(249, 223, 4, 0.6) 0%, rgba(249, 223, 4, 0.2) 100%)',
+              borderRadius: 'var(--radius-xl)',
               zIndex: 0,
-              opacity: 0.9,
+              filter: 'blur(1px)',
             }}
           />
 
           <AnimatePresence mode="wait">
             <motion.div
               key={activeStep}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+              initial={{ opacity: 0, y: 16, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -16, scale: 0.99 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 position: 'relative',
                 zIndex: 1,
-                backgroundColor: '#0F172A',
+                background: 'linear-gradient(145deg, #0F172A 0%, #1E293B 100%)',
                 color: '#FFFFFF',
-                borderRadius: '4px',
-                border: '2px solid #000000',
-                padding: '38px 34px',
-                boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.25)',
+                borderRadius: 'var(--radius-xl)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                padding: '42px 38px',
+                boxShadow: '0 24px 50px -12px rgba(0, 0, 0, 0.25)',
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                gap: '36px',
+                gap: '40px',
                 alignItems: 'center',
               }}
             >
@@ -310,15 +354,16 @@ export default function ConstructionProcess() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '8px',
-                    backgroundColor: '#F9DF04',
+                    background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)',
                     color: '#000000',
-                    padding: '6px 12px',
-                    borderRadius: '2px',
+                    padding: '7px 16px',
+                    borderRadius: 'var(--radius-full)',
                     fontFamily: 'var(--font-heading)',
-                    fontSize: '0.74rem',
-                    fontWeight: 900,
-                    letterSpacing: '0.06em',
-                    marginBottom: '16px',
+                    fontSize: '0.73rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.05em',
+                    marginBottom: '20px',
+                    boxShadow: '0 2px 10px rgba(249, 223, 4, 0.3)',
                   }}
                 >
                   <span>{current.badge}</span>
@@ -331,12 +376,11 @@ export default function ConstructionProcess() {
                   style={{
                     fontFamily: 'var(--font-heading)',
                     fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
-                    fontWeight: 900,
+                    fontWeight: 800,
                     color: '#FFFFFF',
-                    textTransform: 'uppercase',
-                    letterSpacing: '-0.015em',
+                    letterSpacing: '-0.02em',
                     lineHeight: 1.2,
-                    marginBottom: '14px',
+                    marginBottom: '16px',
                   }}
                 >
                   {current.title}
@@ -345,22 +389,23 @@ export default function ConstructionProcess() {
                 <p
                   style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: '0.94rem',
-                    lineHeight: 1.6,
+                    fontSize: '0.95rem',
+                    lineHeight: 1.65,
                     color: '#94A3B8',
-                    marginBottom: '24px',
+                    marginBottom: '28px',
+                    fontWeight: 400,
                   }}
                 >
                   {current.overview}
                 </p>
 
-                {/* Deliverables Checklist with Reference Dash Bullets */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {/* Deliverables Checklist */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   <div
                     style={{
                       fontFamily: 'var(--font-heading)',
-                      fontSize: '0.76rem',
-                      fontWeight: 800,
+                      fontSize: '0.74rem',
+                      fontWeight: 700,
                       letterSpacing: '0.08em',
                       color: '#F9DF04',
                       textTransform: 'uppercase',
@@ -377,23 +422,25 @@ export default function ConstructionProcess() {
               </div>
 
               {/* Right Column: QA Certification Card & Stage Control */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
                 <div
                   style={{
-                    backgroundColor: '#1E293B',
-                    borderRadius: '4px',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderLeft: '4px solid #F9DF04',
-                    padding: '24px 22px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: 'var(--radius-lg)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderLeft: '3px solid #F9DF04',
+                    padding: '26px 24px',
+                    backdropFilter: 'blur(8px)',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px' }}>
                     <div
                       style={{
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '3px',
-                        backgroundColor: '#000000',
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: 'var(--radius-md)',
+                        background: 'linear-gradient(135deg, rgba(249, 223, 4, 0.2) 0%, rgba(249, 223, 4, 0.08) 100%)',
+                        border: '1px solid rgba(249, 223, 4, 0.3)',
                         color: '#F9DF04',
                         display: 'flex',
                         alignItems: 'center',
@@ -403,10 +450,10 @@ export default function ConstructionProcess() {
                       <CurrentIcon size={22} />
                     </div>
                     <div>
-                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.72rem', fontWeight: 800, color: '#F9DF04', letterSpacing: '0.06em' }}>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.72rem', fontWeight: 700, color: '#F9DF04', letterSpacing: '0.06em' }}>
                         QUALITY MANDATE
                       </div>
-                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, color: '#FFFFFF', textTransform: 'uppercase' }}>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
                         Stage 0{activeStep + 1} Testing Protocol
                       </div>
                     </div>
@@ -414,13 +461,13 @@ export default function ConstructionProcess() {
 
                   <div
                     style={{
-                      backgroundColor: '#0F172A',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                      borderRadius: '2px',
-                      padding: '14px 16px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                      border: '1px solid rgba(255, 255, 255, 0.06)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '14px 18px',
                       fontFamily: 'var(--font-body)',
-                      fontSize: '0.85rem',
-                      fontWeight: 500,
+                      fontSize: '0.86rem',
+                      fontWeight: 400,
                       color: '#E2E8F0',
                       lineHeight: 1.5,
                     }}
@@ -429,45 +476,53 @@ export default function ConstructionProcess() {
                   </div>
                 </div>
 
-                {/* Navigation Button */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                {/* Navigation Buttons */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                   {activeStep > 0 && (
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => setActiveStep(activeStep - 1)}
                       style={{
-                        backgroundColor: 'transparent',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
                         color: '#FFFFFF',
-                        padding: '10px 18px',
-                        borderRadius: '3px',
+                        padding: '10px 20px',
+                        borderRadius: 'var(--radius-full)',
                         fontFamily: 'var(--font-heading)',
                         fontWeight: 700,
                         fontSize: '0.82rem',
                         cursor: 'pointer',
                         textTransform: 'uppercase',
-                        transition: 'all 0.2s',
+                        transition: 'all 0.3s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
                       }}
                     >
-                      Previous Phase
-                    </button>
+                      <ArrowLeft size={14} />
+                      Previous
+                    </motion.button>
                   )}
 
                   {activeStep < stages.length - 1 && (
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => setActiveStep(activeStep + 1)}
                       className="btn-yellow-ref"
-                      style={{ padding: '10px 20px', fontSize: '0.82rem' }}
+                      style={{ padding: '10px 22px', fontSize: '0.82rem' }}
                     >
-                      <span>Advance to Phase 0{activeStep + 2}</span>
-                      <ArrowRight size={15} />
-                    </button>
+                      <span>Phase 0{activeStep + 2}</span>
+                      <ArrowRight size={14} />
+                    </motion.button>
                   )}
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
