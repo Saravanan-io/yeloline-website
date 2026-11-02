@@ -7,7 +7,6 @@ import ScrollConstructionHero from './components/ScrollConstructionHero';
 import Hero from './components/Hero';
 import LegacyHero from './components/LegacyHero';
 import AboutUs from './components/AboutUs';
-import ConstructionProcess from './components/ConstructionProcess';
 import WhyChooseUs from './components/WhyChooseUs';
 import Testimonials from './components/Testimonials';
 import SitePortfolio from './components/SitePortfolio';
@@ -16,7 +15,6 @@ import Renovation from './components/Renovation';
 import ContactUs from './components/ContactUs';
 import ProjectModal from './components/ProjectModal';
 import Footer from './components/Footer';
-import MobileBottomDock from './components/MobileBottomDock';
 
 export default function App() {
   const [activePage, setActivePage] = useState(() => {
@@ -114,11 +112,6 @@ export default function App() {
 
             {/* 3. About Yeloline */}
             <AboutUs onStartProject={handleOpenQuote} />
-
-            <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)', width: '100%' }} />
-
-            {/* 3. Construction Process */}
-            <ConstructionProcess />
 
             {/* 4. Interactive 3D Scroll Construction Experience */}
             <ScrollConstructionHero
@@ -263,7 +256,7 @@ export default function App() {
                         letterSpacing: '0.04em',
                       }}
                     >
-                      RENOVATION
+                      RENOVAN
                     </span>
                     <h4
                       style={{
@@ -400,55 +393,6 @@ export default function App() {
         {activePage === 'renovation' && (
           <div style={{ paddingTop: '30px' }}>
             <Renovation onGetQuote={() => navigateTo('contact')} />
-            <section style={{ background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)', color: '#000000', padding: '72px 0' }}>
-              <div
-                className="app-container"
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '28px',
-                }}
-              >
-                <div>
-                  <span
-                    style={{
-                      color: 'rgba(0,0,0,0.6)',
-                      fontSize: '0.76rem',
-                      fontWeight: 600,
-                      letterSpacing: '0.14em',
-                      textTransform: 'uppercase',
-                      fontFamily: 'var(--font-body)',
-                    }}
-                  >
-                    Non-Destructive Testing & Retrofitting
-                  </span>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-                      fontWeight: 800,
-                      marginTop: '8px',
-                      letterSpacing: '-0.02em',
-                    }}
-                  >
-                    Schedule A Structural Audit For Your Property
-                  </h3>
-                  <p style={{ color: 'rgba(0,0,0,0.65)', fontSize: '0.94rem', maxWidth: '620px', marginTop: '8px', fontWeight: 400, lineHeight: 1.65 }}>
-                    Rebound hammer tests, ultrasonic pulse velocity, core extraction, and carbonation depth analysis by licensed structural engineers.
-                  </p>
-                </div>
-                <button
-                  onClick={() => navigateTo('contact')}
-                  className="btn-black-ref"
-                  style={{ padding: '13px 26px', fontSize: '0.9rem' }}
-                >
-                  <span>Book Structural Audit</span>
-                  <ArrowUpRight size={16} />
-                </button>
-              </div>
-            </section>
           </div>
         )}
 
@@ -471,13 +415,6 @@ export default function App() {
 
       {/* Footer */}
       <Footer onNavigate={navigateTo} />
-
-      {/* Mobile Sticky Navigation Dock */}
-      <MobileBottomDock
-        activePage={activePage}
-        setActivePage={navigateTo}
-        onOpenQuote={handleOpenQuote}
-      />
     </div>
   );
 }

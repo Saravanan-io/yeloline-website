@@ -12,7 +12,7 @@ export default function MobileBottomDock({ activePage, setActivePage, activeSect
     { id: 'home', label: 'Home', icon: Home },
     { id: 'portfolio', label: 'Portfolio', icon: Building2 },
     { id: 'quote', label: 'Quote', icon: FileText, isAction: true },
-    { id: 'renovation', label: 'Renovate', icon: Truck },
+    { id: 'renovation', label: 'Renovan', icon: Truck },
     { id: 'contact', label: 'Contact', icon: Phone },
   ];
 

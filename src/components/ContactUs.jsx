@@ -1,608 +1,657 @@
-import React, { useState } from 'react';
-import { Phone, MessageSquare, MapPin, Sparkles, Ruler } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { 
+  HardHat, 
+  TrendingUp, 
+  FileCheck2, 
+  Users, 
+  CheckCircle2, 
+  Download, 
+  Sparkles,
+  Smartphone,
+  ExternalLink,
+  X
+} from 'lucide-react';
 
 export default function ContactUs() {
-  // Configurator state
-  const [projectType, setProjectType] = useState('New Luxury Villa');
-  const [areaSize, setAreaSize] = useState(4500);
-  const [stylePreference, setStylePreference] = useState('Contemporary Glass & Cantilever');
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const [downloadModal, setDownloadModal] = useState(false);
 
-  // Form state
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    city: '',
-    notes: '',
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [consultationId, setConsultationId] = useState(8492);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setConsultationId(Math.floor(1000 + Math.random() * 9000));
-      setSubmitted(true);
-    }, 700);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    },
   };
 
-  const projectTypes = [
-    'New Luxury Villa',
-    'High-End Renovation',
-    'Boutique Bungalow',
-    'Commercial Landmark'
-  ];
+  const itemVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    },
+  };
 
-  const architecturalStyles = [
-    'Contemporary Glass & Cantilever',
-    'Perforated Stone Jali & Slate',
-    'Minimalist Tropical Biophilic',
-    'Modern Heritage Fusion'
+  const features = [
+    {
+      id: 'start-project',
+      title: 'Start a Project',
+      desc: 'Begin your construction or renovation easily.',
+      icon: (
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Construction Hardhat Outline in Yeloline Gold */}
+          <path d="M6 21C6 15.5 10.5 11 17 11C23.5 11 28 15.5 28 21" stroke="#F9DF04" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 22C4 21.45 4.45 21 5 21H29C29.55 21 30 21.45 30 22V23C30 23.55 29.55 24 29 24H5C4.45 24 4 23.55 4 23V22Z" fill="#F9DF04" stroke="#E5CC00" strokeWidth="1.2" />
+          <path d="M17 11V7" stroke="#F9DF04" strokeWidth="2.4" strokeLinecap="round" />
+          <path d="M12 13V9" stroke="#F9DF04" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M22 13V9" stroke="#F9DF04" strokeWidth="2.2" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+    {
+      id: 'track-progress',
+      title: 'Track Project Progress',
+      desc: 'Monitor real-time updates at every stage.',
+      icon: (
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Bar Chart with Rising Trend Arrow */}
+          <rect x="6" y="19" width="4.5" height="9" rx="1.5" fill="#F9DF04" />
+          <rect x="14.5" y="14" width="4.5" height="14" rx="1.5" fill="#F9DF04" />
+          <rect x="23" y="9" width="4.5" height="19" rx="1.5" fill="#F9DF04" />
+          <path d="M6 14L15 6L21 11L28 4" stroke="#E5CC00" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M24 4H28V8" stroke="#E5CC00" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
+    {
+      id: 'get-quotes',
+      title: 'Get Quotes & Updates',
+      desc: 'Receive quotations and important project updates.',
+      icon: (
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Document with Checkmark Seal */}
+          <rect x="7" y="5" width="16" height="23" rx="2.5" stroke="#F9DF04" strokeWidth="2.4" />
+          <line x1="11" y1="10" x2="19" y2="10" stroke="#F9DF04" strokeWidth="2" strokeLinecap="round" />
+          <line x1="11" y1="15" x2="17" y2="15" stroke="#F9DF04" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="23" cy="23" r="5.5" fill="#F9DF04" />
+          <path d="M21 23L22.5 24.5L25.5 21.5" stroke="#000000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
+    {
+      id: 'connect-team',
+      title: 'Connect with Our Team',
+      desc: 'Stay in touch with our architectural experts.',
+      icon: (
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* 3 People / Team Icon in Gold */}
+          <circle cx="17" cy="11" r="3.5" stroke="#F9DF04" strokeWidth="2.2" />
+          <path d="M10 24C10 20.5 13 18 17 18C21 18 24 20.5 24 24" stroke="#F9DF04" strokeWidth="2.2" strokeLinecap="round" />
+          <circle cx="8" cy="13" r="2.8" stroke="#F9DF04" strokeWidth="1.8" />
+          <path d="M3.5 23C3.5 20.5 5.5 19 8 19" stroke="#F9DF04" strokeWidth="1.8" strokeLinecap="round" />
+          <circle cx="26" cy="13" r="2.8" stroke="#F9DF04" strokeWidth="1.8" />
+          <path d="M30.5 23C30.5 20.5 28.5 19 26 19" stroke="#F9DF04" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      ),
+    },
   ];
 
   return (
     <section
       id="contact"
-      className="section-wrapper"
+      ref={ref}
       style={{
         position: 'relative',
         overflow: 'hidden',
         backgroundColor: '#FFFFFF',
-        padding: '100px 0',
+        padding: '90px 0 110px 0',
       }}
     >
-      {/* Background Watermark Typography */}
-      <div
-        className="watermark-bg select-none pointer-events-none"
-        style={{ top: '20px', right: '4%' }}
+      {/* Background Architectural CAD Blueprint Wireframe Lines */}
+      <svg
+        className="pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: 'clamp(400px, 45vw, 750px)',
+          height: '100%',
+          opacity: 0.1,
+          zIndex: 1,
+        }}
+        viewBox="0 0 600 600"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        CONTACT
-      </div>
+        <path d="M50 500L450 150L580 200V550H50V500Z" stroke="#0F172A" strokeWidth="1.2" />
+        <path d="M450 150L450 550" stroke="#0F172A" strokeWidth="1.2" />
+        <path d="M120 500V300L350 190V500" stroke="#0F172A" strokeWidth="1.2" />
+        <path d="M160 350H240V430H160V350Z" stroke="#0F172A" strokeWidth="1" strokeDasharray="3 3" />
+        <path d="M260 350H320V430H260V350Z" stroke="#0F172A" strokeWidth="1" strokeDasharray="3 3" />
+        <line x1="50" y1="200" x2="580" y2="200" stroke="#0F172A" strokeWidth="0.8" strokeDasharray="4 4" />
+        <line x1="50" y1="350" x2="580" y2="350" stroke="#0F172A" strokeWidth="0.8" strokeDasharray="4 4" />
+        <line x1="50" y1="500" x2="580" y2="500" stroke="#0F172A" strokeWidth="1.5" />
+      </svg>
 
-      {/* Floating Geometric Accents from Reference Style */}
-      <div
-        className="geo-diamond"
+      {/* Sweeping Gold Ribbon Waves in Background */}
+      <svg
+        className="pointer-events-none select-none"
         style={{
           position: 'absolute',
-          top: '70px',
-          left: '3%',
-          width: '32px',
-          height: '32px',
+          top: '15%',
+          left: '-5%',
+          width: '75%',
+          height: '75%',
+          opacity: 0.45,
+          zIndex: 1,
         }}
-      />
-      <div
-        className="geo-ring"
-        style={{
-          position: 'absolute',
-          bottom: '80px',
-          right: '5%',
-          width: '42px',
-          height: '42px',
-        }}
-      />
-      <div
-        className="geo-triangle"
-        style={{
-          position: 'absolute',
-          bottom: '140px',
-          left: '4%',
-          width: 0,
-          height: 0,
-        }}
-      />
+        viewBox="0 0 800 500"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M-50 380C120 420 220 220 400 320C580 420 680 280 850 350"
+          stroke="url(#goldRibbonGrad)"
+          strokeWidth="32"
+          strokeLinecap="round"
+        />
+        <path
+          d="M-30 420C140 450 250 260 420 350C600 440 700 310 880 370"
+          stroke="url(#goldRibbonGrad2)"
+          strokeWidth="14"
+          strokeLinecap="round"
+          opacity="0.6"
+        />
+        <defs>
+          <linearGradient id="goldRibbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F9DF04" stopOpacity="0.8" />
+            <stop offset="50%" stopColor="#E5CC00" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#F9DF04" stopOpacity="0.1" />
+          </linearGradient>
+          <linearGradient id="goldRibbonGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FACC15" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#F9DF04" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
 
-      <div className="app-container" style={{ position: 'relative', zIndex: 10 }}>
-        {/* Header */}
-        <div style={{ marginBottom: '46px' }}>
-          <div className="badge-gold" style={{ marginBottom: '14px' }}>
-            <Sparkles size={13} color="#000000" />
-            <span>10 // PROJECT INCEPTION • CONTACT &amp; FREE QUOTE</span>
-          </div>
-
-          <h2
+      <motion.div
+        className="app-container"
+        style={{ position: 'relative', zIndex: 10 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+      >
+        {/* Top Header matching Reference Image */}
+        <motion.div variants={itemVariants} style={{ marginBottom: '48px' }}>
+          {/* Eyebrow: // DOWNLOAD OUR MOBILE APP with yellow trailing bar */}
+          <div
             style={{
-              fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-              fontWeight: 900,
-              color: '#000000',
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
-              marginBottom: '10px',
-              fontFamily: 'var(--font-heading)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '14px',
             }}
           >
-            Start Your Dream Construction
-          </h2>
+            <span
+              style={{
+                color: '#F9DF04',
+                fontWeight: 900,
+                fontSize: '1.15rem',
+                letterSpacing: '-0.05em',
+                lineHeight: 1,
+              }}
+            >
+              //
+            </span>
+            <span
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: '0.84rem',
+                fontWeight: 800,
+                letterSpacing: '0.12em',
+                color: '#0F172A',
+                textTransform: 'uppercase',
+              }}
+            >
+              DOWNLOAD OUR MOBILE APP
+            </span>
+            <div
+              style={{
+                width: '70px',
+                height: '2px',
+                backgroundColor: '#F9DF04',
+                borderRadius: '2px',
+              }}
+            />
+          </div>
+
+          {/* Main Title: GET THE [YELOLINE] APP */}
+          <h1
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(2.4rem, 4.6vw, 4rem)',
+              fontWeight: 900,
+              color: '#0F172A',
+              letterSpacing: '-0.03em',
+              lineHeight: 1.12,
+              margin: '0 0 12px 0',
+              textTransform: 'uppercase',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            <span>GET THE</span>
+            <span
+              style={{
+                backgroundColor: '#F9DF04',
+                color: '#0F172A',
+                padding: '4px 18px',
+                borderRadius: '10px',
+                display: 'inline-block',
+                boxShadow: '0 8px 24px rgba(249, 223, 4, 0.35)',
+              }}
+            >
+              YELOLINE
+            </span>
+            <span>APP</span>
+          </h1>
+
+          {/* Subtitle */}
           <p
             style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'clamp(1rem, 1.8vw, 1.22rem)',
               color: '#475569',
-              fontSize: '1rem',
-              maxWidth: '700px',
-              lineHeight: 1.6,
-              margin: 0,
               fontWeight: 500,
+              margin: 0,
+              maxWidth: '680px',
             }}
           >
-            You have worked hard to realize this vision. Building it should be a seamless, joyful journey. Connect directly with our lead architectural team.
+            Your construction project, always within reach.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Modern Consultation Console with Offset Yellow Backdrop */}
-        <div style={{ position: 'relative' }}>
-          {/* Yellow Offset Backdrop Block */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '-12px',
-              right: '-12px',
-              width: '85%',
-              height: '85%',
-              backgroundColor: '#F9DF04',
-              borderRadius: '4px',
-              zIndex: 0,
-            }}
-          />
-
-          <div
+        {/* 2-Column Split: Dual 3D Smartphone Showcase (Left) + Features & Download Action (Right) */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            alignItems: 'center',
+            gap: 'clamp(36px, 5vw, 64px)',
+          }}
+        >
+          {/* Left Column: 3D Dual Smartphones on Marble Podium with Yellow Ribbon */}
+          <motion.div
+            variants={itemVariants}
             style={{
               position: 'relative',
-              zIndex: 1,
-              background: '#FFFFFF',
-              border: '2px solid #000000',
-              borderRadius: '4px',
-              boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.15)',
-              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px 0',
             }}
           >
-            {/* Top Console Navigation Bar */}
+            <div
+              style={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: '520px',
+              }}
+            >
+              {/* 3D Dual Smartphones Floating Mockup with Transparent Background */}
+              <motion.img
+                src="/images/yeloline_app_phones_transparent.png"
+                alt="Yeloline Construction Mobile App on iOS & Android"
+                whileHover={{ scale: 1.03, y: -6 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                style={{
+                  width: '100%',
+                  maxWidth: '480px',
+                  height: 'auto',
+                  display: 'block',
+                  margin: '0 auto',
+                  filter: 'drop-shadow(0 30px 45px rgba(0, 0, 0, 0.16))',
+                }}
+              />
+            </div>
+          </motion.div>
+
+          {/* Right Column: Built For Your Next Project + 4 Features + Google Play & QR Code */}
+          <motion.div variants={itemVariants}>
+            {/* Pill Badge: BUILT FOR YOUR NEXT PROJECT */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '14px',
+                marginBottom: '16px',
+              }}
+            >
+              <span
+                style={{
+                  backgroundColor: '#F9DF04',
+                  color: '#000000',
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '0.76rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  padding: '7px 20px',
+                  borderRadius: 'var(--radius-full)',
+                  boxShadow: '0 4px 14px rgba(249, 223, 4, 0.35)',
+                }}
+              >
+                BUILT FOR YOUR NEXT PROJECT
+              </span>
+              <div
+                style={{
+                  width: '60px',
+                  height: '2px',
+                  backgroundColor: '#F9DF04',
+                  borderRadius: '2px',
+                }}
+              />
+            </div>
+
+            {/* Headline */}
+            <h2
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(2rem, 3.2vw, 2.85rem)',
+                fontWeight: 900,
+                color: '#0F172A',
+                letterSpacing: '-0.025em',
+                lineHeight: 1.15,
+                margin: '0 0 34px 0',
+              }}
+            >
+              Everything you need, in one app
+            </h2>
+
+            {/* 4 Feature Items */}
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '16px 24px',
-                borderBottom: '2px solid #000000',
-                backgroundColor: '#000000',
-                color: '#FFFFFF',
+                flexDirection: 'column',
+                gap: '24px',
+                marginBottom: '42px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '10px', height: '10px', backgroundColor: '#F9DF04', borderRadius: '1px' }} />
-                <span style={{ fontSize: '0.84rem', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>
-                  YELOLINE ARCHITECTURAL CONSULTATION DESK
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: '#F9DF04', fontWeight: 700 }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F9DF04' }} />
-                <span>Studio Architects Available</span>
-              </div>
-            </div>
-
-            {/* Main 2-Column Split Console */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                gap: '0',
-              }}
-            >
-              {/* Left Console: Project Configuration */}
-              <div
-                style={{
-                  padding: '32px 28px',
-                  borderRight: '1px solid #E2E8F0',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '24px',
-                  backgroundColor: '#F8FAFC',
-                }}
-              >
-                <div>
-                  <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                    STEP 01 • PROJECT SCOPE
-                  </span>
-                  <h3 style={{ fontSize: '1.25rem', color: '#000000', marginTop: '4px', fontWeight: 900, textTransform: 'uppercase' }}>
-                    Select Construction Type
-                  </h3>
-                </div>
-
-                {/* Scope Selector Chips */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-                  {projectTypes.map((type) => {
-                    const selected = projectType === type;
-                    return (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => setProjectType(type)}
-                        style={{
-                          padding: '11px 14px',
-                          borderRadius: '3px',
-                          border: '1px solid',
-                          borderColor: selected ? '#000000' : '#CBD5E1',
-                          backgroundColor: selected ? '#F9DF04' : '#FFFFFF',
-                          color: '#000000',
-                          fontSize: '0.82rem',
-                          fontWeight: selected ? 800 : 600,
-                          textAlign: 'left',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          textTransform: 'uppercase',
-                        }}
-                      >
-                        {type}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Area Dimension Range Slider */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Ruler size={16} color="#000000" />
-                      <span style={{ fontSize: '0.86rem', fontWeight: 800, color: '#000000', textTransform: 'uppercase' }}>
-                        Target Built-Up Area
-                      </span>
-                    </div>
-                    <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000' }}>
-                      {areaSize.toLocaleString()} sq.ft.
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="2000"
-                    max="15000"
-                    step="250"
-                    value={areaSize}
-                    onChange={(e) => setAreaSize(Number(e.target.value))}
-                    style={{
-                      width: '100%',
-                      accentColor: '#000000',
-                      cursor: 'pointer',
-                    }}
-                  />
-                </div>
-
-                {/* Architectural Style Preferences */}
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>
-                    Architectural Style Preference
-                  </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {architecturalStyles.map((style) => {
-                      const selected = stylePreference === style;
-                      return (
-                        <button
-                          key={style}
-                          type="button"
-                          onClick={() => setStylePreference(style)}
-                          style={{
-                            padding: '10px 14px',
-                            borderRadius: '3px',
-                            border: '1px solid',
-                            borderColor: selected ? '#000000' : '#E2E8F0',
-                            backgroundColor: selected ? '#000000' : '#FFFFFF',
-                            color: selected ? '#F9DF04' : '#334155',
-                            fontSize: '0.82rem',
-                            fontWeight: selected ? 800 : 600,
-                            textAlign: 'left',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
-                          {style}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Console: Contact Form */}
-              <div
-                style={{
-                  padding: '32px 28px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  backgroundColor: '#FFFFFF',
-                }}
-              >
-                {submitted ? (
+              {features.map((item) => (
+                <div
+                  key={item.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '18px',
+                  }}
+                >
+                  {/* Yellow Custom Icon */}
                   <div
                     style={{
+                      flexShrink: 0,
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '12px',
+                      backgroundColor: 'rgba(249, 223, 4, 0.12)',
                       display: 'flex',
-                      flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      height: '100%',
-                      minHeight: '360px',
-                      textAlign: 'center',
-                      padding: '24px',
+                      marginTop: '2px',
                     }}
                   >
-                    <div
-                      style={{
-                        width: '58px',
-                        height: '58px',
-                        borderRadius: '3px',
-                        backgroundColor: '#F9DF04',
-                        color: '#000000',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: '18px',
-                      }}
-                    >
-                      <Sparkles size={28} />
-                    </div>
-
-                    <h3 style={{ fontSize: '1.45rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase', marginBottom: '8px' }}>
-                      Consultation Registered!
-                    </h3>
-
-                    <p style={{ color: '#64748B', fontSize: '0.94rem', maxWidth: '420px', lineHeight: 1.55, marginBottom: '18px' }}>
-                      Our principal architect will review your project parameters ({areaSize.toLocaleString()} sq.ft {projectType}) and connect with you within 2 business hours.
-                    </p>
-
-                    <div
-                      style={{
-                        backgroundColor: '#F8FAFC',
-                        border: '2px solid #000000',
-                        padding: '10px 18px',
-                        borderRadius: '3px',
-                        fontSize: '0.84rem',
-                        color: '#000000',
-                        fontWeight: 700,
-                      }}
-                    >
-                      Priority ID: <span style={{ color: '#000000', fontWeight: 900 }}>#YELO-{consultationId}</span>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setSubmitted(false);
-                        setFormData({ name: '', phone: '', email: '', city: '', notes: '' });
-                      }}
-                      className="btn-yellow-ref"
-                      style={{ marginTop: '20px', padding: '10px 20px', fontSize: '0.84rem' }}
-                    >
-                      <span>Submit Another Inquiry</span>
-                    </button>
+                    {item.icon}
                   </div>
-                ) : (
-                  <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div>
-                      <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                        STEP 02 • DIRECT CONTACT DETAILS
-                      </span>
-                      <h3 style={{ fontSize: '1.25rem', color: '#000000', marginTop: '4px', fontWeight: 900, textTransform: 'uppercase' }}>
-                        Connect With Lead Architect
-                      </h3>
-                    </div>
 
-                    {/* Input 1: Full Name */}
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '6px', fontWeight: 700, textTransform: 'uppercase' }}>
-                        Full Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Rajesh Patel"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '11px 14px',
-                          borderRadius: '3px',
-                          background: '#F8FAFC',
-                          border: '1px solid #CBD5E1',
-                          color: '#0F172A',
-                          fontSize: '0.9rem',
-                          outline: 'none',
-                        }}
-                        onFocus={(e) => (e.target.style.borderColor = '#000000')}
-                        onBlur={(e) => (e.target.style.borderColor = '#CBD5E1')}
-                      />
-                    </div>
-
-                    {/* Grid 2: Phone & Email */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '6px', fontWeight: 700, textTransform: 'uppercase' }}>
-                          Phone / WhatsApp *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="+91 98765 43210"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          style={{
-                            width: '100%',
-                            padding: '11px 14px',
-                            borderRadius: '3px',
-                            background: '#F8FAFC',
-                            border: '1px solid #CBD5E1',
-                            color: '#0F172A',
-                            fontSize: '0.9rem',
-                            outline: 'none',
-                          }}
-                          onFocus={(e) => (e.target.style.borderColor = '#000000')}
-                          onBlur={(e) => (e.target.style.borderColor = '#CBD5E1')}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '6px', fontWeight: 700, textTransform: 'uppercase' }}>
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          placeholder="client@domain.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          style={{
-                            width: '100%',
-                            padding: '11px 14px',
-                            borderRadius: '3px',
-                            background: '#F8FAFC',
-                            border: '1px solid #CBD5E1',
-                            color: '#0F172A',
-                            fontSize: '0.9rem',
-                            outline: 'none',
-                          }}
-                          onFocus={(e) => (e.target.style.borderColor = '#000000')}
-                          onBlur={(e) => (e.target.style.borderColor = '#CBD5E1')}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Input 3: City */}
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '6px', fontWeight: 700, textTransform: 'uppercase' }}>
-                        Site Location / City
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Ahmedabad / Surat / Vadodara / Pan-India"
-                        value={formData.city}
-                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '11px 14px',
-                          borderRadius: '3px',
-                          background: '#F8FAFC',
-                          border: '1px solid #CBD5E1',
-                          color: '#0F172A',
-                          fontSize: '0.9rem',
-                          outline: 'none',
-                        }}
-                        onFocus={(e) => (e.target.style.borderColor = '#000000')}
-                        onBlur={(e) => (e.target.style.borderColor = '#CBD5E1')}
-                      />
-                    </div>
-
-                    {/* Input 4: Notes */}
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '6px', fontWeight: 700, textTransform: 'uppercase' }}>
-                        Share Your Vision &amp; Requirements
-                      </label>
-                      <textarea
-                        rows="2"
-                        placeholder="Tell us about your plot size, architectural preferences, or expected handover year..."
-                        value={formData.notes}
-                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '11px 14px',
-                          borderRadius: '3px',
-                          background: '#F8FAFC',
-                          border: '1px solid #CBD5E1',
-                          color: '#0F172A',
-                          fontSize: '0.9rem',
-                          outline: 'none',
-                          resize: 'none',
-                        }}
-                        onFocus={(e) => (e.target.style.borderColor = '#000000')}
-                        onBlur={(e) => (e.target.style.borderColor = '#CBD5E1')}
-                      />
-                    </div>
-
-                    {/* Submit Button styled as .btn-yellow-ref */}
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="btn-yellow-ref"
+                  {/* Text */}
+                  <div>
+                    <h3
                       style={{
-                        width: '100%',
-                        padding: '13px',
-                        fontSize: '0.88rem',
-                        marginTop: '6px',
-                        justifyContent: 'center',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '1.14rem',
+                        fontWeight: 900,
+                        color: '#0F172A',
+                        margin: '0 0 3px 0',
+                        letterSpacing: '-0.01em',
                       }}
                     >
-                      {isSubmitting ? (
-                        <span>Scheduling Review...</span>
-                      ) : (
-                        <>
-                          <span>Submit Project For Review</span>
-                          <span style={{ fontSize: '0.95rem' }}>↓</span>
-                        </>
-                      )}
-                    </button>
-                  </form>
-                )}
-              </div>
+                      {item.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        fontSize: '0.94rem',
+                        color: '#64748B',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* Bottom Direct Connect Studio Bar */}
+            {/* Bottom Row: Official Google Play Store Button + Yellow Divider + QR Code */}
             <div
               style={{
-                padding: '18px 26px',
-                borderTop: '1px solid #E2E8F0',
-                backgroundColor: '#F8FAFC',
                 display: 'flex',
-                flexWrap: 'wrap',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '16px',
+                gap: 'clamp(18px, 3vw, 32px)',
+                flexWrap: 'wrap',
+                paddingTop: '10px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '22px', flexWrap: 'wrap' }}>
-                <a
-                  href="https://wa.me/919876543210?text=Hello%20Yeloline%20Construction,%20I%20would%20like%20to%20discuss%20my%20dream%20project."
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    color: '#000000',
-                    textDecoration: 'none',
-                    fontSize: '0.86rem',
-                    fontWeight: 700,
-                  }}
-                >
-                  <MessageSquare size={16} color="#000000" />
-                  <span>Chat on WhatsApp (+91 98765 43210)</span>
-                </a>
+              {/* Google Play Button */}
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setDownloadModal(true)}
+                style={{
+                  backgroundColor: '#000000',
+                  color: '#FFFFFF',
+                  borderRadius: '14px',
+                  padding: '10px 22px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                  cursor: 'pointer',
+                  transition: 'all 0.25s ease',
+                }}
+              >
+                {/* Official Google Play 4-Color Logo */}
+                <svg width="28" height="30" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#gpBlue)" />
+                  <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#gpYellow)" />
+                  <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#gpRed)" />
+                  <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#gpGreen)" />
+                  <defs>
+                    <linearGradient id="gpBlue" x1="13.9" y1="2.7" x2="-2.4" y2="19" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#00A0FF" />
+                      <stop offset="0.007" stopColor="#00A1FF" />
+                      <stop offset="0.26" stopColor="#00BEFF" />
+                      <stop offset="0.512" stopColor="#00D2FF" />
+                      <stop offset="0.76" stopColor="#00DFFF" />
+                      <stop offset="1" stopColor="#00E3FF" />
+                    </linearGradient>
+                    <linearGradient id="gpYellow" x1="27.4" y1="15" x2="0.6" y2="15" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FFE000" />
+                      <stop offset="0.409" stopColor="#FFBD00" />
+                      <stop offset="0.775" stopColor="#FFA500" />
+                      <stop offset="1" stopColor="#FF9C00" />
+                    </linearGradient>
+                    <linearGradient id="gpRed" x1="17.6" y1="17.3" x2="2.7" y2="32.2" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FF3A44" />
+                      <stop offset="1" stopColor="#C31162" />
+                    </linearGradient>
+                    <linearGradient id="gpGreen" x1="2.7" y1="-2.2" x2="17.6" y2="12.7" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#32A071" />
+                      <stop offset="0.069" stopColor="#2DA771" />
+                      <stop offset="0.476" stopColor="#15CF74" />
+                      <stop offset="0.801" stopColor="#06E775" />
+                      <stop offset="1" stopColor="#00F076" />
+                    </linearGradient>
+                  </defs>
+                </svg>
 
-                <a
-                  href="tel:+919876543210"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    color: '#000000',
-                    textDecoration: 'none',
-                    fontSize: '0.86rem',
-                    fontWeight: 700,
-                  }}
-                >
-                  <Phone size={15} color="#000000" />
-                  <span>Call Studio Direct</span>
-                </a>
-
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '0.84rem' }}>
-                  <MapPin size={15} color="#000000" />
-                  <span>Main Studio: SG Highway, Ahmedabad</span>
+                {/* Text Block */}
+                <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
+                  <div
+                    style={{
+                      fontSize: '0.64rem',
+                      letterSpacing: '0.1em',
+                      color: '#94A3B8',
+                      textTransform: 'uppercase',
+                      fontWeight: 700,
+                    }}
+                  >
+                    GET IT ON
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '1.24rem',
+                      fontWeight: 800,
+                      color: '#FFFFFF',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    Google Play
+                  </div>
                 </div>
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Interactive Download Feedback Modal */}
+      <AnimatePresence>
+        {downloadModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDownloadModal(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 23, 42, 0.65)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px',
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '24px',
+                padding: '36px',
+                maxWidth: '440px',
+                width: '100%',
+                textAlign: 'center',
+                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.25)',
+                position: 'relative',
+              }}
+            >
+              <button
+                onClick={() => setDownloadModal(false)}
+                style={{
+                  position: 'absolute',
+                  top: '18px',
+                  right: '18px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#64748B',
+                }}
+              >
+                <X size={20} />
+              </button>
+
+              <div
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(249, 223, 4, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 18px',
+                }}
+              >
+                <Smartphone size={32} color="#000000" />
               </div>
 
-              <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
-                Confidentiality Guaranteed • NDA on Demand
+              <h3
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '1.5rem',
+                  fontWeight: 900,
+                  color: '#0F172A',
+                  margin: '0 0 8px 0',
+                }}
+              >
+                Download Yeloline App
+              </h3>
+
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '0.92rem',
+                  color: '#64748B',
+                  lineHeight: 1.55,
+                  marginBottom: '24px',
+                }}
+              >
+                The Yeloline Construction companion app is ready for download. Manage blueprints, track construction milestones, and access line-item BOQ estimates.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <a
+                  href="#download-playstore"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert('Redirecting to Google Play Store listing: Yeloline Construction (com.yeloline.construction)');
+                    setDownloadModal(false);
+                  }}
+                  className="btn-yellow-ref"
+                  style={{ justifyContent: 'center', padding: '12px' }}
+                >
+                  <Download size={16} />
+                  <span>Download APK / Play Store</span>
+                </a>
+
+                <button
+                  onClick={() => setDownloadModal(false)}
+                  className="btn-black-ref"
+                  style={{ justifyContent: 'center', padding: '12px' }}
+                >
+                  <span>Close</span>
+                </button>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

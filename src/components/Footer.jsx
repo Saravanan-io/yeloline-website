@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowUp, Phone, Mail, MapPin, ShieldCheck } from 'lucide-react';
+import { ArrowUp, ShieldCheck } from 'lucide-react';
 
 export default function Footer({ onNavigate }) {
   const ref = useRef(null);
@@ -63,8 +63,8 @@ export default function Footer({ onNavigate }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '40px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '48px',
             marginBottom: '52px',
           }}
         >
@@ -118,7 +118,7 @@ export default function Footer({ onNavigate }) {
               {[
                 { label: 'Home Page', page: 'home' },
                 { label: 'Site Portfolio', page: 'portfolio' },
-                { label: 'Renovation Transformations', page: 'renovation' },
+                { label: 'Renovan Transformations', page: 'renovation' },
                 { label: 'Contact Us & Free Quote', page: 'contact' },
               ].map((link, i) => (
                 <a
@@ -139,59 +139,6 @@ export default function Footer({ onNavigate }) {
                   {link.label}
                 </a>
               ))}
-            </div>
-          </motion.div>
-
-          {/* Regional Studios */}
-          <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>
-              Regional Studios
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.86rem', color: '#64748B' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <MapPin size={15} color="#F9DF04" style={{ marginTop: '2px', flexShrink: 0 }} />
-                <span style={{ lineHeight: 1.5 }}>Ahmedabad Studio: SG Highway Financial Corridor, Gujarat</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <MapPin size={15} color="#F9DF04" style={{ marginTop: '2px', flexShrink: 0 }} />
-                <span style={{ lineHeight: 1.5 }}>Surat Studio: VIP Road, Vesu Waterfront, Gujarat</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <MapPin size={15} color="#F9DF04" style={{ marginTop: '2px', flexShrink: 0 }} />
-                <span style={{ lineHeight: 1.5 }}>Vadodara Studio: Alkapuri High Street, Gujarat</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Direct Contact */}
-          <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>
-              Direct Line
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <a
-                href="tel:+919876543210"
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#94A3B8', textDecoration: 'none', fontSize: '0.86rem', fontWeight: 400, transition: 'color 0.2s' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#94A3B8')}
-              >
-                <Phone size={15} color="#F9DF04" />
-                <span>+91 98765 43210</span>
-              </a>
-
-              <a
-                href="mailto:projects@yelolineconstruction.com"
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#94A3B8', textDecoration: 'none', fontSize: '0.86rem', fontWeight: 400, transition: 'color 0.2s' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#94A3B8')}
-              >
-                <Mail size={15} color="#F9DF04" />
-                <span>projects@yelolineconstruction.com</span>
-              </a>
-
-              <div style={{ fontSize: '0.78rem', color: '#475569', marginTop: '2px', fontWeight: 400 }}>
-                Studio Hours: Mon – Sat · 9:00 AM – 8:00 PM IST
-              </div>
             </div>
           </motion.div>
         </div>

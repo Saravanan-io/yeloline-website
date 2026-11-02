@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Menu, X, ArrowUpRight, Phone } from 'lucide-react';
+import { ChevronRight, Menu, X, ArrowUpRight, Download } from 'lucide-react';
 
 export default function Navbar({ activePage, setActivePage, activeSection, setActiveSection, onOpenQuote }) {
   const [scrolled, setScrolled] = useState(false);
@@ -22,7 +22,7 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
   const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'portfolio', label: 'Portfolio' },
-    { id: 'renovation', label: 'Renovation' },
+    { id: 'renovation', label: 'Renovan' },
     { id: 'contact', label: 'Contact' },
   ];
 
@@ -175,39 +175,25 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             })}
           </nav>
 
-          {/* Right Controls: Direct Phone & Consultation CTA */}
+          {/* Right Controls: Consultation CTA */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <a
-              href="tel:+919876543210"
-              style={{
-                display: 'none',
-                alignItems: 'center',
-                gap: '6px',
-                color: '#475569',
-                textDecoration: 'none',
-                fontSize: '0.84rem',
-                fontWeight: 600,
-                fontFamily: 'var(--font-body)',
-                transition: 'color 0.2s',
-              }}
-              className="desktop-phone"
-            >
-              <Phone size={14} color="#64748B" />
-              <span>+91 98765 43210</span>
-            </a>
-
             <button
-              onClick={onOpenQuote}
+              onClick={() => {
+                alert('Yeloline Construction App download will be available soon on Android & iOS!');
+              }}
               className="btn-yellow-ref"
               id="cta-desktop"
               style={{
                 display: 'none',
                 padding: '9px 20px',
                 fontSize: '0.82rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 800,
               }}
             >
-              <span>Get Free Quote</span>
-              <ArrowUpRight size={15} />
+              <span>Download App</span>
+              <Download size={14} />
             </button>
 
             {/* Mobile Hamburger Button */}
@@ -284,12 +270,13 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onOpenQuote();
+                alert('Yeloline Construction App download will be available soon on Android & iOS!');
               }}
               className="btn-gold"
-              style={{ width: '100%', marginTop: '8px', justifyContent: 'center' }}
+              style={{ width: '100%', marginTop: '8px', justifyContent: 'center', gap: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}
             >
-              Get Free Consultation
+              <span>Download App</span>
+              <Download size={15} />
             </button>
           </div>
         )}
@@ -301,9 +288,6 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             display: flex !important;
           }
           #cta-desktop {
-            display: inline-flex !important;
-          }
-          .desktop-phone {
             display: inline-flex !important;
           }
           .mobile-hamburger {

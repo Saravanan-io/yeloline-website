@@ -1,530 +1,545 @@
-import React, { useState, useRef } from 'react';
-import { Hammer, MoveHorizontal, Sliders, Shield, Layers } from 'lucide-react';
-import { renovationData } from '../data/projectsData';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { 
+  Truck, 
+  Layers, 
+  Hammer, 
+  Zap,
+  PaintRoller,
+  Settings
+} from 'lucide-react';
 
 export default function Renovation({ onGetQuote }) {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
 
-  // Estimator state
-  const [renoType, setRenoType] = useState('full-villa');
-  const [renoSqft, setRenoSqft] = useState(3500);
+  // 6 Core Services from Reference Infographic
+  const services = [
+    {
+      id: 'plumbing',
+      title: 'Plumbing',
+      desc: 'Leak detection, pipe replacement, fixtures & water pressure audits.',
+      icon: (props) => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M15 7h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1" />
+          <path d="M9 7H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1" />
+          <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+          <path d="M10 13v6a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2v-6" />
+        </svg>
+      ),
+      image: '/images/service_plumbing.jpg',
+      offsetX: 30,
+    },
+    {
+      id: 'electrical',
+      title: 'Electrical',
+      desc: 'Rewiring, MCB & circuit upgrades, architectural lighting & earthing.',
+      icon: (props) => <Zap size={22} color="#0F172A" strokeWidth={2.2} {...props} />,
+      image: '/images/service_electrical.jpg',
+      offsetX: 85,
+    },
+    {
+      id: 'masonry',
+      title: 'Masonry',
+      desc: 'Structural crack stitching, high-strength plastering & tile fixes.',
+      icon: (props) => <Layers size={22} color="#0F172A" strokeWidth={2.2} {...props} />,
+      image: '/images/service_masonry.jpg',
+      offsetX: 10,
+    },
+    {
+      id: 'carpentry',
+      title: 'Carpentry',
+      desc: 'Door/window realignment, custom woodwork repairs & fittings.',
+      icon: (props) => <Hammer size={22} color="#0F172A" strokeWidth={2.2} {...props} />,
+      image: '/images/service_carpentry.jpg',
+      offsetX: 80,
+    },
+    {
+      id: 'painting',
+      title: 'Painting',
+      desc: 'Weatherproof exterior coats, interior textures & damp priming.',
+      icon: (props) => <PaintRoller size={22} color="#0F172A" strokeWidth={2.2} {...props} />,
+      image: '/images/service_painting.jpg',
+      offsetX: 15,
+    },
+    {
+      id: 'maintenance',
+      title: 'General Maintenance',
+      desc: 'Waterproofing, seismic joints, roof upkeep & hardware overhaul.',
+      icon: (props) => <Settings size={22} color="#0F172A" strokeWidth={2.2} {...props} />,
+      image: '/images/service_maintenance.jpg',
+      offsetX: 75,
+    },
+  ];
 
-  const containerRef = useRef(null);
-
-  const handleSliderMove = (clientX) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    const percent = Math.max(5, Math.min(95, (x / rect.width) * 100));
-    setSliderPosition(percent);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
   };
 
-  const onTouchMove = (e) => {
-    handleSliderMove(e.touches[0].clientX);
-  };
-
-  const onMouseMove = (e) => {
-    if (isDragging) {
-      handleSliderMove(e.clientX);
-    }
-  };
-
-  const getEstimatedDuration = () => {
-    if (renoType === 'facade') return '45 - 60 Days';
-    if (renoType === 'interior') return '75 - 90 Days';
-    return '110 - 140 Days';
+  const itemVariants = {
+    hidden: { opacity: 0, y: 25 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } 
+    },
   };
 
   return (
-    <section
-      id="renovation"
-      className="section-wrapper"
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        backgroundColor: '#FFFFFF',
-        padding: '100px 0',
-      }}
-    >
-      {/* Background Watermark Typography */}
+    <div>
+      {/* 1. Renovan Hero & Video Section */}
+      <section
+        id="renovation"
+        ref={ref}
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundColor: '#FFFFFF',
+          padding: '80px 0 48px 0',
+        }}
+      >
+      {/* Background Watermark */}
       <div
         className="watermark-bg select-none pointer-events-none"
-        style={{ top: '20px', left: '3%' }}
+        style={{ top: '20px', left: '3%', opacity: 0.55 }}
       >
-        RENOVATION
+        RENOVAN
       </div>
 
-      {/* Floating Geometric Accents from Reference Style */}
-      <div
-        className="geo-diamond"
-        style={{
-          position: 'absolute',
-          top: '80px',
-          right: '5%',
-          width: '32px',
-          height: '32px',
-        }}
-      />
-      <div
-        className="geo-ring"
-        style={{
-          position: 'absolute',
-          bottom: '100px',
-          left: '4%',
-          width: '42px',
-          height: '42px',
-        }}
-      />
+      {/* Floating Geometric Accents */}
+      <div className="geo-diamond" style={{ top: '80px', right: '5%' }} />
+      <div className="geo-ring" style={{ bottom: '120px', left: '4%' }} />
 
-      <div className="app-container" style={{ position: 'relative', zIndex: 10 }}>
-        {/* Section Header */}
-        <div style={{ marginBottom: '46px' }}>
-          <div className="badge-gold" style={{ marginBottom: '14px' }}>
-            <Hammer size={13} color="#000000" />
-            <span>07 // PROJECT BEFORE &amp; AFTER • STRUCTURAL METAMORPHOSIS</span>
-          </div>
-
-          <h2
-            style={{
-              fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-              fontWeight: 900,
-              color: '#000000',
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
-              marginBottom: '10px',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Project Before &amp; After Transformation
-          </h2>
-          <p
-            style={{
-              color: '#475569',
-              fontSize: '1rem',
-              maxWidth: '720px',
-              lineHeight: 1.6,
-              margin: 0,
-              fontWeight: 500,
-            }}
-          >
-            Transforming conventional plots and aging structures into modern architectural monuments with zero safety compromises.
-          </p>
-        </div>
-
-        {/* 1. Interactive Before & After Transformation Slider with Offset Backdrop */}
-        <div style={{ marginBottom: '52px', position: 'relative' }}>
-          {/* Subtle yellow offset backing block */}
+      <motion.div 
+        className="app-container" 
+        style={{ position: 'relative', zIndex: 10 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+      >
+        {/* 1. Header Section */}
+        <motion.div variants={itemVariants} style={{ marginBottom: '36px' }}>
           <div
             style={{
-              position: 'absolute',
-              top: '26px',
-              right: '-10px',
-              width: '65%',
-              height: '85%',
-              backgroundColor: '#F9DF04',
-              borderRadius: '4px',
-              zIndex: 0,
-              opacity: 0.9,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 16px',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: 'rgba(249, 223, 4, 0.15)',
+              border: '1px solid rgba(249, 223, 4, 0.35)',
+              marginBottom: '14px',
             }}
-          />
+          >
+            <Truck size={14} color="#92750a" />
+            <span
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                letterSpacing: '0.12em',
+                color: '#0F172A',
+                textTransform: 'uppercase',
+              }}
+            >
+              Renovation Van Booking • Doorstep Mobile Workshop
+            </span>
+          </div>
 
-          <div style={{ position: 'relative', zIndex: 1 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              gap: '20px',
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
+                  fontWeight: 900,
+                  color: '#0F172A',
+                  letterSpacing: '-0.03em',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.1,
+                  margin: '0 0 10px 0',
+                  fontFamily: 'var(--font-heading)',
+                }}
+              >
+                Renovation <span style={{ color: '#E5CC00' }}>Made Easy</span>
+              </h1>
+              <p
+                style={{
+                  color: '#64748B',
+                  fontSize: '1rem',
+                  maxWidth: '700px',
+                  lineHeight: 1.65,
+                  margin: 0,
+                  fontWeight: 450,
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                Our Renovation Van brings expertise to your doorstep. Book a visit and let our specialists handle the rest.
+                Fully equipped with 100+ diagnostic and structural tools for immediate on-site solutions.
+              </p>
+            </div>
+
+            {/* Quick Dispatch Badge */}
             <div
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '12px',
+                gap: '10px',
+                padding: '10px 20px',
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'rgba(248, 250, 252, 0.9)',
+                border: '1px solid rgba(0, 0, 0, 0.06)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)',
               }}
             >
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  color: '#000000',
-                  fontSize: '0.86rem',
-                  fontWeight: 700,
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '50%',
+                  backgroundColor: '#10B981',
+                  boxShadow: '0 0 10px #10B981',
+                }}
+              />
+              <span
+                style={{
                   fontFamily: 'var(--font-heading)',
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                  color: '#0F172A',
+                }}
+              >
+                Vans Available On-Call in Gujarat
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 2. Renovation Van Video Showcase */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            position: 'relative',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            marginBottom: '48px',
+            boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.15)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            backgroundColor: '#000000',
+            width: '100%',
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: '16 / 9',
+              maxHeight: '620px',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#000000',
+            }}
+          >
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block',
+              }}
+            >
+              <source src="/videos/14acf651-4c41-4ade-9024-cef3f42288de.mp4" type="video/mp4" />
+              <source src="/videos/renovan_showcase.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </motion.div>
+        </motion.div>
+      </section>
+
+      {/* 2. Services Offered - Exact Serpentine Timeline Layout from Reference Image */}
+      <section
+        id="renovan-services"
+        style={{
+          position: 'relative',
+          backgroundColor: '#FFFFFF',
+          borderTop: '1px solid rgba(0, 0, 0, 0.05)',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+          padding: '90px 0 100px 0',
+          overflow: 'hidden',
+        }}
+      >
+        <div className="app-container" style={{ position: 'relative', zIndex: 10 }}>
+          {/* Centered Section Header matching Reference Image */}
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            {/* — OUR SERVICES — */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '14px',
+                justifyContent: 'center',
+                marginBottom: '10px',
+              }}
+            >
+              <div
+                style={{
+                  width: '32px',
+                  height: '2.5px',
+                  backgroundColor: '#F9DF04',
+                  borderRadius: '2px',
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '0.84rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.14em',
+                  color: '#0F172A',
                   textTransform: 'uppercase',
                 }}
               >
-                <MoveHorizontal size={16} color="#000000" />
-                <span>Interactive Slider: Drag to compare Before &amp; After transformation</span>
-              </div>
+                OUR SERVICES
+              </span>
               <div
                 style={{
-                  fontSize: '0.74rem',
-                  color: '#000000',
-                  fontWeight: 900,
-                  fontFamily: 'var(--font-heading)',
-                  background: '#F9DF04',
-                  padding: '4px 10px',
+                  width: '32px',
+                  height: '2.5px',
+                  backgroundColor: '#F9DF04',
                   borderRadius: '2px',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                PRECISION COMPARATOR
-              </div>
-            </div>
-
-            {/* Interactive Slider Canvas */}
-            <div
-              ref={containerRef}
-              onMouseDown={() => setIsDragging(true)}
-              onMouseUp={() => setIsDragging(false)}
-              onMouseLeave={() => setIsDragging(false)}
-              onMouseMove={onMouseMove}
-              onTouchMove={onTouchMove}
-              style={{
-                position: 'relative',
-                width: '100%',
-                containerType: 'inline-size',
-                height: 'clamp(340px, 44vw, 500px)',
-                borderRadius: '4px',
-                overflow: 'hidden',
-                cursor: 'ew-resize',
-                border: '2px solid #000000',
-                boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.15)',
-                userSelect: 'none',
-                backgroundColor: '#0B0F17',
-              }}
-            >
-              {/* "AFTER" Image - Yeloline Luxury Transformation */}
-              <img
-                src="/images/renovation_masterpiece.jpg"
-                alt="Yeloline After Renovation Transformation"
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  pointerEvents: 'none',
                 }}
               />
-
-              {/* "BEFORE" Image Layer (Clipped dynamically by slider position) */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  width: `${sliderPosition}%`,
-                  overflow: 'hidden',
-                  borderRight: '3px solid #F9DF04',
-                  boxShadow: '4px 0 20px rgba(0, 0, 0, 0.5)',
-                  backgroundColor: '#111827',
-                }}
-              >
-                <img
-                  src="/images/skyline_residency.jpg"
-                  alt="Before Structural Renovation"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100cqi',
-                    minWidth: '100%',
-                    maxWidth: 'none',
-                    height: '100%',
-                    objectFit: 'cover',
-                    filter: 'grayscale(90%) contrast(1.1) brightness(0.75)',
-                    pointerEvents: 'none',
-                  }}
-                />
-
-                {/* Before Floating Label */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '16px',
-                    left: '16px',
-                    background: '#000000',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#FFFFFF',
-                    padding: '6px 14px',
-                    borderRadius: '2px',
-                    fontSize: '0.74rem',
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 900,
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  BEFORE // INITIAL STRUCTURAL SHELL
-                </div>
-              </div>
-
-              {/* After Floating Label */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '16px',
-                  right: '16px',
-                  background: '#F9DF04',
-                  border: '1px solid #000000',
-                  color: '#000000',
-                  padding: '6px 16px',
-                  borderRadius: '2px',
-                  fontSize: '0.74rem',
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 900,
-                  letterSpacing: '0.04em',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
-                }}
-              >
-                AFTER // YELOLINE TURNKEY RESIDENCE
-              </div>
-
-              {/* Draggable Divider Handle */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: `${sliderPosition}%`,
-                  transform: 'translate(-50%, -50%)',
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '50%',
-                  backgroundColor: '#000000',
-                  border: '3px solid #F9DF04',
-                  boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#F9DF04',
-                  cursor: 'ew-resize',
-                  zIndex: 10,
-                }}
-              >
-                <MoveHorizontal size={20} />
-              </div>
             </div>
-          </div>
-        </div>
 
-        {/* 2. Connected Engineering Conduit Pipeline */}
-        <div style={{ marginBottom: '52px' }}>
-          <div style={{ marginBottom: '20px' }}>
-            <span
+            {/* Main Headline */}
+            <h2
               style={{
-                fontSize: '0.74rem',
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(2.3rem, 4vw, 3.3rem)',
+                fontWeight: 900,
+                color: '#0F172A',
+                letterSpacing: '-0.03em',
+                margin: '0 0 12px 0',
+              }}
+            >
+              Services Offered
+            </h2>
+
+            {/* Subtitle */}
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '1.02rem',
                 color: '#64748B',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
+                maxWidth: '680px',
+                margin: '0 auto',
+                lineHeight: 1.6,
               }}
             >
-              ENGINEERING METHODOLOGY • 4-PHASE PRECISION CONDUIT
-            </span>
-            <h3
-              style={{
-                fontSize: '1.5rem',
-                color: '#000000',
-                marginTop: '4px',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '-0.01em',
-              }}
-            >
-              The Structural Metamorphosis Conduit
-            </h3>
+              Specialized doorstep trade services with diagnostic equipment and master technicians.
+            </p>
           </div>
 
-          {/* 4-Phase Grid styled with reference cues */}
+          {/* Serpentine Timeline Container */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '16px',
+              position: 'relative',
+              maxWidth: '880px',
+              margin: '0 auto',
+              padding: '10px 0',
             }}
           >
-            {renovationData.steps.map((step, idx) => {
-              const isSelected = activeStep === idx;
-              return (
-                <div
-                  key={idx}
-                  onClick={() => setActiveStep(idx)}
-                  style={{
-                    backgroundColor: isSelected ? '#000000' : '#FFFFFF',
-                    color: isSelected ? '#FFFFFF' : '#000000',
-                    borderRadius: '3px',
-                    border: '1px solid',
-                    borderColor: isSelected ? '#000000' : '#E2E8F0',
-                    borderTop: isSelected ? '4px solid #F9DF04' : '4px solid #000000',
-                    padding: '22px 18px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: isSelected ? '0 12px 28px rgba(0, 0, 0, 0.2)' : '0 4px 14px rgba(0,0,0,0.04)',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '0.74rem', fontWeight: 900, color: isSelected ? '#F9DF04' : '#64748B', letterSpacing: '0.05em' }}>
-                      PHASE 0{idx + 1}
-                    </span>
-                    <span style={{ fontSize: '0.74rem', color: isSelected ? '#CBD5E1' : '#64748B', fontWeight: 700 }}>
-                      {step.timeline}
-                    </span>
-                  </div>
+            {/* Fluid Serpentine Golden Ribbon Path behind Circular Nodes */}
+            <svg
+              className="pointer-events-none select-none"
+              style={{
+                position: 'absolute',
+                top: '0px',
+                left: '0px',
+                width: '240px',
+                height: '980px',
+                zIndex: 2,
+              }}
+              viewBox="0 0 240 980"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="serpentineGoldGrad" x1="0" y1="0" x2="0" y2="100%">
+                  <stop offset="0%" stopColor="#F9DF04" />
+                  <stop offset="25%" stopColor="#F59E0B" />
+                  <stop offset="50%" stopColor="#F9DF04" />
+                  <stop offset="75%" stopColor="#E5B800" />
+                  <stop offset="100%" stopColor="#F9DF04" />
+                </linearGradient>
+              </defs>
+              {/* Outer Vibrant Ribbon */}
+              <path
+                d="M 98 68 C 98 152, 153 152, 153 236 C 153 320, 78 320, 78 404 C 78 488, 148 488, 148 572 C 148 656, 83 656, 83 740 C 83 824, 143 824, 143 908"
+                stroke="url(#serpentineGoldGrad)"
+                strokeWidth="60"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Core Bright Sheen */}
+              <path
+                d="M 98 68 C 98 152, 153 152, 153 236 C 153 320, 78 320, 78 404 C 78 488, 148 488, 148 572 C 148 656, 83 656, 83 740 C 83 824, 143 824, 143 908"
+                stroke="#FEF08A"
+                strokeWidth="16"
+                strokeLinecap="round"
+                opacity="0.85"
+              />
+            </svg>
 
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '8px' }}>
-                    {step.title}
-                  </h4>
+            {/* 6 Serpentine Service Rows */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '26px' }}>
+              {services.map((svc) => {
+                const IconComp = svc.icon;
 
-                  <p style={{ fontSize: '0.84rem', color: isSelected ? '#CBD5E1' : '#64748B', lineHeight: 1.55, margin: 0 }}>
-                    {step.desc}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 3. Blueprint Scope Console */}
-        <div
-          style={{
-            position: 'relative',
-            background: '#FFFFFF',
-            border: '2px solid #000000',
-            borderRadius: '4px',
-            padding: '32px 28px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '36px',
-            alignItems: 'center',
-            boxShadow: '0 12px 30px rgba(0, 0, 0, 0.08)',
-          }}
-        >
-          {/* Blueprint Drafting Controls */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <Sliders size={16} color="#000000" />
-              <span style={{ fontSize: '0.76rem', fontWeight: 900, color: '#000000', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                SPATIAL SCOPE ESTIMATOR
-              </span>
-            </div>
-
-            <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase', marginBottom: '20px' }}>
-              Configure Your Structural Renovation
-            </h3>
-
-            {/* Scope Type Selector */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', fontSize: '0.82rem', color: '#475569', marginBottom: '10px', fontWeight: 700, textTransform: 'uppercase' }}>
-                Transformation Scope
-              </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {[
-                  { id: 'full-villa', label: 'Complete Villa Overhaul' },
-                  { id: 'interior', label: 'Living & Atrium Conversion' },
-                  { id: 'facade', label: 'Luxury Facade & Balconies' },
-                ].map((type) => (
-                  <button
-                    key={type.id}
-                    onClick={() => setRenoType(type.id)}
+                return (
+                  <motion.div
+                    key={svc.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-40px' }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
                     style={{
-                      padding: '9px 16px',
-                      borderRadius: '3px',
-                      border: '1px solid',
-                      borderColor: renoType === type.id ? '#000000' : '#CBD5E1',
-                      backgroundColor: renoType === type.id ? '#F9DF04' : '#F8FAFC',
-                      color: '#000000',
-                      fontSize: '0.82rem',
-                      fontWeight: 800,
-                      textTransform: 'uppercase',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      position: 'relative',
+                      zIndex: 5,
                     }}
                   >
-                    {type.label}
-                  </button>
-                ))}
-              </div>
+                    {/* Left: Circular Image Node with Thick Gold Gradient Halo */}
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                      style={{
+                        width: '136px',
+                        height: '136px',
+                        flexShrink: 0,
+                        marginLeft: `${svc.offsetX}px`,
+                        position: 'relative',
+                        zIndex: 6,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: '50%',
+                          border: '7px solid #F9DF04',
+                          boxShadow: '0 8px 24px rgba(249, 223, 4, 0.45), 0 2px 8px rgba(0, 0, 0, 0.1)',
+                          overflow: 'hidden',
+                          backgroundColor: '#0F172A',
+                          transition: 'all 0.3s ease',
+                        }}
+                      >
+                        <img
+                          src={svc.image}
+                          alt={svc.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+
+                    {/* Right: Sleek White Card Overlapping Circular Node */}
+                    <motion.div
+                      whileHover={{ x: 6 }}
+                      style={{
+                        marginLeft: '-45px',
+                        zIndex: 4,
+                        flex: 1,
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: '24px',
+                        border: '1px solid rgba(0, 0, 0, 0.07)',
+                        boxShadow: '0 10px 30px -4px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.02)',
+                        padding: '24px 34px 24px 68px',
+                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
+                    >
+                      {/* Title Row: [Icon] Title */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          marginBottom: '6px',
+                        }}
+                      >
+                        {/* Outline Icon */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '24px',
+                            height: '24px',
+                          }}
+                        >
+                          <IconComp size={22} color="#0F172A" strokeWidth={2.2} />
+                        </div>
+
+                        {/* Service Title */}
+                        <h3
+                          style={{
+                            fontFamily: 'var(--font-heading)',
+                            fontSize: 'clamp(1.2rem, 2vw, 1.38rem)',
+                            fontWeight: 900,
+                            color: '#0F172A',
+                            letterSpacing: '-0.02em',
+                            margin: 0,
+                          }}
+                        >
+                          {svc.title}
+                        </h3>
+                      </div>
+
+                      {/* Description aligned under title */}
+                      <p
+                        style={{
+                          fontFamily: 'var(--font-body)',
+                          fontSize: '0.94rem',
+                          color: '#64748B',
+                          lineHeight: 1.5,
+                          margin: 0,
+                          paddingLeft: '36px',
+                        }}
+                      >
+                        {svc.desc}
+                      </p>
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
             </div>
-
-            {/* Area Slider */}
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <label style={{ fontSize: '0.82rem', color: '#475569', fontWeight: 700, textTransform: 'uppercase' }}>
-                  Estimated Built-Up Area
-                </label>
-                <span style={{ fontSize: '1rem', fontWeight: 900, color: '#000000' }}>
-                  {renoSqft.toLocaleString()} sq.ft.
-                </span>
-              </div>
-              <input
-                type="range"
-                min="1000"
-                max="12000"
-                step="250"
-                value={renoSqft}
-                onChange={(e) => setRenoSqft(Number(e.target.value))}
-                style={{
-                  width: '100%',
-                  accentColor: '#000000',
-                  cursor: 'pointer',
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Specifications Output */}
-          <div
-            style={{
-              borderLeft: '2px solid #E2E8F0',
-              paddingLeft: '28px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '42px', height: '42px', borderRadius: '3px', backgroundColor: '#000000', color: '#F9DF04', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Shield size={20} />
-              </div>
-              <div>
-                <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Estimated Engineering Turnaround
-                </div>
-                <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#000000' }}>
-                  {getEstimatedDuration()}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '42px', height: '42px', borderRadius: '3px', backgroundColor: '#000000', color: '#F9DF04', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Layers size={20} />
-              </div>
-              <div>
-                <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Structural Assurance
-                </div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000' }}>
-                  15-Year Non-Settlement Warranty
-                </div>
-              </div>
-            </div>
-
-            <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: 1.55, margin: 0 }}>
-              Includes 3D architectural rendering, load-bearing structural clearance, municipal compliance, and high-precision finishes.
-            </p>
-
-            <button
-              onClick={onGetQuote}
-              className="btn-yellow-ref"
-              style={{ width: '100%', marginTop: '6px', padding: '12px 20px', fontSize: '0.84rem', justifyContent: 'center' }}
-            >
-              <span>Schedule On-Site Structural Audit</span>
-              <span style={{ fontSize: '0.9rem' }}>↓</span>
-            </button>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+    </div>
   );
 }
