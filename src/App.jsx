@@ -110,7 +110,12 @@ export default function App() {
 
             <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.06)', width: '100%' }} />
 
-            {/* 3. About Yeloline */}
+            {/* 3. Disciplines & Services (3D Revolving Orbital Wheel) */}
+            <OurServices onSelectService={() => navigateTo('contact')} />
+
+            <div style={{ height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.06)', width: '100%' }} />
+
+            {/* 4. About Yeloline */}
             <AboutUs onStartProject={handleOpenQuote} />
 
             {/* 4. Interactive 3D Scroll Construction Experience */}

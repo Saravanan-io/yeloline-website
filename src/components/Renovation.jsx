@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { 
   Truck, 
@@ -6,12 +6,54 @@ import {
   Hammer, 
   Zap,
   PaintRoller,
-  Settings
+  Settings,
+  Play,
+  Pause,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 export default function Renovation({ onGetQuote }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const videoRef = useRef(null);
+  const videoContainerRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!videoContainerRef.current) return;
+    if (!document.fullscreenElement) {
+      if (videoContainerRef.current.requestFullscreen) {
+        videoContainerRef.current.requestFullscreen().catch(() => {});
+      } else if (videoRef.current && videoRef.current.webkitEnterFullscreen) {
+        videoRef.current.webkitEnterFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  };
 
   // 6 Core Services from Reference Infographic
   const services = [
@@ -99,161 +141,169 @@ export default function Renovation({ onGetQuote }) {
           position: 'relative',
           overflow: 'hidden',
           backgroundColor: '#FFFFFF',
-          padding: '80px 0 48px 0',
+          padding: '76px 0 0 0',
+          width: '100%',
         }}
       >
-      {/* Background Watermark */}
-      <div
-        className="watermark-bg select-none pointer-events-none"
-        style={{ top: '20px', left: '3%', opacity: 0.55 }}
-      >
-        RENOVAN
-      </div>
+        {/* Background Watermark */}
+        <div
+          className="watermark-bg select-none pointer-events-none"
+          style={{ top: '20px', left: '3%', opacity: 0.55 }}
+        >
+          RENOVAN
+        </div>
 
-      {/* Floating Geometric Accents */}
-      <div className="geo-diamond" style={{ top: '80px', right: '5%' }} />
-      <div className="geo-ring" style={{ bottom: '120px', left: '4%' }} />
+        {/* Floating Geometric Accents in Header Area */}
+        <div className="geo-diamond" style={{ top: '60px', right: '5%' }} />
 
-      <motion.div 
-        className="app-container" 
-        style={{ position: 'relative', zIndex: 10 }}
-        variants={containerVariants}
-        initial="hidden"
-        animate={isInView ? 'visible' : 'hidden'}
-      >
-        {/* 1. Header Section */}
-        <motion.div variants={itemVariants} style={{ marginBottom: '36px' }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '6px 16px',
-              borderRadius: 'var(--radius-full)',
-              backgroundColor: 'rgba(249, 223, 4, 0.15)',
-              border: '1px solid rgba(249, 223, 4, 0.35)',
-              marginBottom: '14px',
-            }}
-          >
-            <Truck size={14} color="#92750a" />
-            <span
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                letterSpacing: '0.12em',
-                color: '#0F172A',
-                textTransform: 'uppercase',
-              }}
-            >
-              Renovation Van Booking • Doorstep Mobile Workshop
-            </span>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              gap: '20px',
-            }}
-          >
-            <div>
-              <h1
-                style={{
-                  fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-                  fontWeight: 900,
-                  color: '#0F172A',
-                  letterSpacing: '-0.03em',
-                  textTransform: 'uppercase',
-                  lineHeight: 1.1,
-                  margin: '0 0 10px 0',
-                  fontFamily: 'var(--font-heading)',
-                }}
-              >
-                Renovation <span style={{ color: '#E5CC00' }}>Made Easy</span>
-              </h1>
-              <p
-                style={{
-                  color: '#64748B',
-                  fontSize: '1rem',
-                  maxWidth: '700px',
-                  lineHeight: 1.65,
-                  margin: 0,
-                  fontWeight: 450,
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                Our Renovation Van brings expertise to your doorstep. Book a visit and let our specialists handle the rest.
-                Fully equipped with 100+ diagnostic and structural tools for immediate on-site solutions.
-              </p>
-            </div>
-
-            {/* Quick Dispatch Badge */}
+        {/* Top Header Information Container */}
+        <motion.div 
+          className="app-container" 
+          style={{ position: 'relative', zIndex: 10 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          {/* 1. Header Section */}
+          <motion.div variants={itemVariants} style={{ marginBottom: '38px' }}>
             <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '10px',
-                padding: '10px 20px',
-                borderRadius: 'var(--radius-lg)',
-                backgroundColor: 'rgba(248, 250, 252, 0.9)',
-                border: '1px solid rgba(0, 0, 0, 0.06)',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)',
+                gap: '8px',
+                padding: '6px 16px',
+                borderRadius: 'var(--radius-full)',
+                backgroundColor: 'rgba(249, 223, 4, 0.15)',
+                border: '1px solid rgba(249, 223, 4, 0.35)',
+                marginBottom: '14px',
               }}
             >
-              <div
-                style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  backgroundColor: '#10B981',
-                  boxShadow: '0 0 10px #10B981',
-                }}
-              />
+              <Truck size={14} color="#92750a" />
               <span
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontSize: '0.84rem',
-                  fontWeight: 700,
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.12em',
                   color: '#0F172A',
+                  textTransform: 'uppercase',
                 }}
               >
-                Vans Available On-Call in Gujarat
+                Renovation Van Booking • Doorstep Mobile Workshop
               </span>
             </div>
-          </div>
+
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                gap: '20px',
+              }}
+            >
+              <div>
+                <h1
+                  style={{
+                    fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
+                    fontWeight: 900,
+                    color: '#0F172A',
+                    letterSpacing: '-0.03em',
+                    textTransform: 'uppercase',
+                    lineHeight: 1.1,
+                    margin: '0 0 10px 0',
+                    fontFamily: 'var(--font-heading)',
+                  }}
+                >
+                  Renovation <span style={{ color: '#E5CC00' }}>Made Easy</span>
+                </h1>
+                <p
+                  style={{
+                    color: '#64748B',
+                    fontSize: '1rem',
+                    maxWidth: '700px',
+                    lineHeight: 1.65,
+                    margin: 0,
+                    fontWeight: 450,
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
+                  Our Renovation Van brings expertise to your doorstep. Book a visit and let our specialists handle the rest.
+                  Fully equipped with 100+ diagnostic and structural tools for immediate on-site solutions.
+                </p>
+              </div>
+
+              {/* Quick Dispatch Badge */}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px 20px',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: 'rgba(248, 250, 252, 0.9)',
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    backgroundColor: '#10B981',
+                    boxShadow: '0 0 10px #10B981',
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.84rem',
+                    fontWeight: 700,
+                    color: '#0F172A',
+                  }}
+                >
+                  Vans Available On-Call in Gujarat
+                </span>
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
 
-        {/* 2. Renovation Van Video Showcase */}
+        {/* 2. Full-View Edge-to-Edge Video Showcase (Without Borders) */}
         <motion.div
           variants={itemVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
           style={{
             position: 'relative',
-            borderRadius: '24px',
-            overflow: 'hidden',
-            marginBottom: '48px',
-            boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.15)',
-            border: '1px solid rgba(0, 0, 0, 0.08)',
-            backgroundColor: '#000000',
             width: '100%',
+            margin: 0,
+            padding: 0,
+            border: 'none',
+            borderRadius: 0,
+            boxShadow: 'none',
+            backgroundColor: '#000000',
+            overflow: 'hidden',
           }}
         >
           <div
+            ref={videoContainerRef}
             style={{
               position: 'relative',
               width: '100%',
               aspectRatio: '16 / 9',
-              maxHeight: '620px',
-              overflow: 'hidden',
+              backgroundColor: '#000000',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#000000',
+              overflow: 'hidden',
+              border: 'none',
+              borderRadius: 0,
             }}
           >
             <video
+              ref={videoRef}
               autoPlay
               loop
               muted
@@ -264,13 +314,98 @@ export default function Renovation({ onGetQuote }) {
                 objectFit: 'cover',
                 objectPosition: 'center',
                 display: 'block',
+                border: 'none',
+                borderRadius: 0,
+                outline: 'none',
               }}
             >
               <source src="/videos/14acf651-4c41-4ade-9024-cef3f42288de.mp4" type="video/mp4" />
               <source src="/videos/renovan_showcase.mp4" type="video/mp4" />
             </video>
+
+            {/* Floating Glassmorphic Video Controls */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '24px',
+                right: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                zIndex: 20,
+              }}
+            >
+              {/* Play / Pause Toggle */}
+              <button
+                onClick={togglePlay}
+                type="button"
+                aria-label={isPlaying ? 'Pause video' : 'Play video'}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.4)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#F9DF04';
+                  e.currentTarget.style.color = '#0F172A';
+                  e.currentTarget.style.transform = 'scale(1.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.75)';
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                {isPlaying ? <Pause size={18} /> : <Play size={18} style={{ marginLeft: '2px' }} />}
+              </button>
+
+              {/* Fullscreen Toggle */}
+              <button
+                onClick={toggleFullscreen}
+                type="button"
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.4)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#F9DF04';
+                  e.currentTarget.style.color = '#0F172A';
+                  e.currentTarget.style.transform = 'scale(1.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.75)';
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
+            </div>
           </div>
-        </motion.div>
         </motion.div>
       </section>
 
