@@ -137,10 +137,10 @@ export default function CoverflowMilestones() {
       // Active gold rim on closest card
       if (isCenter) {
         el.style.borderColor = '#F9DF04';
-        el.style.boxShadow = '0 25px 60px -10px rgba(0, 0, 0, 0.8), 0 0 35px rgba(249, 223, 4, 0.35)';
+        el.style.boxShadow = '0 25px 60px -10px rgba(0, 0, 0, 0.8), 0 0 35px rgba(249, 223, 4, 0.45)';
       } else {
-        el.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-        el.style.boxShadow = '0 15px 35px -8px rgba(0, 0, 0, 0.6)';
+        el.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        el.style.boxShadow = '0 18px 40px -8px rgba(0, 0, 0, 0.65)';
       }
     });
   }, [isMobile, stepAngle]);
@@ -362,10 +362,10 @@ export default function CoverflowMilestones() {
                 width: isMobile ? '230px' : '280px',
                 height: isMobile ? '350px' : '390px',
                 borderRadius: '18px',
-                backgroundColor: '#131B2E',
-                borderWidth: '1.5px',
+                backgroundColor: '#FFFFFF',
+                borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(255, 255, 255, 0.08)',
+                borderColor: 'rgba(255, 255, 255, 0.15)',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
@@ -374,6 +374,7 @@ export default function CoverflowMilestones() {
                 transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
+                cursor: 'pointer',
               }}
             >
               {/* Card Photo Header */}
@@ -392,20 +393,20 @@ export default function CoverflowMilestones() {
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.05) 0%, rgba(19, 27, 46, 0.95) 100%)',
+                    background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 65%, rgba(255, 255, 255, 0.35) 90%, #FFFFFF 100%)',
                   }}
                 />
               </div>
 
               {/* Card Body */}
-              <div style={{ padding: '16px 18px 20px', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ padding: '16px 18px 20px', flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#FFFFFF' }}>
                 {/* Title */}
                 <h3
                   style={{
                     fontFamily: 'var(--font-heading)',
                     fontSize: isMobile ? '1.02rem' : '1.12rem',
                     fontWeight: 800,
-                    color: '#FFFFFF',
+                    color: '#0F172A',
                     marginBottom: '8px',
                     lineHeight: 1.25,
                     letterSpacing: '-0.01em',
@@ -418,7 +419,7 @@ export default function CoverflowMilestones() {
                 <p
                   style={{
                     fontSize: isMobile ? '0.78rem' : '0.84rem',
-                    color: '#94A3B8',
+                    color: '#475569',
                     lineHeight: 1.5,
                     margin: 0,
                     fontWeight: 400,
