@@ -13,6 +13,7 @@ import SitePortfolio from './components/SitePortfolio';
 import OurServices from './components/OurServices';
 import Renovation from './components/Renovation';
 import ContactUs from './components/ContactUs';
+import AboutYeloline from './components/AboutYeloline';
 import ProjectDetailView from './components/ProjectDetailView';
 import DownloadAppSection from './components/DownloadAppSection';
 import Footer from './components/Footer';
@@ -21,7 +22,8 @@ export default function App() {
   const [activePage, setActivePage] = useState(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '');
-      if (['home', 'portfolio', 'renovation', 'contact', 'preview-why'].includes(hash)) {
+      if (hash === 'team') return 'about';
+      if (['home', 'about', 'portfolio', 'renovation', 'contact', 'preview-why'].includes(hash)) {
         return hash;
       }
     }
@@ -40,7 +42,15 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['home', 'portfolio', 'renovation', 'contact', 'preview-why'].includes(hash)) {
+      if (hash === 'team') {
+        setActivePage('about');
+        setTimeout(() => {
+          const el = document.getElementById('our-team');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+        return;
+      }
+      if (['home', 'about', 'portfolio', 'renovation', 'contact', 'preview-why'].includes(hash)) {
         setActivePage(hash);
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
@@ -136,6 +146,12 @@ export default function App() {
           </div>
         )}
 
+        {activePage === 'about' && (
+          <div>
+            <AboutYeloline onContact={() => navigateTo('contact')} />
+          </div>
+        )}
+
         {activePage === 'portfolio' && (
           <div style={{ paddingTop: '20px' }}>
             {selectedProject ? (
@@ -161,6 +177,10 @@ export default function App() {
                     window.scrollTo({ top: 0, behavior: 'instant' });
                   }}
                 />
+
+                {/* Get It On Google Play / Download The App Now Section */}
+                <DownloadAppSection />
+
                 <section style={{ background: 'linear-gradient(145deg, #0B0F17 0%, #0F172A 100%)', color: '#FFFFFF', padding: '72px 0' }}>
                   <div
                     className="app-container"

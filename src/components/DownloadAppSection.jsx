@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, QrCode, Smartphone, X, Check, Apple, Play } from 'lucide-react';
+import { Smartphone, X, Check } from 'lucide-react';
 
-export default function DownloadAppSection() {
+export default function DownloadAppSection({
+  title = 'DOWNLOAD OUR',
+  highlight = 'MOBILE APP',
+  subheading = 'DOWNLOAD THE APP NOW',
+  description = 'Track on-site construction milestones in real time, inspect 3D engineering blueprints, and view daily material and labor logs directly on your mobile device.',
+}) {
   const [showModal, setShowModal] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
@@ -301,7 +306,30 @@ export default function DownloadAppSection() {
               </motion.button>
             </div>
 
-            {/* 2. Top Heading: DOWNLOAD OUR */}
+            {/* 2. Top Pill / Kicker */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: 'rgba(254, 198, 3, 0.16)',
+                border: '1.5px solid rgba(254, 198, 3, 0.55)',
+                color: '#000000',
+                padding: '5px 16px',
+                borderRadius: '9999px',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-heading)',
+                marginBottom: '12px',
+              }}
+            >
+              <Smartphone size={14} color="#000000" />
+              <span>YELOLINE MOBILE CLIENT</span>
+            </div>
+
+            {/* 3. Top Heading */}
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
@@ -314,10 +342,10 @@ export default function DownloadAppSection() {
                 textTransform: 'uppercase',
               }}
             >
-              DOWNLOAD OUR
+              {title}
             </h2>
 
-            {/* 3. Skewed Yellow Banner: MOBILE APP */}
+            {/* 4. Skewed Yellow Banner */}
             <motion.div
               onClick={handleDownloadClick}
               whileHover={{ scale: 1.03 }}
@@ -331,7 +359,7 @@ export default function DownloadAppSection() {
                 padding: '10px 42px',
                 borderRadius: '8px',
                 boxShadow: '0 10px 30px rgba(254, 198, 3, 0.42)',
-                margin: '4px 0 22px 0',
+                margin: '4px 0 16px 0',
               }}
             >
               <span
@@ -348,12 +376,133 @@ export default function DownloadAppSection() {
                   WebkitTextStroke: '0.5px #000000',
                 }}
               >
-                MOBILE APP
+                {highlight}
               </span>
             </motion.div>
 
-            {/* 4. Hashtag Pill: # GET THE YELOLINE APP with spark rays */}
-            <div style={{ position: 'relative', display: 'inline-block' }}>
+            {/* 5. DOWNLOAD THE APP NOW Callout */}
+            <div
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(1.15rem, 2.2vw, 1.55rem)',
+                fontWeight: 900,
+                color: '#0F172A',
+                letterSpacing: '-0.015em',
+                margin: '2px 0 10px 0',
+                textTransform: 'uppercase',
+              }}
+            >
+              {subheading}
+            </div>
+
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.94rem',
+                color: '#475569',
+                lineHeight: 1.6,
+                maxWidth: '520px',
+                margin: '0 auto 24px auto',
+                fontWeight: 500,
+              }}
+            >
+              {description}
+            </p>
+
+            {/* 6. PROMINENT GOOGLE PLAY DOWNLOAD BUTTON */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '26px',
+              }}
+            >
+              {/* Large Hero Google Play Button */}
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={handleDownloadClick}
+                aria-label="Get it on Google Play"
+                style={{
+                  backgroundColor: '#000000',
+                  color: '#FFFFFF',
+                  borderRadius: '18px',
+                  padding: '15px 36px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '18px',
+                  border: '2px solid rgba(254, 198, 3, 0.45)',
+                  boxShadow: '0 14px 35px rgba(0, 0, 0, 0.28), 0 0 24px rgba(254, 198, 3, 0.2)',
+                  cursor: 'pointer',
+                  transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              >
+                {/* Official Google Play 4-Color Logo */}
+                <svg width="34" height="38" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#mainGpBlue)" />
+                  <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#mainGpYellow)" />
+                  <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#mainGpRed)" />
+                  <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#mainGpGreen)" />
+                  <defs>
+                    <linearGradient id="mainGpBlue" x1="13.9" y1="2.7" x2="-2.4" y2="19" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#00A0FF" />
+                      <stop offset="0.007" stopColor="#00A1FF" />
+                      <stop offset="0.26" stopColor="#00BEFF" />
+                      <stop offset="0.512" stopColor="#00D2FF" />
+                      <stop offset="0.76" stopColor="#00DFFF" />
+                      <stop offset="1" stopColor="#00E3FF" />
+                    </linearGradient>
+                    <linearGradient id="mainGpYellow" x1="27.4" y1="15" x2="0.6" y2="15" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FFE000" />
+                      <stop offset="0.409" stopColor="#FFBD00" />
+                      <stop offset="0.775" stopColor="#FFA500" />
+                      <stop offset="1" stopColor="#FF9C00" />
+                    </linearGradient>
+                    <linearGradient id="mainGpRed" x1="17.6" y1="17.3" x2="2.7" y2="32.2" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FF3A44" />
+                      <stop offset="1" stopColor="#C31162" />
+                    </linearGradient>
+                    <linearGradient id="mainGpGreen" x1="2.7" y1="-2.2" x2="17.6" y2="12.7" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#32A071" />
+                      <stop offset="0.069" stopColor="#2DA771" />
+                      <stop offset="0.476" stopColor="#15CF74" />
+                      <stop offset="0.801" stopColor="#06E775" />
+                      <stop offset="1" stopColor="#00F076" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                <div style={{ textAlign: 'left', lineHeight: 1.15 }}>
+                  <div
+                    style={{
+                      fontSize: '0.80rem',
+                      letterSpacing: '0.14em',
+                      color: '#94A3B8',
+                      textTransform: 'uppercase',
+                      fontWeight: 800,
+                    }}
+                  >
+                    GET IT ON
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 'clamp(1.5rem, 2.6vw, 1.95rem)',
+                      fontWeight: 900,
+                      color: '#FFFFFF',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    Google Play
+                  </div>
+                </div>
+              </motion.button>
+            </div>
+
+            {/* 7. Hashtag Pill: # GET THE YELOLINE APP with spark rays */}
+            <div style={{ position: 'relative', display: 'inline-block', marginBottom: '16px' }}>
               <motion.div
                 onClick={handleDownloadClick}
                 whileHover={{ scale: 1.04, borderColor: '#000000' }}
@@ -366,15 +515,15 @@ export default function DownloadAppSection() {
                   backgroundColor: '#FFFFFF',
                   border: '2.5px solid #FEC603',
                   borderRadius: '9999px',
-                  padding: '9px 28px',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+                  padding: '8px 24px',
+                  boxShadow: '0 4px 18px rgba(0, 0, 0, 0.05)',
                   transition: 'border-color 0.2s ease',
                 }}
               >
                 <span
                   style={{
                     fontFamily: 'var(--font-heading)',
-                    fontSize: 'clamp(1rem, 1.8vw, 1.4rem)',
+                    fontSize: 'clamp(0.95rem, 1.6vw, 1.25rem)',
                     fontWeight: 900,
                     letterSpacing: '0.02em',
                     lineHeight: 1,
@@ -585,66 +734,76 @@ export default function DownloadAppSection() {
                 </span>
               </div>
 
-              {/* App Store / Google Play Buttons */}
+              {/* Google Play Button */}
               <div
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '12px',
                   marginBottom: '16px',
                 }}
               >
                 <button
                   onClick={handleDirectDownload}
                   style={{
+                    width: '100%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '10px',
-                    padding: '12px 16px',
-                    borderRadius: '14px',
+                    gap: '12px',
+                    padding: '13px 20px',
+                    borderRadius: '16px',
                     backgroundColor: '#0F172A',
                     color: '#FFFFFF',
-                    border: 'none',
+                    border: '1.5px solid rgba(254, 198, 3, 0.4)',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
                     cursor: 'pointer',
                     fontWeight: 700,
-                    fontSize: '0.85rem',
-                    transition: 'transform 0.2s',
+                    fontSize: '0.92rem',
+                    transition: 'all 0.2s',
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-                >
-                  <Apple size={20} />
-                  <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                    <div style={{ fontSize: '0.62rem', opacity: 0.8 }}>Download on</div>
-                    <div>App Store</div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={handleDirectDownload}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    padding: '12px 16px',
-                    borderRadius: '14px',
-                    backgroundColor: '#0F172A',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    transition: 'transform 0.2s',
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.25)';
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
+                  }}
                 >
-                  <Play size={18} fill="#FFFFFF" />
+                  <svg width="22" height="24" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#modalGpBlue)" />
+                    <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#modalGpYellow)" />
+                    <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#modalGpRed)" />
+                    <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#modalGpGreen)" />
+                    <defs>
+                      <linearGradient id="modalGpBlue" x1="13.9" y1="2.7" x2="-2.4" y2="19" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#00A0FF" />
+                        <stop offset="0.007" stopColor="#00A1FF" />
+                        <stop offset="0.26" stopColor="#00BEFF" />
+                        <stop offset="0.512" stopColor="#00D2FF" />
+                        <stop offset="0.76" stopColor="#00DFFF" />
+                        <stop offset="1" stopColor="#00E3FF" />
+                      </linearGradient>
+                      <linearGradient id="modalGpYellow" x1="27.4" y1="15" x2="0.6" y2="15" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FFE000" />
+                        <stop offset="0.409" stopColor="#FFBD00" />
+                        <stop offset="0.775" stopColor="#FFA500" />
+                        <stop offset="1" stopColor="#FF9C00" />
+                      </linearGradient>
+                      <linearGradient id="modalGpRed" x1="17.6" y1="17.3" x2="2.7" y2="32.2" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FF3A44" />
+                        <stop offset="1" stopColor="#C31162" />
+                      </linearGradient>
+                      <linearGradient id="modalGpGreen" x1="2.7" y1="-2.2" x2="17.6" y2="12.7" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#32A071" />
+                        <stop offset="0.069" stopColor="#2DA771" />
+                        <stop offset="0.476" stopColor="#15CF74" />
+                        <stop offset="0.801" stopColor="#06E775" />
+                        <stop offset="1" stopColor="#00F076" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                   <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                    <div style={{ fontSize: '0.62rem', opacity: 0.8 }}>GET IT ON</div>
-                    <div>Google Play</div>
+                    <div style={{ fontSize: '0.64rem', opacity: 0.85, letterSpacing: '0.08em', fontWeight: 700 }}>GET IT ON</div>
+                    <div style={{ fontSize: '1.18rem', fontWeight: 800 }}>Google Play</div>
                   </div>
                 </button>
               </div>

@@ -631,7 +631,7 @@ export default function WhyChooseUs({ onStartProject }) {
             }}
           >
             We have eliminated the uncertainty, delays, and hidden costs typical of conventional
-            construction. Here is why discerning homeowners across Gujarat trust Yeloline.
+            construction. Here is why discerning homeowners trust Yeloline.
           </p>
         </div>
 

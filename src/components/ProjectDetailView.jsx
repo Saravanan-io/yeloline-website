@@ -25,7 +25,6 @@ import {
 export default function ProjectDetailView({ project, onBackToProjects, onNavigateHome, onConsult }) {
   const [activeImgIndex, setActiveImgIndex] = useState(0);
   const [fullscreenImage, setFullscreenImage] = useState(null);
-  const [insideFilter, setInsideFilter] = useState('ALL');
   const insideScrollRef = useRef(null);
 
   if (!project) return null;
@@ -728,49 +727,6 @@ export default function ProjectDetailView({ project, onBackToProjects, onNavigat
               >
                 Inside View
               </h2>
-            </div>
-
-            {/* Filter Pills */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                flexWrap: 'wrap',
-              }}
-            >
-              {[
-                'All',
-                'Living Room',
-                'Bedrooms',
-                'Kitchen',
-                'Dining',
-                'Exterior & Elevation',
-                'Structural Work',
-              ].map((tab) => {
-                const isActive = insideFilter === tab;
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => setInsideFilter(tab)}
-                    style={{
-                      padding: '7px 16px',
-                      borderRadius: '9999px',
-                      fontSize: '0.80rem',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: isActive ? 800 : 600,
-                      border: isActive ? '1px solid #FEC603' : '1px solid #E2E8F0',
-                      backgroundColor: isActive ? '#FEC603' : '#FFFFFF',
-                      color: isActive ? '#000000' : '#64748B',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      boxShadow: isActive ? '0 2px 8px rgba(254, 198, 3, 0.35)' : 'none',
-                    }}
-                  >
-                    {tab}
-                  </button>
-                );
-              })}
             </div>
           </div>
 

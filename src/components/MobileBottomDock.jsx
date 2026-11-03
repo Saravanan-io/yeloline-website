@@ -10,7 +10,7 @@ export default function MobileBottomDock({ activePage, setActivePage, activeSect
 
   const dockItems = [
     { id: 'home', label: 'Home', icon: Home },
-    { id: 'portfolio', label: 'Portfolio', icon: Building2 },
+    { id: 'portfolio', label: 'Site Portfolio', icon: Building2 },
     { id: 'quote', label: 'Quote', icon: FileText, isAction: true },
     { id: 'renovation', label: 'Renovan', icon: Truck },
     { id: 'contact', label: 'Contact', icon: Phone },

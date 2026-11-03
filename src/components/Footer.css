@@ -1,0 +1,364 @@
+/* ==========================================================================
+   Yeloline Official Footer Styles
+   Precision Architectural View & Clean Left-Aligned Brand Content
+   ========================================================================== */
+
+.yeloline-footer {
+  width: 100%;
+  position: relative;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  font-family: var(--font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   Top Section: Architectural Wave + 3 Columns
+   -------------------------------------------------------------------------- */
+.yeloline-footer-top {
+  position: relative;
+  background-color: #FFFFFF;
+  min-height: 250px;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Background Wave SVG spanning full width */
+.yeloline-footer-wave-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.yeloline-footer-wave-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Foreground Grid - Full width, directly anchored to left edge */
+.yeloline-footer-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 2.1fr 1.05fr 1fr;
+  align-items: stretch;
+  min-height: 250px;
+  padding: 38px 32px 42px 32px;
+  width: 100%;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Column 1: Brand Column (Positioned firmly on the Left Side)
+   -------------------------------------------------------------------------- */
+.yeloline-footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 32px;
+  max-width: 380px;
+}
+
+.yeloline-footer-logo-link {
+  display: inline-block;
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 14px;
+  width: fit-content;
+}
+
+.yeloline-footer-logo-link:hover {
+  transform: scale(1.02);
+}
+
+.yeloline-footer-logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 245px;
+  display: block;
+  object-fit: contain;
+}
+
+.yeloline-footer-quote {
+  font-size: 0.84rem;
+  line-height: 1.62;
+  color: #111111;
+  font-weight: 500;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+  max-width: 290px;
+}
+
+.yeloline-footer-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #111111;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.yeloline-footer-badge-icon {
+  flex-shrink: 0;
+  color: #111111;
+}
+
+/* --------------------------------------------------------------------------
+   Column 2: Head Office Column (Right Side, Pure White Background)
+   -------------------------------------------------------------------------- */
+.yeloline-footer-office-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 48px;
+  padding-right: 24px;
+  border-left: 1px solid #E5E7EB;
+  margin: 6px 0;
+}
+
+.yeloline-footer-office-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.yeloline-footer-office-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: #F9DF04;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.yeloline-footer-office-badge svg {
+  color: #111111;
+}
+
+.yeloline-footer-office-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111111;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--font-heading, sans-serif);
+  margin: 0;
+}
+
+.yeloline-footer-office-address {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #334155;
+  font-weight: 500;
+  font-style: normal;
+  margin: 0 0 0 36px;
+}
+
+.yeloline-footer-office-line {
+  width: 180px;
+  height: 2.5px;
+  background-color: #F9DF04;
+  border-radius: 2px;
+  margin-top: 14px;
+  margin-left: 36px;
+}
+
+/* --------------------------------------------------------------------------
+   Column 3: Navigation Column (Right Side, Pure White Background)
+   -------------------------------------------------------------------------- */
+.yeloline-footer-nav-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 48px;
+  padding-right: 0;
+  border-left: 1px solid #E5E7EB;
+  margin: 6px 0;
+}
+
+.yeloline-footer-nav-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111111;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--font-heading, sans-serif);
+  margin: 0 0 14px 0;
+}
+
+.yeloline-footer-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yeloline-footer-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: #1E293B;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  width: fit-content;
+}
+
+.yeloline-footer-nav-icon {
+  color: #F9DF04;
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+
+.yeloline-footer-nav-link:hover {
+  color: #000000;
+  transform: translateX(3px);
+}
+
+.yeloline-footer-nav-link:hover .yeloline-footer-nav-icon {
+  transform: scale(1.15);
+  color: #E5CC00;
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Bar (Full-Width Solid Black Bar)
+   -------------------------------------------------------------------------- */
+.yeloline-footer-bottom {
+  width: 100%;
+  background-color: #111111;
+  position: relative;
+  z-index: 5;
+  padding: 16px 0;
+}
+
+.yeloline-footer-bottom-container {
+  width: 100%;
+  margin: 0;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.yeloline-footer-copyright {
+  font-size: 0.82rem;
+  color: #94A3B8;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.yeloline-footer-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  border: 1.5px solid #F9DF04;
+  background-color: transparent;
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.yeloline-footer-top-btn-icon {
+  color: #F9DF04;
+  transition: all 0.25s ease;
+}
+
+.yeloline-footer-top-btn:hover {
+  background-color: #F9DF04;
+  color: #000000;
+  border-color: #F9DF04;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(249, 223, 4, 0.3);
+}
+
+.yeloline-footer-top-btn:hover .yeloline-footer-top-btn-icon {
+  color: #000000;
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .yeloline-footer-grid {
+    padding: 32px 20px;
+    grid-template-columns: 1.6fr 1fr 1fr;
+  }
+
+  .yeloline-footer-office-col,
+  .yeloline-footer-nav-col {
+    padding-left: 20px;
+    padding-right: 12px;
+  }
+
+  .yeloline-footer-bottom-container {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 860px) {
+  .yeloline-footer-top {
+    min-height: auto;
+  }
+
+  .yeloline-footer-wave-bg {
+    display: none;
+  }
+
+  .yeloline-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 0 0 36px 0;
+    min-height: auto;
+  }
+
+  .yeloline-footer-brand-col {
+    max-width: 100%;
+    padding: 36px 20px 32px 20px;
+    background: linear-gradient(135deg, #F9DF04 0%, #FEDB04 100%);
+    border-bottom: 8px solid #111111;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .yeloline-footer-office-col,
+  .yeloline-footer-nav-col {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-left: none;
+    border-bottom: 1px solid #E5E7EB;
+    padding-bottom: 24px;
+    margin: 0;
+  }
+
+  .yeloline-footer-office-address,
+  .yeloline-footer-office-line {
+    margin-left: 36px;
+  }
+
+  .yeloline-footer-bottom-container {
+    padding: 0 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+}

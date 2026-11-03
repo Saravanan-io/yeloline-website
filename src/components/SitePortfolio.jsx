@@ -6,7 +6,6 @@ import {
   Building2,
   Clock,
   Shield,
-  Search,
   User,
   Folder,
   CheckCircle2,
@@ -267,27 +266,12 @@ function BlueprintHeader({ project, index }) {
 
 export default function SitePortfolio({ onSelectProject }) {
   const [filter, setFilter] = useState('ALL');
-  const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter & Search Logic
+  // Filter Logic
   const filteredProjects = projectsData.filter((proj) => {
-    // 1. Category Filter
     if (filter === 'residential' && proj.category !== 'Residential') return false;
     if (filter === 'renovation' && proj.category !== 'Renovation & Lifting') return false;
     if (filter === 'commercial' && proj.category !== 'Commercial') return false;
-
-    // 2. Search Query Filter
-    if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase();
-      const matchTitle = proj.title.toLowerCase().includes(q);
-      const matchClient = proj.client.toLowerCase().includes(q);
-      const matchLocation = proj.location.toLowerCase().includes(q);
-      const matchFolder = proj.folderName.toLowerCase().includes(q);
-      const matchType = proj.type.toLowerCase().includes(q);
-      const matchIndex = proj.index.includes(q);
-      return matchTitle || matchClient || matchLocation || matchFolder || matchType || matchIndex;
-    }
-
     return true;
   });
 
@@ -361,54 +345,6 @@ export default function SitePortfolio({ onSelectProject }) {
                 Completed Residential, Commercial, Renovation &amp; Extension Works arranged in the exact order of the
                 supplied folder list. Click any site to view complete architectural specifications.
               </p>
-            </div>
-
-            {/* Quick Live Search Input */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: '#F8FAFC',
-                padding: '8px 16px',
-                borderRadius: '9999px',
-                border: '1.5px solid #E2E8F0',
-                width: '100%',
-                maxWidth: '340px',
-                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
-              }}
-            >
-              <Search size={16} color="#64748B" />
-              <input
-                type="text"
-                placeholder="Search by client, location, or site #..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  border: 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                  fontSize: '0.84rem',
-                  fontFamily: 'var(--font-body)',
-                  color: '#0F172A',
-                  width: '100%',
-                }}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  style={{
-                    border: 'none',
-                    background: 'none',
-                    fontSize: '0.75rem',
-                    color: '#94A3B8',
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                  }}
-                >
-                  ✕
-                </button>
-              )}
             </div>
           </div>
 
@@ -743,16 +679,13 @@ export default function SitePortfolio({ onSelectProject }) {
           >
             <Folder size={36} color="#94A3B8" style={{ marginBottom: '12px' }} />
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', marginBottom: '6px' }}>
-              No Sites Matching "{searchQuery}"
+              No Sites Found in This Category
             </h3>
             <p style={{ color: '#64748B', fontSize: '0.9rem', marginBottom: '16px' }}>
-              Try searching by client name (e.g. Kolanje, Gowri), location (e.g. Erode), or clear filters.
+              Select "All Sites" to view our complete project portfolio.
             </p>
             <button
-              onClick={() => {
-                setSearchQuery('');
-                setFilter('ALL');
-              }}
+              onClick={() => setFilter('ALL')}
               style={{
                 backgroundColor: '#FEC603',
                 color: '#000000',
@@ -764,7 +697,7 @@ export default function SitePortfolio({ onSelectProject }) {
                 cursor: 'pointer',
               }}
             >
-              Reset Search &amp; Filters
+              Reset Filters
             </button>
           </div>
         )}

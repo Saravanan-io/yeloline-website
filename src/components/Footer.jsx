@@ -1,10 +1,19 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowUp, ShieldCheck } from 'lucide-react';
+import {
+  ArrowUp,
+  ShieldCheck,
+  MapPin,
+  Home,
+  Layers,
+  Wrench,
+  MessageSquareQuote,
+} from 'lucide-react';
+import './Footer.css';
 
 export default function Footer({ onNavigate }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const isInView = useInView(ref, { once: true, margin: '-40px' });
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -14,187 +23,194 @@ export default function Footer({ onNavigate }) {
     e.preventDefault();
     if (onNavigate) {
       onNavigate(pageId);
+    } else {
+      window.location.hash = pageId;
     }
   };
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.04 },
+    },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
+    },
   };
 
   return (
-    <footer
-      ref={ref}
-      style={{
-        background: 'linear-gradient(145deg, #0B0F17 0%, #0F172A 100%)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-        paddingTop: '72px',
-        paddingBottom: '88px',
-        position: 'relative',
-        zIndex: 10,
-        color: '#F8FAFC',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Ambient glow */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-20%',
-          left: '10%',
-          width: '40%',
-          height: '60%',
-          background: 'radial-gradient(ellipse at center, rgba(249, 223, 4, 0.04) 0%, transparent 60%)',
-          pointerEvents: 'none',
-        }}
-      />
+    <footer ref={ref} className="yeloline-footer" aria-label="Website Footer">
+      {/* -------------------------------------------------------------------- */}
+      {/* Top Section: Architectural Wave + 3 Columns Layout                   */}
+      {/* -------------------------------------------------------------------- */}
+      <div className="yeloline-footer-top">
+        {/* Background Wave Graphic (Confined to left ~50% so right columns stay on pure white) */}
+        <div className="yeloline-footer-wave-bg" aria-hidden="true">
+          <svg
+            className="yeloline-footer-wave-svg"
+            viewBox="0 0 1024 250"
+            preserveAspectRatio="none"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              {/* Soft golden feathered gradient for outer highlight swoop */}
+              <linearGradient id="footerSwoopGlow" x1="0%" y1="0%" x2="100%" y2="80%">
+                <stop offset="0%" stopColor="#F9DF04" stopOpacity="0.9" />
+                <stop offset="35%" stopColor="#FEDB04" stopOpacity="0.65" />
+                <stop offset="70%" stopColor="#FFF275" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+              </linearGradient>
 
-      <motion.div
-        className="app-container"
-        variants={containerVariants}
-        initial="hidden"
-        animate={isInView ? 'visible' : 'hidden'}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '48px',
-            marginBottom: '52px',
-          }}
-        >
-          {/* Brand Column */}
-          <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)',
-                  borderRadius: '10px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'var(--font-heading)',
-                  color: '#000000',
-                  fontWeight: 900,
-                  fontSize: '1.25rem',
-                  boxShadow: '0 4px 14px rgba(249, 223, 4, 0.25)',
-                }}
-              >
-                Y
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
-                  YELOLINE.
-                </span>
-                <span style={{ fontSize: '0.58rem', letterSpacing: '0.22em', color: '#F9DF04', fontWeight: 600, textTransform: 'uppercase' }}>
-                  CONSTRUCTION
-                </span>
-              </div>
-            </div>
+              {/* Feather blur filter */}
+              <filter id="softSwoopBlur" x="-10%" y="-10%" width="120%" height="120%">
+                <feGaussianBlur stdDeviation="3" />
+              </filter>
+            </defs>
 
-            <p style={{ fontSize: '0.86rem', color: '#64748B', lineHeight: 1.7, fontWeight: 400 }}>
-              "A building is more than bricks and concrete… it's a lifelong dream shaped by dedication and perseverance. Realizing it with total peace of mind is our commitment."
-            </p>
+            {/* Base white backdrop */}
+            <rect width="1024" height="250" fill="#FFFFFF" />
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F9DF04', fontSize: '0.8rem', fontWeight: 600 }}>
-              <ShieldCheck size={15} />
-              <span>Registered Architectural Practice • Est. 2014</span>
-            </div>
-          </motion.div>
+            {/* 1. Outer Golden Highlight Swoop */}
+            <path
+              d="M 180 20
+                 C 300 22, 400 60, 460 130
+                 C 490 170, 510 200, 518 220
+                 L 510 250
+                 C 480 200, 430 140, 370 90
+                 C 290 38, 200 20, 70 20 Z"
+              fill="url(#footerSwoopGlow)"
+              filter="url(#softSwoopBlur)"
+            />
 
-          {/* Quick Links */}
-          <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>
-              Navigation
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {[
-                { label: 'Home Page', page: 'home' },
-                { label: 'Site Portfolio', page: 'portfolio' },
-                { label: 'Renovan Transformations', page: 'renovation' },
-                { label: 'Contact Us & Free Quote', page: 'contact' },
-              ].map((link, i) => (
-                <a
-                  key={i}
-                  href={`#${link.page}`}
-                  onClick={(e) => handleNav(e, link.page)}
-                  style={{
-                    color: '#64748B',
-                    textDecoration: 'none',
-                    fontSize: '0.86rem',
-                    fontWeight: 400,
-                    transition: 'color 0.2s',
-                    fontFamily: 'var(--font-body)',
-                  }}
-                  onMouseEnter={(e) => (e.target.style.color = '#F9DF04')}
-                  onMouseLeave={(e) => (e.target.style.color = '#64748B')}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </motion.div>
+            {/* 2. Primary Yellow Field (Anchored to left edge, curving down safely before Head Office) */}
+            <path
+              d="M 0 20
+                 L 70 20
+                 C 180 20, 260 45, 330 110
+                 C 390 170, 430 220, 460 250
+                 L 0 250 Z"
+              fill="#F9DF04"
+            />
+
+            {/* 3. Aerodynamic Black Ribbon Swoop (Ends completely before Head Office column) */}
+            <path
+              d="M 70 20
+                 C 200 20, 290 38, 370 90
+                 C 430 140, 480 200, 510 250
+                 L 460 250
+                 C 430 220, 390 170, 330 110
+                 C 260 45, 180 20, 70 20 Z"
+              fill="#111111"
+            />
+          </svg>
         </div>
 
-        {/* Bottom Copyright & Back to Top */}
+        {/* Foreground Content Grid */}
         <motion.div
-          variants={itemVariants}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '14px',
-            paddingTop: '28px',
-            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-          }}
+          className="yeloline-footer-grid"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
         >
-          <div style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 400 }}>
-            © 2026 YELOLINE CONSTRUCTION. All rights reserved. Registered Architectural Practice.
+          {/* Column 1: Brand Column (Left Side, Inside Yellow Wave) */}
+          <motion.div className="yeloline-footer-brand-col" variants={itemVariants}>
+            <a
+              href="#home"
+              onClick={(e) => handleNav(e, 'home')}
+              className="yeloline-footer-logo-link"
+              aria-label="Yeloline Construction Home"
+            >
+              <img
+                src="/images/yeloline_logo.png"
+                alt="YELOLINE CONSTRUCTION"
+                className="yeloline-footer-logo-img"
+              />
+            </a>
+
+            <p className="yeloline-footer-quote">
+              &ldquo;A building is more than bricks and concrete... it's a lifelong dream shaped by dedication and perseverance. Realizing it with total peace of mind is our commitment.&rdquo;
+            </p>
+
+            <div className="yeloline-footer-badge">
+              <ShieldCheck size={18} className="yeloline-footer-badge-icon" />
+              <span>Registered Architectural Practice &bull; Est. 2014</span>
+            </div>
+          </motion.div>
+
+          {/* Column 2: Head Office Column (Moved to Right Side, Pure White Background) */}
+          <motion.div className="yeloline-footer-office-col" variants={itemVariants}>
+            <div className="yeloline-footer-office-header">
+              <div className="yeloline-footer-office-badge">
+                <MapPin size={17} strokeWidth={2.5} />
+              </div>
+              <h3 className="yeloline-footer-office-title">HEAD OFFICE</h3>
+            </div>
+
+            <address className="yeloline-footer-office-address">
+              160, Lakshmi Saw Mill,<br />
+              Nasiyanur Rd, Kaikattivalasu,<br />
+              Erode, Tamil Nadu 638107
+            </address>
+
+            <div className="yeloline-footer-office-line" aria-hidden="true" />
+          </motion.div>
+
+          {/* Column 3: Navigation Column (Moved to Right Side, Pure White Background) */}
+          <motion.div className="yeloline-footer-nav-col" variants={itemVariants}>
+            <h3 className="yeloline-footer-nav-title">NAVIGATION</h3>
+
+            <nav className="yeloline-footer-nav-list" aria-label="Footer Navigation">
+              {[
+                { label: 'Home Page', page: 'home', icon: Home },
+                { label: 'Site Portfolio', page: 'portfolio', icon: Layers },
+                { label: 'Renovation Transformations', page: 'renovation', icon: Wrench },
+                { label: 'Contact Us & Free Quote', page: 'contact', icon: MessageSquareQuote },
+              ].map((item, idx) => {
+                const IconComponent = item.icon;
+                return (
+                  <a
+                    key={idx}
+                    href={`#${item.page}`}
+                    onClick={(e) => handleNav(e, item.page)}
+                    className="yeloline-footer-nav-link"
+                  >
+                    <IconComponent size={18} strokeWidth={2} className="yeloline-footer-nav-icon" />
+                    <span>{item.label}</span>
+                  </a>
+                );
+              })}
+            </nav>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* -------------------------------------------------------------------- */}
+      {/* Bottom Bar: Full-Width Solid Black Bar                               */}
+      {/* -------------------------------------------------------------------- */}
+      <div className="yeloline-footer-bottom">
+        <div className="yeloline-footer-bottom-container">
+          <div className="yeloline-footer-copyright">
+            &copy; 2026 YELOLINE CONSTRUCTION. All rights reserved. Registered Architectural Practice.
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.06, y: -2 }}
-            whileTap={{ scale: 0.96 }}
+          <button
             onClick={scrollToTop}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '8px 18px',
-              borderRadius: 'var(--radius-full)',
-              background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: '#FFFFFF',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              fontFamily: 'var(--font-body)',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #F9DF04, #E5CC00)';
-              e.currentTarget.style.borderColor = 'transparent';
-              e.currentTarget.style.color = '#000000';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.color = '#FFFFFF';
-            }}
+            className="yeloline-footer-top-btn"
+            aria-label="Scroll back to top of page"
           >
             <span>Back to Top</span>
-            <ArrowUp size={13} />
-          </motion.button>
-        </motion.div>
-      </motion.div>
+            <ArrowUp size={13} strokeWidth={2.5} className="yeloline-footer-top-btn-icon" />
+          </button>
+        </div>
+      </div>
     </footer>
   );
 }

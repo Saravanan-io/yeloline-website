@@ -6,103 +6,118 @@ export default function OurServices({ onSelectService }) {
   const [activeService, setActiveService] = useState(null);
   const [hoveredNode, setHoveredNode] = useState(null);
 
-  // 8 Services arranged in exact order matching reference image
+  // 9 Services arranged symmetrically around the central orbital hub
   const services = [
+    // --- LEFT COLUMN (5 Construction & Execution Services) ---
     {
       no: '01',
-      id: 'luxury-homes',
-      title: 'Luxury Homes',
-      tagline: 'Thoughtful multi-level home design',
-      scope: 'Ultra-luxury bespoke duplexes engineered with double-height atriums, cantilevered slabs, and smart home automation.',
-      deliverables: ['Double-Height Ceilings & Column-Free Spans', 'Smart Climate Automation', 'Artisanal Marble & Facades'],
-      img: '/services/luxury-homes.png',
-      side: 'right',
-      discPos: { x: 623, y: 484 },
-      cardStyle: { left: '59.0%', top: '75.5%', width: '270px' },
+      id: 'residential-building',
+      title: 'Residential Building',
+      tagline: 'Custom villas & modern family homes',
+      scope: 'Custom private villas, multi-storey turnkey homes, and monolithic earthquake-resistant RCC framed structures.',
+      deliverables: ['Custom Villa Architecture', 'Seismic Zone-IV RCC Framework', 'Turnkey Finishing & Handover'],
+      img: '/services/residential-building.png',
+      side: 'left',
+      discPos: { x: 375, y: 55 },
+      cardStyle: { left: '13.0%', top: '1.0%', width: '255px' },
     },
     {
       no: '02',
-      id: 'residential',
-      title: 'Residential Construction',
-      tagline: 'Homes planned for modern family living',
-      scope: 'Custom private villas, multi-storey turnkey homes, and monolithic earthquake-resistant RCC framed structures.',
-      deliverables: ['Turnkey Architectural Execution', 'Seismic Zone-IV RCC Framework', 'Thermal & Acoustic Insulation'],
-      img: '/services/residential-construction.png',
+      id: 'commercial-building',
+      title: 'Commercial Building',
+      tagline: 'Spaces built for business & enterprise',
+      scope: 'Corporate headquarters, retail complexes, column-free commercial floors, and high-footfall business architecture.',
+      deliverables: ['Column-Free Structural Spans', 'HVAC & Fire Safety Integration', 'Commercial Grade-A Finishes'],
+      img: '/services/commercial-building.png',
       side: 'left',
-      discPos: { x: 358, y: 475 },
-      cardStyle: { left: '13.5%', top: '74.0%', width: '255px' },
+      discPos: { x: 255, y: 165 },
+      cardStyle: { left: '2.0%', top: '20.0%', width: '255px' },
     },
     {
       no: '03',
-      id: 'transforming-spaces',
-      title: 'Transforming Existing Spaces',
-      tagline: 'Modern living & spatial upgrades',
-      scope: 'Structural retrofitting, interior spatial reconfiguration, premium architectural finishes, and complete modern living upgrades.',
-      deliverables: ['Interior Space Planning', 'Luxury Finishes & Millwork', 'Structural Wall Removal & MEP Overhaul'],
-      img: '/services/renovation-remodeling.png',
+      id: 'turnkey-contracts',
+      title: 'Turnkey Contracts',
+      tagline: 'End-to-end design & construction',
+      scope: 'Complete hands-off construction management from excavation to handover with fixed pricing and guaranteed timelines.',
+      deliverables: ['Single-Point Accountability', 'Fixed Cost & Timeline Guarantee', 'Material Procurement & Execution'],
+      img: '/services/turnkey-contracts.png',
       side: 'left',
-      discPos: { x: 248, y: 308 },
-      cardStyle: { left: '2.5%', top: '44.5%', width: '260px' },
+      discPos: { x: 228, y: 288 },
+      cardStyle: { left: '0.0%', top: '41.5%', width: '255px' },
     },
     {
       no: '04',
-      id: 'building-extension',
-      title: 'Building Extension',
-      tagline: 'More room for growing needs',
-      scope: 'Vertical floor additions with structural load recalculation, cantilevered balconies, and seamless structural tie-in joints.',
-      deliverables: ['Vertical Floor Additions', 'Cantilevered Balconies', 'Municipal Permitting Approvals'],
-      img: '/services/building-extension.png',
+      id: 'labour-contracts',
+      title: 'Labour Contracts',
+      tagline: 'Skilled workforce & site supervision',
+      scope: 'Expert civil masons, bar benders, shuttering carpenters, and certified site supervisors for structural and finish works.',
+      deliverables: ['Skilled Civil Trades & Masons', 'Daily Engineering Supervision', 'Productivity & Safety Compliance'],
+      img: '/services/labour-contracts.png',
       side: 'left',
-      discPos: { x: 250, y: 172 },
-      cardStyle: { left: '4.5%', top: '19.5%', width: '245px' },
+      discPos: { x: 260, y: 410 },
+      cardStyle: { left: '2.5%', top: '62.5%', width: '255px' },
     },
     {
       no: '05',
-      id: 'house-lifting',
-      title: 'Structural House Lifting',
-      tagline: 'Safe elevation of existing homes',
-      scope: 'Synchronized hydraulic jack engineering to elevate homes above flood levels and reinforce foundation footings.',
-      deliverables: ['Synchronized Hydraulic Elevation', 'Reinforced Plinth Underpinning', 'Zero Structural Cracks Guarantee'],
-      img: '/services/house-lifting.png',
+      id: 'renovation',
+      title: 'Renovation',
+      tagline: 'Transforming existing spaces',
+      scope: 'Structural retrofitting, floor additions, kitchen & bath remodeling, waterproofing, and contemporary aesthetic upgrades.',
+      deliverables: ['Structural Reinforcement & Remodel', 'Modern Interior & Exterior Facelift', 'Plumbing & Electrical Overhaul'],
+      img: '/services/renovation.png',
       side: 'left',
-      discPos: { x: 370, y: 72 },
-      cardStyle: { left: '14.0%', top: '2.5%', width: '255px' },
+      discPos: { x: 380, y: 518 },
+      cardStyle: { left: '13.5%', top: '81.0%', width: '255px' },
     },
+
+    // --- RIGHT COLUMN (4 Planning, Design & PMC Services) ---
     {
       no: '06',
-      id: 'apartment-rental',
-      title: 'Apartment & Rental Construction',
-      tagline: 'Practical multi-unit developments',
-      scope: 'High-yield residential multi-unit complexes engineered for low maintenance, space optimization, and durability.',
-      deliverables: ['Multi-Unit Spatial Optimization', 'Central Utility Conduits', 'High Rental Yield Architecture'],
-      img: '/services/apartment-rental.png',
+      id: '2d-vaastu-plan',
+      title: '2D Vaastu Plan',
+      tagline: 'Harmonious spatial architectural layouts',
+      scope: 'Precise 2D floor plans harmonized with traditional Vaastu Shastra principles, natural lighting, and cross ventilation.',
+      deliverables: ['Vaastu Direction Alignment', 'Optimal Furniture & Room Layouts', 'Municipal Approval Blueprints'],
+      img: '/services/2d-vaastu-plan.png',
       side: 'right',
-      discPos: { x: 589, y: 75 },
-      cardStyle: { left: '55.5%', top: '3.5%', width: '275px' },
+      discPos: { x: 625, y: 68 },
+      cardStyle: { left: '59.5%', top: '3.5%', width: '265px' },
     },
     {
       no: '07',
-      id: 'commercial',
-      title: 'Commercial Construction',
-      tagline: 'Spaces built for business',
-      scope: 'Corporate headquarters, retail showrooms, post-tensioned spans, and high-traffic commercial architecture.',
-      deliverables: ['Post-Tensioned Column-Free Spans', 'HVAC & VRV Energy Integration', 'Fire Safety & Grade-A Standards'],
-      img: '/services/commercial-construction.png',
+      id: '3d-elevation',
+      title: '3D Elevation',
+      tagline: 'Photorealistic exterior visualisations',
+      scope: 'High-fidelity 3D architectural renders showcasing daylight, dusk lighting, exterior textures, and facade details.',
+      deliverables: ['Photorealistic Day & Night Renders', 'Material & Texture Detailing', '360° Architectural Elevation View'],
+      img: '/services/3d-elevation.png',
       side: 'right',
-      discPos: { x: 735, y: 202 },
-      cardStyle: { left: '70.0%', top: '26.5%', width: '265px' },
+      discPos: { x: 745, y: 195 },
+      cardStyle: { left: '71.0%', top: '25.0%', width: '265px' },
     },
     {
       no: '08',
-      id: 'specialized',
-      title: 'Specialized Construction',
-      tagline: 'Interlock, solid block & custom finishes',
-      scope: 'Complex topography piling, sloped terrain terracing, industrial pre-engineered steel frames, and custom masonry.',
-      deliverables: ['Deep Piling & Soil Stabilization', 'Pre-Engineered Structural Frames', 'Strict NDT Quality Audits'],
-      img: '/services/specialized-construction.png',
+      id: 'bank-estimation',
+      title: 'Bank Estimation',
+      tagline: 'Certified BOQ & loan valuation reports',
+      scope: 'Official structural valuation and itemized Bill of Quantities (BOQ) prepared for smooth housing loan sanction.',
+      deliverables: ['Bank-Approved Itemized BOQ', 'Certified Engineer Valuation', 'Stage-Wise Disbursement Docs'],
+      img: '/services/bank-estimation.png',
       side: 'right',
-      discPos: { x: 746, y: 354 },
-      cardStyle: { left: '71.0%', top: '53.5%', width: '265px' },
+      discPos: { x: 745, y: 375 },
+      cardStyle: { left: '71.0%', top: '56.0%', width: '265px' },
+    },
+    {
+      no: '09',
+      id: 'pmc',
+      title: 'PMC (Project Management)',
+      tagline: 'Quality audits, budget & site control',
+      scope: 'Independent third-party civil inspection, bill verification, material testing, and timeline enforcement for property owners.',
+      deliverables: ['Independent Quality Audits', 'Contractor Bill Verification', 'Milestone & Budget Tracking'],
+      img: '/services/pmc.png',
+      side: 'right',
+      discPos: { x: 630, y: 505 },
+      cardStyle: { left: '60.0%', top: '78.5%', width: '280px' },
     },
   ];
 
@@ -474,8 +489,8 @@ export default function OurServices({ onSelectService }) {
                 opacity="0.45"
               />
 
-              {/* 8 Rotating Radial Spokes with Golden Ring Beads */}
-              {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, idx) => {
+              {/* 9 Rotating Radial Spokes with Golden Ring Beads matching 9 Services */}
+              {[0, 40, 80, 120, 160, 200, 240, 280, 320].map((angle, idx) => {
                 const rad = (angle * Math.PI) / 180;
                 const cosA = Math.cos(rad);
                 const sinA = Math.sin(rad);
@@ -613,7 +628,7 @@ export default function OurServices({ onSelectService }) {
             </div>
           </div>
 
-          {/* ================= 4. ALL 8 SERVICE UNITS ================= */}
+          {/* ================= 4. ALL 9 SERVICE UNITS ================= */}
           {services.map((srv) => {
             const isHovered = hoveredNode === srv.no;
 
@@ -819,7 +834,7 @@ export default function OurServices({ onSelectService }) {
           </div>
         </div>
 
-        {/* 8 Mobile Cards */}
+        {/* 9 Mobile Cards */}
         <div
           style={{
             display: 'grid',

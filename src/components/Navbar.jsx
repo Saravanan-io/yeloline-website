@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Menu, X, ArrowUpRight, Download } from 'lucide-react';
+import { ChevronRight, Menu, X } from 'lucide-react';
 
 export default function Navbar({ activePage, setActivePage, activeSection, setActiveSection, onOpenQuote }) {
   const [scrolled, setScrolled] = useState(false);
@@ -21,7 +21,8 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
 
   const navLinks = [
     { id: 'home', label: 'Home' },
-    { id: 'portfolio', label: 'Portfolio' },
+    { id: 'about', label: 'About Yeloline' },
+    { id: 'portfolio', label: 'Site Portfolio' },
     { id: 'renovation', label: 'Renovan' },
     { id: 'contact', label: 'Contact' },
   ];
@@ -52,7 +53,7 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             height: '72px',
           }}
         >
-          {/* Logo - Modern Architectural Brand */}
+          {/* Logo - Official Yeloline Construction Brand */}
           <a
             href="#home"
             onClick={(e) => {
@@ -62,66 +63,22 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
               textDecoration: 'none',
+              transition: 'transform 0.2s ease',
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            {/* Geometric Yellow Mark - Rounded */}
-            <div
+            <img
+              src="/images/yeloline_logo.png"
+              alt="YELOLINE CONSTRUCTION"
               style={{
-                width: '36px',
-                height: '36px',
-                background: 'linear-gradient(135deg, #F9DF04 0%, #E5CC00 100%)',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 3px 12px rgba(249, 223, 4, 0.3)',
+                height: '42px',
+                width: 'auto',
+                display: 'block',
+                objectFit: 'contain',
               }}
-            >
-              <span
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  color: '#000000',
-                  fontWeight: 900,
-                  fontSize: '1.2rem',
-                  lineHeight: 1,
-                }}
-              >
-                Y
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1.18rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.02em',
-                  color: '#0F172A',
-                  lineHeight: 1,
-                }}
-              >
-                YELOLINE.
-              </div>
-              <span
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.58rem',
-                  letterSpacing: '0.22em',
-                  color: '#94A3B8',
-                  fontWeight: 600,
-                  marginTop: '2px',
-                  textTransform: 'uppercase',
-                }}
-              >
-                CONSTRUCTION
-              </span>
-            </div>
+            />
           </a>
 
           {/* Desktop Navigation Links - Modern Pill Style */}
@@ -177,23 +134,96 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
 
           {/* Right Controls: Consultation CTA */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            {/* Google Play Button (Desktop) */}
             <button
               onClick={() => {
-                alert('Yeloline Construction App download will be available soon on Android & iOS!');
+                alert('Redirecting to Google Play Store: Yeloline Construction (com.yeloline.construction)');
               }}
-              className="btn-yellow-ref"
               id="cta-desktop"
+              aria-label="Get it on Google Play"
               style={{
                 display: 'none',
-                padding: '9px 20px',
-                fontSize: '0.82rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.04em',
-                fontWeight: 800,
+                alignItems: 'center',
+                gap: '10px',
+                padding: '6px 16px',
+                borderRadius: '12px',
+                backgroundColor: '#000000',
+                color: '#FFFFFF',
+                border: '1.5px solid rgba(254, 198, 3, 0.5)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2), 0 0 10px rgba(254, 198, 3, 0.15)',
+                cursor: 'pointer',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-1.5px)';
+                e.currentTarget.style.borderColor = '#F9DF04';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.28), 0 0 18px rgba(249, 223, 4, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = 'rgba(254, 198, 3, 0.5)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.2), 0 0 10px rgba(254, 198, 3, 0.15)';
               }}
             >
-              <span>Download App</span>
-              <Download size={14} />
+              {/* Official Google Play 4-Color Logo */}
+              <svg width="20" height="22" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#navGpBlue)" />
+                <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#navGpYellow)" />
+                <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#navGpRed)" />
+                <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#navGpGreen)" />
+                <defs>
+                  <linearGradient id="navGpBlue" x1="13.9" y1="2.7" x2="-2.4" y2="19" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#00A0FF" />
+                    <stop offset="0.007" stopColor="#00A1FF" />
+                    <stop offset="0.26" stopColor="#00BEFF" />
+                    <stop offset="0.512" stopColor="#00D2FF" />
+                    <stop offset="0.76" stopColor="#00DFFF" />
+                    <stop offset="1" stopColor="#00E3FF" />
+                  </linearGradient>
+                  <linearGradient id="navGpYellow" x1="27.4" y1="15" x2="0.6" y2="15" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FFE000" />
+                    <stop offset="0.409" stopColor="#FFBD00" />
+                    <stop offset="0.775" stopColor="#FFA500" />
+                    <stop offset="1" stopColor="#FF9C00" />
+                  </linearGradient>
+                  <linearGradient id="navGpRed" x1="17.6" y1="17.3" x2="2.7" y2="32.2" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FF3A44" />
+                    <stop offset="1" stopColor="#C31162" />
+                  </linearGradient>
+                  <linearGradient id="navGpGreen" x1="2.7" y1="-2.2" x2="17.6" y2="12.7" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#32A071" />
+                    <stop offset="0.069" stopColor="#2DA771" />
+                    <stop offset="0.476" stopColor="#15CF74" />
+                    <stop offset="0.801" stopColor="#06E775" />
+                    <stop offset="1" stopColor="#00F076" />
+                  </linearGradient>
+                </defs>
+              </svg>
+
+              <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
+                <div
+                  style={{
+                    fontSize: '0.54rem',
+                    letterSpacing: '0.12em',
+                    color: '#94A3B8',
+                    textTransform: 'uppercase',
+                    fontWeight: 700,
+                  }}
+                >
+                  GET IT ON
+                </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.96rem',
+                    fontWeight: 800,
+                    color: '#FFFFFF',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  Google Play
+                </div>
+              </div>
             </button>
 
             {/* Mobile Hamburger Button */}
@@ -270,13 +300,38 @@ export default function Navbar({ activePage, setActivePage, activeSection, setAc
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                alert('Yeloline Construction App download will be available soon on Android & iOS!');
+                alert('Redirecting to Google Play Store: Yeloline Construction (com.yeloline.construction)');
               }}
-              className="btn-gold"
-              style={{ width: '100%', marginTop: '8px', justifyContent: 'center', gap: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}
+              style={{
+                width: '100%',
+                marginTop: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                padding: '11px 20px',
+                borderRadius: '14px',
+                backgroundColor: '#000000',
+                color: '#FFFFFF',
+                border: '1.5px solid rgba(254, 198, 3, 0.5)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
+                cursor: 'pointer',
+              }}
             >
-              <span>Download App</span>
-              <Download size={15} />
+              <svg width="22" height="24" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#navGpBlue)" />
+                <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#navGpYellow)" />
+                <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#navGpRed)" />
+                <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#navGpGreen)" />
+              </svg>
+              <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
+                <div style={{ fontSize: '0.56rem', letterSpacing: '0.12em', color: '#94A3B8', textTransform: 'uppercase', fontWeight: 700 }}>
+                  GET IT ON
+                </div>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+                  Google Play
+                </div>
+              </div>
             </button>
           </div>
         )}

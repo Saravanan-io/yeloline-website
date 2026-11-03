@@ -10,6 +10,7 @@ import {
   Sparkles,
   Smartphone,
   ExternalLink,
+  ArrowUpRight,
   X
 } from 'lucide-react';
 
@@ -438,101 +439,188 @@ export default function ContactUs() {
                 </div>
               ))}
             </div>
+          </motion.div>
+        </div>
 
-            {/* Bottom Row: Official Google Play Store Button + Yellow Divider + QR Code */}
+        {/* Full-Width Maximum-Width Google Play Store Hero Banner */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            width: '100%',
+            maxWidth: '100%',
+            marginTop: '32px',
+          }}
+        >
+          {/* Full Width Eye-Catching Google Play Button */}
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.015, y: -3 }}
+            whileTap={{ scale: 0.985 }}
+            onClick={() => setDownloadModal(true)}
+            aria-label="Get it on Google Play"
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, #090D16 0%, #111827 50%, #000000 100%)',
+              color: '#FFFFFF',
+              borderRadius: '24px',
+              padding: '20px 32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '20px',
+              border: '2px solid rgba(254, 198, 3, 0.85)',
+              boxShadow: '0 18px 45px rgba(0, 0, 0, 0.28), 0 0 32px rgba(254, 198, 3, 0.28)',
+              cursor: 'pointer',
+              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              position: 'relative',
+              overflow: 'hidden',
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* Left side: Logo + Text */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              {/* Official Google Play 4-Color Logo */}
+              <svg width="40" height="44" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#gpBlue)" />
+                <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#gpYellow)" />
+                <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#gpRed)" />
+                <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#gpGreen)" />
+                <defs>
+                  <linearGradient id="gpBlue" x1="13.9" y1="2.7" x2="-2.4" y2="19" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#00A0FF" />
+                    <stop offset="0.007" stopColor="#00A1FF" />
+                    <stop offset="0.26" stopColor="#00BEFF" />
+                    <stop offset="0.512" stopColor="#00D2FF" />
+                    <stop offset="0.76" stopColor="#00DFFF" />
+                    <stop offset="1" stopColor="#00E3FF" />
+                  </linearGradient>
+                  <linearGradient id="gpYellow" x1="27.4" y1="15" x2="0.6" y2="15" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FFE000" />
+                    <stop offset="0.409" stopColor="#FFBD00" />
+                    <stop offset="0.775" stopColor="#FFA500" />
+                    <stop offset="1" stopColor="#FF9C00" />
+                  </linearGradient>
+                  <linearGradient id="gpRed" x1="17.6" y1="17.3" x2="2.7" y2="32.2" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FF3A44" />
+                    <stop offset="1" stopColor="#C31162" />
+                  </linearGradient>
+                  <linearGradient id="gpGreen" x1="2.7" y1="-2.2" x2="17.6" y2="12.7" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#32A071" />
+                    <stop offset="0.069" stopColor="#2DA771" />
+                    <stop offset="0.476" stopColor="#15CF74" />
+                    <stop offset="0.801" stopColor="#06E775" />
+                    <stop offset="1" stopColor="#00F076" />
+                  </linearGradient>
+                </defs>
+              </svg>
+
+              {/* Text Block */}
+              <div style={{ textAlign: 'left', lineHeight: 1.15 }}>
+                <div
+                  style={{
+                    fontSize: '0.82rem',
+                    letterSpacing: '0.14em',
+                    color: '#94A3B8',
+                    textTransform: 'uppercase',
+                    fontWeight: 800,
+                  }}
+                >
+                  GET IT ON
+                </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(1.65rem, 2.8vw, 2.25rem)',
+                    fontWeight: 900,
+                    color: '#FFFFFF',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  Google Play
+                </div>
+              </div>
+            </div>
+
+            {/* Middle Feature Tagline */}
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: 'clamp(18px, 3vw, 32px)',
-                flexWrap: 'wrap',
-                paddingTop: '10px',
+                flexDirection: 'column',
+                textAlign: 'left',
+                maxWidth: '460px',
               }}
             >
-              {/* Google Play Button */}
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setDownloadModal(true)}
+              <span
                 style={{
-                  backgroundColor: '#000000',
-                  color: '#FFFFFF',
-                  borderRadius: '14px',
-                  padding: '10px 22px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s ease',
+                  color: '#FEC603',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  fontFamily: 'var(--font-heading)',
+                  marginBottom: '2px',
                 }}
               >
-                {/* Official Google Play 4-Color Logo */}
-                <svg width="28" height="30" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#gpBlue)" />
-                  <path d="M19.9 19.6L15.3 15V14.8L19.9 10.2L20 10.3L25.4 13.4C27 14.3 27 15.7 25.4 16.6L20 19.6L19.9 19.6Z" fill="url(#gpYellow)" />
-                  <path d="M20 19.6L15.3 15L1.3 28.9C1.8 29.5 2.7 29.5 3.8 28.9L20 19.6Z" fill="url(#gpRed)" />
-                  <path d="M20 10.4L3.8 1.1C2.7 0.5 1.8 0.5 1.3 1.1L15.3 15L20 10.4Z" fill="url(#gpGreen)" />
-                  <defs>
-                    <linearGradient id="gpBlue" x1="13.9" y1="2.7" x2="-2.4" y2="19" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#00A0FF" />
-                      <stop offset="0.007" stopColor="#00A1FF" />
-                      <stop offset="0.26" stopColor="#00BEFF" />
-                      <stop offset="0.512" stopColor="#00D2FF" />
-                      <stop offset="0.76" stopColor="#00DFFF" />
-                      <stop offset="1" stopColor="#00E3FF" />
-                    </linearGradient>
-                    <linearGradient id="gpYellow" x1="27.4" y1="15" x2="0.6" y2="15" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#FFE000" />
-                      <stop offset="0.409" stopColor="#FFBD00" />
-                      <stop offset="0.775" stopColor="#FFA500" />
-                      <stop offset="1" stopColor="#FF9C00" />
-                    </linearGradient>
-                    <linearGradient id="gpRed" x1="17.6" y1="17.3" x2="2.7" y2="32.2" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#FF3A44" />
-                      <stop offset="1" stopColor="#C31162" />
-                    </linearGradient>
-                    <linearGradient id="gpGreen" x1="2.7" y1="-2.2" x2="17.6" y2="12.7" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#32A071" />
-                      <stop offset="0.069" stopColor="#2DA771" />
-                      <stop offset="0.476" stopColor="#15CF74" />
-                      <stop offset="0.801" stopColor="#06E775" />
-                      <stop offset="1" stopColor="#00F076" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-
-                {/* Text Block */}
-                <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
-                  <div
-                    style={{
-                      fontSize: '0.64rem',
-                      letterSpacing: '0.1em',
-                      color: '#94A3B8',
-                      textTransform: 'uppercase',
-                      fontWeight: 700,
-                    }}
-                  >
-                    GET IT ON
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: '1.24rem',
-                      fontWeight: 800,
-                      color: '#FFFFFF',
-                      letterSpacing: '-0.02em',
-                    }}
-                  >
-                    Google Play
-                  </div>
-                </div>
-              </motion.button>
+                OFFICIAL MOBILE APPLICATION
+              </span>
+              <span
+                style={{
+                  color: '#CBD5E1',
+                  fontSize: '0.88rem',
+                  lineHeight: 1.45,
+                  fontWeight: 500,
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                Track on-site construction milestones, 3D engineering blueprints &amp; BOQ updates on Android.
+              </span>
             </div>
-          </motion.div>
-        </div>
+
+            {/* Right side: High-Attraction Yellow CTA Button */}
+            <div
+              style={{
+                backgroundColor: '#F9DF04',
+                color: '#000000',
+                padding: '11px 24px',
+                borderRadius: '9999px',
+                fontFamily: 'var(--font-heading)',
+                fontSize: '0.88rem',
+                fontWeight: 900,
+                letterSpacing: '0.04em',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 6px 20px rgba(249, 223, 4, 0.45)',
+                flexShrink: 0,
+              }}
+            >
+              <span>INSTALL NOW</span>
+              <ArrowUpRight size={17} color="#000000" />
+            </div>
+          </motion.button>
+
+          {/* Trust Badge Subtitle */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              marginTop: '12px',
+              color: '#64748B',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              fontFamily: 'var(--font-body)',
+              flexWrap: 'wrap',
+            }}
+          >
+            <span style={{ color: '#10B981', fontWeight: 800 }}>✓ Verified Android Release</span>
+            <span>•</span>
+            <span>100% Free on Android</span>
+            <span>•</span>
+            <span>Instant Installation on Google Play</span>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Interactive Download Feedback Modal */}
