@@ -10,6 +10,8 @@ import {
   Pause,
   Maximize2,
   Minimize2,
+  Volume2,
+  VolumeX,
   Smartphone,
   Calendar,
   Clock,
@@ -19,11 +21,270 @@ import {
   CheckCircle2,
   Download,
   Sparkles,
-  X
+  X,
+  Bell,
+  ArrowRight
 } from 'lucide-react';
 import Renovan3DBackground from './Renovan3DBackground';
 
-export default function Renovation({ onGetQuote }) {
+// ============================================================================
+// DYNAMIC WEB AUDIO API RENOVAN CAR SOUND ENGINE
+// Realistic vehicle audio synchronized to the 10-second showcase video:
+// - 0.0s - 1.1s: Ignition key turn & starter motor crank
+// - 1.1s - 2.5s: Engine catch & throttle rev blip
+// - 2.5s - 5.0s: In-gear acceleration & road roll
+// - 5.0s - 8.0s: Smooth cruising & exhaust hum
+// - 8.0s - 9.8s: Deceleration & throaty van idle rumble
+// - 9.8s - 10.0s: Seamless loop crossfade
+// ============================================================================
+class RenovanCarAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.masterGain = null;
+    this.isMuted = false;
+    this.isRunning = false;
+
+    // Engine Oscillators & Filters
+    this.engineOsc1 = null; // Cylinder fundamental pulse
+    this.engineOsc2 = null; // Cylinder 2nd harmonic overtone
+    this.subOsc = null;     // Sub-bass exhaust pressure
+    this.exhaustFilter = null; // Acoustic muffler resonator
+    this.engineGain = null;
+
+    // Road Tire Noise
+    this.noiseNode = null;
+    this.noiseFilter = null;
+    this.noiseGain = null;
+
+    // Starter Motor
+    this.starterOsc = null;
+    this.starterGain = null;
+  }
+
+  init() {
+    if (this.ctx) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      this.ctx = new AudioCtx();
+
+      const now = this.ctx.currentTime;
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.setValueAtTime(0.001, now);
+      this.masterGain.connect(this.ctx.destination);
+
+      // 1. Engine Audio Path
+      this.engineGain = this.ctx.createGain();
+      this.engineGain.gain.setValueAtTime(0.001, now);
+
+      this.exhaustFilter = this.ctx.createBiquadFilter();
+      this.exhaustFilter.type = 'lowpass';
+      this.exhaustFilter.frequency.setValueAtTime(180, now);
+      this.exhaustFilter.Q.setValueAtTime(2.2, now);
+
+      // Fundamental cylinder firing waveform (Sawtooth rich in all harmonics)
+      this.engineOsc1 = this.ctx.createOscillator();
+      this.engineOsc1.type = 'sawtooth';
+      this.engineOsc1.frequency.setValueAtTime(32, now); // ~960 RPM idle
+      this.engineOsc1.connect(this.exhaustFilter);
+
+      // Secondary overtone (Triangle for rounded acoustic body)
+      this.engineOsc2 = this.ctx.createOscillator();
+      this.engineOsc2.type = 'triangle';
+      this.engineOsc2.frequency.setValueAtTime(64, now);
+      this.engineOsc2.connect(this.exhaustFilter);
+
+      // Deep sub-bass pulse (Piston stroke thud)
+      this.subOsc = this.ctx.createOscillator();
+      this.subOsc.type = 'sine';
+      this.subOsc.frequency.setValueAtTime(42, now);
+      const subGain = this.ctx.createGain();
+      subGain.gain.setValueAtTime(0.35, now);
+      this.subOsc.connect(subGain);
+      subGain.connect(this.exhaustFilter);
+
+      this.exhaustFilter.connect(this.engineGain);
+      this.engineGain.connect(this.masterGain);
+
+      // 2. Starter Motor Audio Path
+      this.starterGain = this.ctx.createGain();
+      this.starterGain.gain.setValueAtTime(0.001, now);
+
+      this.starterOsc = this.ctx.createOscillator();
+      this.starterOsc.type = 'sawtooth';
+      this.starterOsc.frequency.setValueAtTime(260, now);
+
+      const starterFilter = this.ctx.createBiquadFilter();
+      starterFilter.type = 'bandpass';
+      starterFilter.frequency.setValueAtTime(320, now);
+      starterFilter.Q.setValueAtTime(3.5, now);
+
+      this.starterOsc.connect(starterFilter);
+      starterFilter.connect(this.starterGain);
+      this.starterGain.connect(this.masterGain);
+
+      // 3. Road / Tire Surface Noise (Pink/White noise loop)
+      const bufferSize = this.ctx.sampleRate * 2;
+      const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99765 * b0 + white * 0.0990460;
+        b1 = 0.96300 * b1 + white * 0.2965164;
+        b2 = 0.57000 * b2 + white * 1.0526913;
+        output[i] = (b0 + b1 + b2 + white * 0.1848) * 0.05;
+      }
+
+      this.noiseNode = this.ctx.createBufferSource();
+      this.noiseNode.buffer = noiseBuffer;
+      this.noiseNode.loop = true;
+
+      this.noiseFilter = this.ctx.createBiquadFilter();
+      this.noiseFilter.type = 'lowpass';
+      this.noiseFilter.frequency.setValueAtTime(260, now);
+
+      this.noiseGain = this.ctx.createGain();
+      this.noiseGain.gain.setValueAtTime(0.001, now);
+
+      this.noiseNode.connect(this.noiseFilter);
+      this.noiseFilter.connect(this.noiseGain);
+      this.noiseGain.connect(this.masterGain);
+
+      // Start all continuous source nodes
+      this.engineOsc1.start(now);
+      this.engineOsc2.start(now);
+      this.subOsc.start(now);
+      this.starterOsc.start(now);
+      this.noiseNode.start(now);
+
+      this.isRunning = true;
+    } catch {
+      // Audio fallback
+    }
+  }
+
+  resume() {
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+  }
+
+  setMuted(muted) {
+    this.isMuted = muted;
+    if (!this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+    if (muted) {
+      this.masterGain.gain.setTargetAtTime(0.0001, now, 0.06);
+    } else {
+      this.masterGain.gain.setTargetAtTime(0.28, now, 0.08);
+    }
+  }
+
+  /**
+   * Called on every video frame to shape engine parameters to the exact video timeline
+   * @param {number} currentTime - video.currentTime in seconds
+   * @param {boolean} isPlaying - whether video is playing
+   * @param {boolean} isVisible - whether video element is in viewport
+   */
+  update(currentTime, isPlaying, isVisible) {
+    if (this.isMuted || !isPlaying || !isVisible) {
+      if (this.ctx && this.masterGain) {
+        this.masterGain.gain.setTargetAtTime(0.0001, this.ctx.currentTime, 0.06);
+      }
+      return;
+    }
+
+    if (!this.ctx || !this.isRunning) {
+      this.init();
+    }
+    this.resume();
+
+    if (!this.ctx || this.ctx.state !== 'running') return;
+
+    const now = this.ctx.currentTime;
+    // Base master volume
+    this.masterGain.gain.setTargetAtTime(0.28, now, 0.05);
+
+    // Normalize timeline to 10-second video loop
+    const t = (currentTime || 0) % 10.0;
+
+    let targetRPM = 950;
+    let starterVol = 0;
+    let engineVol = 0.55;
+    let roadVol = 0;
+    let filterFreq = 180;
+
+    if (t < 1.1) {
+      // PHASE 1: Starter motor crank before engine starts
+      const crankPhase = (t / 1.1);
+      starterVol = 0.42 * (1 - crankPhase * 0.3);
+      // Pulsing starter motor cadence (4-cylinder compression cycles)
+      const pulse = Math.sin(t * Math.PI * 9);
+      starterVol *= (pulse > 0 ? 1.0 : 0.4);
+      // Engine sputtering into life
+      engineVol = crankPhase * 0.25;
+      targetRPM = 420 + crankPhase * 450;
+      filterFreq = 140 + crankPhase * 80;
+    } else if (t < 2.5) {
+      // PHASE 2: Engine Catch & Enthusiastic Throttle Blip
+      const blipT = (t - 1.1) / 1.4;
+      starterVol = 0;
+      // Parabolic rev curve peaking at 2800 RPM
+      const revCurve = Math.sin(blipT * Math.PI);
+      targetRPM = 950 + revCurve * 1850;
+      engineVol = 0.65 + revCurve * 0.25;
+      filterFreq = 220 + revCurve * 320;
+      roadVol = blipT * 0.04;
+    } else if (t < 5.0) {
+      // PHASE 3: In-Gear Acceleration & Van Movement
+      const driveT = (t - 2.5) / 2.5;
+      targetRPM = 2200 + driveT * 400; // Accelerating to ~2600 RPM
+      engineVol = 0.72;
+      filterFreq = 340 + driveT * 80;
+      roadVol = 0.08 + driveT * 0.04;
+    } else if (t < 8.0) {
+      // PHASE 4: Steady Van Cruising
+      const cruiseT = (t - 5.0) / 3.0;
+      targetRPM = 2400 - cruiseT * 450; // High gear cruising ~2000 RPM
+      engineVol = 0.65;
+      filterFreq = 320 - cruiseT * 60;
+      roadVol = 0.09 - cruiseT * 0.03;
+    } else {
+      // PHASE 5: Deceleration & Deep Warm Idle (8.0s - 10.0s)
+      const idleT = (t - 8.0) / 2.0;
+      targetRPM = 1950 - idleT * 1000; // Drops to 950 RPM
+      engineVol = 0.58 - idleT * 0.08;
+      filterFreq = 260 - idleT * 90; // Closes to warm 170Hz
+      roadVol = Math.max(0, 0.06 - idleT * 0.06);
+    }
+
+    // Convert RPM to cylinder firing frequency (4-cylinder, 4-stroke: RPM / 30)
+    const firingFreq = Math.max(18, targetRPM / 30);
+
+    // Apply audio parameters with smooth interpolation
+    this.engineOsc1.frequency.setTargetAtTime(firingFreq, now, 0.04);
+    this.engineOsc2.frequency.setTargetAtTime(firingFreq * 2.0, now, 0.04);
+    this.subOsc.frequency.setTargetAtTime(Math.max(22, firingFreq * 1.5), now, 0.04);
+    this.exhaustFilter.frequency.setTargetAtTime(filterFreq, now, 0.04);
+    this.engineGain.gain.setTargetAtTime(engineVol, now, 0.04);
+
+    this.starterGain.gain.setTargetAtTime(starterVol, now, 0.03);
+    this.noiseGain.gain.setTargetAtTime(roadVol, now, 0.05);
+  }
+
+  destroy() {
+    if (this.ctx) {
+      try {
+        this.ctx.close();
+      } catch {}
+      this.ctx = null;
+    }
+    this.isRunning = false;
+  }
+}
+
+export default function Renovation({ onGetQuote: _onGetQuote }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
   const appSectionRef = useRef(null);
@@ -31,9 +292,72 @@ export default function Renovation({ onGetQuote }) {
   const moduleMousePos = useRef({ x: 0, y: 0 });
   const videoRef = useRef(null);
   const videoContainerRef = useRef(null);
+  const isVideoInView = useInView(videoContainerRef, { margin: '40px' });
+  const carAudioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isSoundMuted, setIsSoundMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showAppModal, setShowAppModal] = useState(false);
+  const homeOnWheelsRef = useRef(null);
+  const isHomeOnWheelsInView = useInView(homeOnWheelsRef, { once: true, margin: '-60px' });
+
+  // Initialize and unlock Web Audio API on first user interaction
+  useEffect(() => {
+    carAudioRef.current = new RenovanCarAudioEngine();
+
+    const unlockAudio = () => {
+      if (carAudioRef.current) {
+        carAudioRef.current.init();
+        carAudioRef.current.resume();
+      }
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('scroll', unlockAudio);
+    };
+
+    window.addEventListener('pointerdown', unlockAudio, { passive: true });
+    window.addEventListener('keydown', unlockAudio, { passive: true });
+    window.addEventListener('scroll', unlockAudio, { passive: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('scroll', unlockAudio);
+      if (carAudioRef.current) {
+        carAudioRef.current.destroy();
+      }
+    };
+  }, []);
+
+  // Frame-accurate 60fps audio update synchronized with video.currentTime
+  useEffect(() => {
+    let animId;
+    const tick = () => {
+      if (videoRef.current && carAudioRef.current) {
+        const currentTime = videoRef.current.currentTime || 0;
+        const activePlaying = !videoRef.current.paused && !videoRef.current.ended && isPlaying;
+        carAudioRef.current.update(currentTime, activePlaying, isVideoInView);
+      }
+      animId = requestAnimationFrame(tick);
+    };
+
+    animId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animId);
+  }, [isPlaying, isVideoInView]);
+
+  const toggleSound = () => {
+    setIsSoundMuted((prev) => {
+      const next = !prev;
+      if (carAudioRef.current) {
+        carAudioRef.current.setMuted(next);
+        if (!next) {
+          carAudioRef.current.init();
+          carAudioRef.current.resume();
+        }
+      }
+      return next;
+    });
+  };
 
   const handleModuleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -55,9 +379,15 @@ export default function Renovation({ onGetQuote }) {
     if (videoRef.current.paused) {
       videoRef.current.play();
       setIsPlaying(true);
+      if (carAudioRef.current && !isSoundMuted) {
+        carAudioRef.current.resume();
+      }
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
+      if (carAudioRef.current) {
+        carAudioRef.current.update(videoRef.current.currentTime || 0, false, false);
+      }
     }
   };
 
@@ -135,14 +465,6 @@ export default function Renovation({ onGetQuote }) {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-    },
-  };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 25 },
     visible: { 
@@ -161,62 +483,12 @@ export default function Renovation({ onGetQuote }) {
         style={{
           position: 'relative',
           overflow: 'hidden',
-          backgroundColor: '#FFFFFF',
-          padding: '76px 0 0 0',
+          backgroundColor: '#000000',
+          padding: 0,
           width: '100%',
         }}
       >
-        {/* Background Watermark */}
-        <div
-          className="watermark-bg select-none pointer-events-none"
-          style={{ top: '20px', left: '3%', opacity: 0.55 }}
-        >
-          RENOVAN
-        </div>
-
-        {/* Floating Geometric Accents in Header Area */}
-        <div className="geo-diamond" style={{ top: '60px', right: '5%' }} />
-
-        {/* Top Header Information Container */}
-        <motion.div 
-          className="app-container" 
-          style={{ position: 'relative', zIndex: 10 }}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-        >
-          {/* 1. Header Section */}
-          <motion.div variants={itemVariants} style={{ marginBottom: '38px' }}>
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'flex-end',
-                justifyContent: 'space-between',
-                gap: '20px',
-              }}
-            >
-              <div>
-                <h1
-                  style={{
-                    fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-                    fontWeight: 900,
-                    color: '#0F172A',
-                    letterSpacing: '-0.03em',
-                    textTransform: 'uppercase',
-                    lineHeight: 1.1,
-                    margin: 0,
-                    fontFamily: 'var(--font-heading)',
-                  }}
-                >
-                  Renovation <span style={{ color: '#E5CC00' }}>Made Easy</span>
-                </h1>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* 2. Full-View Edge-to-Edge Video Showcase (Without Borders) */}
+        {/* Full-View Edge-to-Edge Video Showcase with Overlay Title */}
         <motion.div
           variants={itemVariants}
           initial="hidden"
@@ -248,6 +520,52 @@ export default function Renovation({ onGetQuote }) {
               borderRadius: 0,
             }}
           >
+            {/* Top Vignette Gradient for High-Contrast Readability */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '220px',
+                background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 50%, transparent 100%)',
+                zIndex: 10,
+                pointerEvents: 'none',
+              }}
+            />
+
+            {/* Floating Top-Center Title Overlay directly on the Video */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 'clamp(20px, 4.5vh, 44px)',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 20,
+                textAlign: 'center',
+                width: '100%',
+                maxWidth: '900px',
+                padding: '0 24px',
+                pointerEvents: 'none',
+              }}
+            >
+              <h1
+                style={{
+                  fontSize: 'clamp(1.3rem, 2.4vw, 2.1rem)',
+                  fontWeight: 900,
+                  color: '#FFFFFF',
+                  letterSpacing: '0.02em',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.15,
+                  margin: 0,
+                  fontFamily: 'var(--font-heading)',
+                  textShadow: '0 3px 20px rgba(0, 0, 0, 0.95), 0 2px 6px rgba(0, 0, 0, 0.9)',
+                }}
+              >
+                Renovation <span style={{ color: '#F9DF04' }}>Made Easy</span>
+              </h1>
+            </div>
+
             <video
               ref={videoRef}
               autoPlay
@@ -314,6 +632,42 @@ export default function Renovation({ onGetQuote }) {
                 }}
               >
                 {isPlaying ? <Pause size={18} /> : <Play size={18} style={{ marginLeft: '2px' }} />}
+              </button>
+
+              {/* Car Audio Mute / Unmute Toggle */}
+              <button
+                onClick={toggleSound}
+                type="button"
+                aria-label={isSoundMuted ? 'Unmute car audio' : 'Mute car audio'}
+                title={isSoundMuted ? 'Unmute Car Audio' : 'Mute Car Audio'}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  backgroundColor: isSoundMuted ? 'rgba(15, 23, 42, 0.75)' : '#F9DF04',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: isSoundMuted ? '1px solid rgba(255, 255, 255, 0.25)' : '1.5px solid #F9DF04',
+                  color: isSoundMuted ? '#FFFFFF' : '#0F172A',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: isSoundMuted
+                    ? '0 4px 14px rgba(0, 0, 0, 0.4)'
+                    : '0 4px 18px rgba(249, 223, 4, 0.5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = isSoundMuted ? 'rgba(255, 255, 255, 0.2)' : '#FFE855';
+                  e.currentTarget.style.transform = 'scale(1.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = isSoundMuted ? 'rgba(15, 23, 42, 0.75)' : '#F9DF04';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                {isSoundMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
 
               {/* Fullscreen Toggle */}
@@ -1293,6 +1647,567 @@ export default function Renovation({ onGetQuote }) {
             </motion.div>
           )}
         </AnimatePresence>
+      </section>
+
+      {/* ======================================================================== */}
+      {/* RENOVAN • HOME ON WHEELS SHOWCASE SECTION                                */}
+      {/* Precise high-fidelity recreation of Reference Design                     */}
+      {/* ======================================================================== */}
+      <section
+        id="renovan-home-on-wheels"
+        ref={homeOnWheelsRef}
+        style={{
+          position: 'relative',
+          background: '#FFFFFF',
+          padding: '100px 0 110px',
+          overflow: 'hidden',
+          color: '#0F172A',
+          fontFamily: 'inherit'
+        }}
+      >
+        {/* Dynamic Top-Right Angular Accent Swoop with Yeloline Brand Colors (#F9DF04 & #111111) */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '42%',
+            maxWidth: '560px',
+            height: '200px',
+            pointerEvents: 'none',
+            zIndex: 1,
+            overflow: 'hidden'
+          }}
+        >
+          <svg
+            viewBox="0 0 560 200"
+            preserveAspectRatio="none"
+            style={{ width: '100%', height: '100%' }}
+          >
+            {/* Aerodynamic Black Ribbon Swoop matching footer wave */}
+            <path
+              d="M 100 0 Q 300 80 560 220 L 560 180 Q 320 70 140 0 Z"
+              fill="#111111"
+            />
+            {/* Primary Yellow Field matching footer wave */}
+            <path
+              d="M 140 0 Q 320 70 560 180 L 560 0 Z"
+              fill="#F9DF04"
+            />
+          </svg>
+        </div>
+
+        {/* Bottom Fluid Architectural Swooshes with Footer Wave Styling */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '46%',
+            maxWidth: '600px',
+            height: '96px',
+            pointerEvents: 'none',
+            zIndex: 1
+          }}
+        >
+          <svg
+            viewBox="0 0 600 96"
+            preserveAspectRatio="none"
+            style={{ width: '100%', height: '100%' }}
+          >
+            {/* Black ribbon border */}
+            <path
+              d="M 0 96 L 0 38 Q 250 8 600 96 L 560 96 Q 250 20 0 48 Z"
+              fill="#111111"
+            />
+            {/* Primary Yellow field */}
+            <path
+              d="M 0 96 L 0 48 Q 250 20 560 96 Z"
+              fill="#F9DF04"
+            />
+          </svg>
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: '46%',
+            maxWidth: '600px',
+            height: '96px',
+            pointerEvents: 'none',
+            zIndex: 1
+          }}
+        >
+          <svg
+            viewBox="0 0 600 96"
+            preserveAspectRatio="none"
+            style={{ width: '100%', height: '100%' }}
+          >
+            {/* Black ribbon border */}
+            <path
+              d="M 0 96 Q 350 8 600 38 L 600 48 Q 350 20 40 96 Z"
+              fill="#111111"
+            />
+            {/* Primary Yellow field */}
+            <path
+              d="M 40 96 Q 350 20 600 48 L 600 96 Z"
+              fill="#F9DF04"
+            />
+          </svg>
+        </div>
+
+        <div className="app-container" style={{ position: 'relative', zIndex: 10 }}>
+          <div className="renovan-wheels-grid">
+            {/* Left Column: Headlines, Copy, Feature Badges, Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, x: -35 }}
+              animate={isHomeOnWheelsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -35 }}
+              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              className="renovan-wheels-content"
+            >
+              {/* Top Pill with Flanking Lines */}
+              <div className="renovan-pill-wrapper">
+                <div className="renovan-pill-line" />
+                <div className="renovan-top-pill">
+                  RENOVAN • HOME ON WHEELS
+                </div>
+                <div className="renovan-pill-line" />
+              </div>
+
+              {/* Main Headline */}
+              <div style={{ marginTop: '14px', marginBottom: '16px' }}>
+                <h2
+                  style={{
+                    fontSize: 'clamp(2.6rem, 5.8vw, 4.4rem)',
+                    fontWeight: 900,
+                    fontStyle: 'italic',
+                    color: '#0F172A',
+                    lineHeight: 1.05,
+                    margin: 0,
+                    letterSpacing: '-0.02em',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  BOOK YOUR
+                </h2>
+
+                {/* RENOVAN with slanted yellow badge & racing slashes // */}
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    marginTop: '8px'
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      background: '#F9DF04',
+                      padding: '4px 22px 6px 18px',
+                      transform: 'skewX(-11deg)',
+                      boxShadow: '0 8px 24px rgba(249, 223, 4, 0.35)',
+                      borderRadius: '4px'
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: '#111111',
+                        fontSize: 'clamp(2.5rem, 5.5vw, 4.2rem)',
+                        fontWeight: 900,
+                        fontStyle: 'italic',
+                        letterSpacing: '-0.01em',
+                        lineHeight: 1.05
+                      }}
+                    >
+                      RENOVAN
+                    </span>
+                  </div>
+
+                  {/* Slanted racing stripes // */}
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      gap: '7px',
+                      marginLeft: '12px',
+                      transform: 'skewX(-11deg)'
+                    }}
+                  >
+                    <div style={{ width: '9px', height: '46px', background: '#F9DF04', borderRadius: '2px' }} />
+                    <div style={{ width: '9px', height: '46px', background: '#F9DF04', borderRadius: '2px' }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sub-headline */}
+              <p
+                style={{
+                  fontSize: 'clamp(1.15rem, 2.2vw, 1.4rem)',
+                  fontStyle: 'italic',
+                  fontWeight: 700,
+                  color: '#0F172A',
+                  margin: '0 0 14px 0',
+                  lineHeight: 1.3
+                }}
+              >
+                Expert home services, right at your doorstep.
+              </p>
+
+              {/* Small yellow accent underline */}
+              <div
+                style={{
+                  width: '64px',
+                  height: '4px',
+                  background: '#F9DF04',
+                  borderRadius: '9999px',
+                  marginBottom: '20px'
+                }}
+              />
+
+              {/* Description text */}
+              <p
+                style={{
+                  fontSize: 'clamp(0.95rem, 1.35vw, 1.05rem)',
+                  color: '#475569',
+                  lineHeight: 1.7,
+                  maxWidth: '540px',
+                  margin: '0 0 28px 0',
+                  fontWeight: 450
+                }}
+              >
+                Book electrical, plumbing, general maintenance and masonry services in just a few taps.
+                Track your service request and get reliable help when you need it.
+              </p>
+
+              {/* 3 Feature Badges in Row */}
+              <div className="renovan-features-row">
+                {/* Quick Booking */}
+                <div className="renovan-feature-item">
+                  <div className="renovan-feature-icon-box">
+                    <Calendar size={20} strokeWidth={2.4} />
+                  </div>
+                  <div className="renovan-feature-text">
+                    <div>Quick</div>
+                    <div>Booking</div>
+                  </div>
+                </div>
+
+                <div className="renovan-feature-divider" />
+
+                {/* Verified Service Team */}
+                <div className="renovan-feature-item">
+                  <div className="renovan-feature-icon-box">
+                    <ShieldCheck size={20} strokeWidth={2.4} />
+                  </div>
+                  <div className="renovan-feature-text">
+                    <div>Verified</div>
+                    <div>Service Team</div>
+                  </div>
+                </div>
+
+                <div className="renovan-feature-divider" />
+
+                {/* Live Booking Updates */}
+                <div className="renovan-feature-item">
+                  <div className="renovan-feature-icon-box">
+                    <Bell size={20} strokeWidth={2.4} />
+                  </div>
+                  <div className="renovan-feature-text">
+                    <div>Live Booking</div>
+                    <div>Updates</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action CTA Buttons */}
+              <div className="renovan-cta-row">
+                {/* Button 1: Book Renovan Now */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const moduleElem = document.getElementById('renovan-app-module');
+                    if (moduleElem) {
+                      moduleElem.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      setShowAppModal(true);
+                    }
+                  }}
+                  className="renovan-btn-book"
+                >
+                  <Calendar size={19} strokeWidth={2.5} />
+                  <span>BOOK RENOVAN NOW</span>
+                  <ArrowRight size={19} strokeWidth={2.5} />
+                </button>
+
+                {/* Button 2: Download Google Play */}
+                <button
+                  type="button"
+                  onClick={() => setShowAppModal(true)}
+                  className="renovan-btn-play"
+                >
+                  {/* Google Play official color icon */}
+                  <svg width="22" height="24" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.37891 0.771484C1.04891 1.13148 0.858906 1.70148 0.858906 2.45148V23.5515C0.858906 24.3015 1.04891 24.8715 1.38891 25.2315L1.45891 25.3015L13.1689 13.5915V13.3115L1.45891 1.60148L1.37891 0.771484Z" fill="url(#play_linear_1)" />
+                    <path d="M17.0689 17.5015L13.1689 13.5915V13.3115L17.0689 9.40148L17.1589 9.45148L21.7889 12.0815C23.1089 12.8315 23.1089 14.0715 21.7889 14.8215L17.1589 17.4515L17.0689 17.5015Z" fill="url(#play_linear_2)" />
+                    <path d="M17.1589 17.4515L13.1689 13.4515L1.37891 25.2415C1.81891 25.7015 2.56891 25.7615 3.42891 25.2715L17.1589 17.4515Z" fill="url(#play_linear_3)" />
+                    <path d="M17.1589 9.45148L3.42891 1.63148C2.56891 1.14148 1.81891 1.20148 1.37891 1.66148L13.1689 13.4515L17.1589 9.45148Z" fill="url(#play_linear_4)" />
+                    <defs>
+                      <linearGradient id="play_linear_1" x1="12.04" y1="2.18" x2="-2.9" y2="17.12" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#00A0FF" />
+                        <stop offset="0.007" stopColor="#00A1FF" />
+                        <stop offset="0.26" stopColor="#00BEFF" />
+                        <stop offset="0.512" stopColor="#00D2FF" />
+                        <stop offset="0.76" stopColor="#00DFFF" />
+                        <stop offset="1" stopColor="#00E3FF" />
+                      </linearGradient>
+                      <linearGradient id="play_linear_2" x1="23.67" y1="13.45" x2="-0.4" y2="13.45" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FFE000" />
+                        <stop offset="0.409" stopColor="#FFBD00" />
+                        <stop offset="0.775" stopColor="#FFA500" />
+                        <stop offset="1" stopColor="#FF9C00" />
+                      </linearGradient>
+                      <linearGradient id="play_linear_3" x1="14.95" y1="15.68" x2="-7.3" y2="37.93" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FF3A44" />
+                        <stop offset="1" stopColor="#C31162" />
+                      </linearGradient>
+                      <linearGradient id="play_linear_4" x1="-3.45" y1="-8.42" x2="8.63" y2="3.66" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#32A071" />
+                        <stop offset="0.068" stopColor="#2DA771" />
+                        <stop offset="0.476" stopColor="#15CF74" />
+                        <stop offset="0.801" stopColor="#06E775" />
+                        <stop offset="1" stopColor="#00F076" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontSize: '9px', fontWeight: 600, color: '#9CA3AF', letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1 }}>
+                      DOWNLOAD THE APP
+                    </div>
+                    <div style={{ fontSize: '15px', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.01em', lineHeight: 1.2, marginTop: '2px' }}>
+                      Google Play
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Right Column: User's 3rd Image (Van + Mobile Phone Mockup) */}
+            <motion.div
+              initial={{ opacity: 0, x: 45, scale: 0.96 }}
+              animate={isHomeOnWheelsInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: 45, scale: 0.96 }}
+              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+              className="renovan-wheels-visual"
+            >
+              {/* Ambient Warm Golden Halo matching #F9DF04 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '85%',
+                  height: '75%',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(249, 223, 4, 0.22) 0%, rgba(249, 223, 4, 0.06) 55%, transparent 75%)',
+                  filter: 'blur(45px)',
+                  pointerEvents: 'none',
+                  zIndex: 0
+                }}
+              />
+
+              {/* Soft Floor Shadow beneath Wheels & Smartphone */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '4px',
+                  left: '4%',
+                  width: '92%',
+                  height: '24px',
+                  background: 'radial-gradient(ellipse at center, rgba(17, 17, 17, 0.28) 0%, rgba(17, 17, 17, 0.08) 55%, transparent 75%)',
+                  filter: 'blur(7px)',
+                  borderRadius: '50%',
+                  pointerEvents: 'none',
+                  zIndex: 1
+                }}
+              />
+
+              {/* Showcase Visual Cutout */}
+              <img
+                src="/images/renovan_showcase_van_phone.png?v=2"
+                alt="Yeloline Renovan - Home on Wheels Service Van and Booking App"
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                  width: '100%',
+                  maxWidth: '720px',
+                  height: 'auto',
+                  display: 'block',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 16px 28px rgba(0, 0, 0, 0.08))'
+                }}
+              />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Section-Specific Scoped CSS with Footer Color Matching */}
+        <style>{`
+          .renovan-wheels-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 44px;
+          }
+          .renovan-pill-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+          }
+          .renovan-pill-line {
+            width: 44px;
+            height: 1.5px;
+            background: #E2E8F0;
+          }
+          .renovan-top-pill {
+            background: #F9DF04;
+            color: #111111;
+            padding: 6px 20px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 10px rgba(249, 223, 4, 0.35);
+          }
+          .renovan-features-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px 20px;
+            margin-top: 24px;
+            margin-bottom: 32px;
+          }
+          .renovan-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          .renovan-feature-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(249, 223, 4, 0.16);
+            border: 1.5px solid #F9DF04;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #111111;
+            flex-shrink: 0;
+          }
+          .renovan-feature-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0F172A;
+            line-height: 1.25;
+          }
+          .renovan-feature-divider {
+            width: 1px;
+            height: 34px;
+            background: #E2E8F0;
+          }
+          .renovan-cta-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+          }
+          .renovan-btn-book {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 26px;
+            border-radius: 14px;
+            background: #F9DF04;
+            color: #111111;
+            font-weight: 800;
+            font-size: 0.92rem;
+            letter-spacing: 0.04em;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(249, 223, 4, 0.35);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .renovan-btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(249, 223, 4, 0.45);
+            background: #FEDB04;
+          }
+          .renovan-btn-book:active {
+            transform: translateY(0);
+          }
+          .renovan-btn-play {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 22px;
+            border-radius: 14px;
+            background: #111111;
+            border: 1px solid #1E293B;
+            color: #FFFFFF;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .renovan-btn-play:hover {
+            transform: translateY(-2px);
+            background: #1A1A1A;
+            border-color: #334155;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+          }
+          .renovan-btn-play:active {
+            transform: translateY(0);
+          }
+          .renovan-wheels-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          @media (max-width: 968px) {
+            .renovan-wheels-grid {
+              grid-template-columns: 1fr;
+              gap: 48px;
+            }
+            .renovan-wheels-content {
+              text-align: left;
+            }
+            .renovan-features-row {
+              justify-content: flex-start;
+            }
+            .renovan-cta-row {
+              justify-content: flex-start;
+            }
+          }
+          @media (max-width: 640px) {
+            .renovan-feature-divider {
+              display: none;
+            }
+            .renovan-features-row {
+              gap: 16px;
+            }
+            .renovan-cta-row {
+              flex-direction: column;
+              align-items: stretch;
+            }
+            .renovan-btn-book, .renovan-btn-play {
+              width: 100%;
+              justify-content: center;
+            }
+          }
+        `}</style>
       </section>
 
     </div>

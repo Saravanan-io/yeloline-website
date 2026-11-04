@@ -13,6 +13,204 @@ const getFramePath = (index) => {
   return `/images/homepage/ezgif-frame-${frameNumber}.jpg`;
 };
 
+// ============================================================================
+// DYNAMIC WEB AUDIO API CONSTRUCTION SCROLL SOUND ENGINE
+// ============================================================================
+class ConstructionAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.isMuted = false;
+    this.humOsc = null;
+    this.humGain = null;
+    this.lastClickTime = 0;
+    this.humStopTimeout = null;
+    this.milestoneCooldown = 0;
+  }
+
+  init() {
+    if (this.ctx) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      this.ctx = new AudioCtx();
+
+      // Continuous Hydraulic Crane / Engine Hum
+      const osc = this.ctx.createOscillator();
+      const filter = this.ctx.createBiquadFilter();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(65, this.ctx.currentTime); // 65Hz low engine rumble
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(125, this.ctx.currentTime);
+
+      gain.gain.setValueAtTime(0, this.ctx.currentTime);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      this.humOsc = osc;
+      this.humGain = gain;
+    } catch {
+      // AudioContext blocked or unsupported
+    }
+  }
+
+  resume() {
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+  }
+
+  // 1. Tactile Construction Placement Ratchet / Concrete Thud & Snap
+  playBuildClick(frameIndex, velocity = 0, isForward = true) {
+    if (this.isMuted) return;
+    this.init();
+    this.resume();
+    if (!this.ctx || this.ctx.state !== 'running') return;
+
+    const now = this.ctx.currentTime;
+    // Throttle clicks to avoid clipping or harsh buzzing on ultra-fast trackpad scrolls
+    if (now - this.lastClickTime < 0.032) return;
+    this.lastClickTime = now;
+
+    // Pitch rises as building rises (Frame 0 -> 49)
+    // Low frequency during excavation/foundation (110Hz - 160Hz)
+    // Mid frequency during concrete beams (180Hz - 280Hz)
+    // Crisp high frequency during glass, roof & finishing (320Hz - 480Hz)
+    const frameNorm = Math.min(1, Math.max(0, frameIndex / TOTAL_FRAMES));
+    const baseFreq = isForward
+      ? 120 + frameNorm * 260
+      : 240 - frameNorm * 90;
+
+    // Volume gently scales with scroll velocity
+    const absV = Math.abs(velocity);
+    const vol = Math.min(0.24, 0.08 + Math.min(absV / 2500, 0.16));
+
+    // A. Low Concrete / Stone Foundation Impact Thud
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(45, baseFreq * 0.45), now + 0.045);
+
+    gain.gain.setValueAtTime(vol, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.052);
+
+    // B. High Mechanical Tool Snap / Structural Lock
+    const snapOsc = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+
+    snapOsc.type = 'sine';
+    const snapFreq = 950 + frameNorm * 650;
+    snapOsc.frequency.setValueAtTime(snapFreq, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(snapFreq * 0.4, now + 0.018);
+
+    snapGain.gain.setValueAtTime(vol * 0.42, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.022);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.ctx.destination);
+
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.026);
+  }
+
+  // 2. Active Scroll Hydraulic Engine Hum
+  updateScrollHum(velocity = 0) {
+    if (this.isMuted || !this.humGain || !this.ctx || this.ctx.state !== 'running') return;
+    const now = this.ctx.currentTime;
+    const absV = Math.abs(velocity);
+
+    if (absV > 40) {
+      // Scale hum volume & frequency with scroll speed
+      const targetGain = Math.min(0.09, (absV / 2800) * 0.09);
+      const targetFreq = 62 + Math.min(48, (absV / 2000) * 48);
+
+      this.humGain.gain.setTargetAtTime(targetGain, now, 0.06);
+      if (this.humOsc) {
+        this.humOsc.frequency.setTargetAtTime(targetFreq, now, 0.06);
+      }
+
+      // Reset auto-stop timeout
+      if (this.humStopTimeout) clearTimeout(this.humStopTimeout);
+      this.humStopTimeout = setTimeout(() => {
+        if (this.humGain && this.ctx) {
+          this.humGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.12);
+        }
+      }, 90);
+    }
+  }
+
+  // 3. Milestone Completion Chimes (Plays when crossing construction phases)
+  playMilestoneChime(phaseIndex) {
+    if (this.isMuted) return;
+    this.init();
+    this.resume();
+    if (!this.ctx || this.ctx.state !== 'running') return;
+
+    const now = this.ctx.currentTime;
+    if (now - this.milestoneCooldown < 0.6) return;
+    this.milestoneCooldown = now;
+
+    // Harmonic chords per phase
+    const chords = [
+      [261.63, 329.63, 392.00],          // Phase 1 (Foundation): C4 - E4 - G4
+      [329.63, 392.00, 493.88],          // Phase 2 (RCC Columns): E4 - G4 - B4
+      [392.00, 493.88, 587.33],          // Phase 3 (Roof & Walls): G4 - B4 - D5
+      [523.25, 659.25, 783.99, 1046.50], // Phase 4 (Full Completion): C5 - E5 - G5 - C6
+    ];
+
+    const notes = chords[Math.min(phaseIndex, chords.length - 1)];
+    const duration = phaseIndex === 3 ? 1.5 : 0.85;
+
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.038);
+
+      const noteVol = phaseIndex === 3 ? 0.14 : 0.09;
+      gain.gain.setValueAtTime(0.001, now + idx * 0.038);
+      gain.gain.exponentialRampToValueAtTime(noteVol, now + idx * 0.038 + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.038 + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + idx * 0.038);
+      osc.stop(now + idx * 0.038 + duration + 0.05);
+    });
+  }
+
+  setMuted(muted) {
+    this.isMuted = muted;
+    if (muted && this.humGain && this.ctx) {
+      this.humGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    }
+  }
+
+  destroy() {
+    if (this.ctx) {
+      try {
+        this.ctx.close();
+      } catch {}
+      this.ctx = null;
+    }
+  }
+}
+
 export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -20,9 +218,42 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
   const currentFrameRef = useRef(0);
   const triggerRef = useRef(null);
 
+  // Audio Engine Instance Ref
+  const audioRef = useRef(null);
+  const lastMilestoneRef = useRef(-1);
+
   const [loadedCount, setLoadedCount] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Initialize Audio Engine once
+  useEffect(() => {
+    audioRef.current = new ConstructionAudioEngine();
+
+    // Browser Audio Autoplay Unlock: Listen to first user gesture
+    const unlockAudio = () => {
+      if (audioRef.current) {
+        audioRef.current.init();
+        audioRef.current.resume();
+      }
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('scroll', unlockAudio);
+    };
+
+    window.addEventListener('pointerdown', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+    window.addEventListener('scroll', unlockAudio, { passive: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('scroll', unlockAudio);
+      if (audioRef.current) {
+        audioRef.current.destroy();
+      }
+    };
+  }, []);
 
   // High-Precision Canvas Renderer (Guaranteed Proper View with Strict Contain Scaling)
   const renderFrame = (frameIndex) => {
@@ -159,7 +390,7 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
     };
   }, []);
 
-  // 2. GSAP ScrollTrigger Scroll-Controlled Frame Scrubbing
+  // 2. GSAP ScrollTrigger Scroll-Controlled Frame Scrubbing & Audio Synchronization
   useEffect(() => {
     if (!containerRef.current || !canvasRef.current) return;
 
@@ -178,6 +409,9 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
         const progress = Math.max(0, Math.min(1, self.progress));
         setScrollProgress(progress);
 
+        // Scroll velocity in pixels/sec
+        const velocity = self.getVelocity ? self.getVelocity() : 0;
+
         // Scrub frames from 0% to 85% scroll progress, then hold on the completed frame 50
         // from 85% to 100% so the user has comfortable scroll cushion to admire the full completed house
         const scrubProgress = Math.min(1, progress / 0.85);
@@ -187,9 +421,37 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
         );
 
         if (targetFrame !== currentFrameRef.current) {
+          const prevFrame = currentFrameRef.current;
+          const isForward = targetFrame > prevFrame;
+
           requestAnimationFrame(() => {
             renderFrame(targetFrame);
           });
+
+          // ==========================================================
+          // DYNAMIC SOUND EFFECT TRIGGER ON SCROLL
+          // ==========================================================
+          if (audioRef.current) {
+            // 1. Play tactile mechanical construction placement sound
+            audioRef.current.playBuildClick(targetFrame, velocity, isForward);
+
+            // 2. Modulate engine/hydraulic hum based on scroll speed
+            audioRef.current.updateScrollHum(velocity);
+
+            // 3. Milestone Phase Completion Chimes
+            let phase = -1;
+            if (targetFrame >= 12 && targetFrame <= 14) phase = 0;       // Phase 1: Foundation
+            else if (targetFrame >= 24 && targetFrame <= 26) phase = 1;  // Phase 2: RCC Columns
+            else if (targetFrame >= 36 && targetFrame <= 38) phase = 2;  // Phase 3: Roof Slab
+            else if (targetFrame >= 48) phase = 3;                      // Phase 4: Full Complete
+
+            if (phase !== -1 && phase !== lastMilestoneRef.current) {
+              lastMilestoneRef.current = phase;
+              audioRef.current.playMilestoneChime(phase);
+            } else if (phase === -1) {
+              lastMilestoneRef.current = -1;
+            }
+          }
         }
       },
     });
@@ -260,44 +522,6 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
           transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
         }}
       >
-        {/* Architectural pill */}
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.90)',
-            backdropFilter: 'blur(10px)',
-            border: 'none',
-            padding: '5px 16px',
-            borderRadius: '9999px',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-            marginBottom: '8px',
-          }}
-        >
-          <div
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#F9DF04',
-              boxShadow: '0 0 8px rgba(249, 223, 4, 0.8)',
-            }}
-          />
-          <span
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              letterSpacing: '0.14em',
-              color: '#334155',
-              textTransform: 'uppercase',
-            }}
-          >
-            INTERACTIVE 3D CONSTRUCTION EXPERIENCE
-          </span>
-        </div>
-
         {/* Main Heading */}
         <h2
           style={{
@@ -366,7 +590,7 @@ export default function ScrollConstructionHero({ onExploreProjects, onGetQuote }
         </div>
       </div>
 
-      {/* 3. Preload Status Bar (Shown only during initial frame download) */}
+      {/* Preload Status Bar (Shown only during initial frame download) */}
       {!isReady && (
         <div
           style={{

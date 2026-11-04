@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown } from 'lucide-react';
 
 /**
  * Hero Component
@@ -285,56 +284,85 @@ export default function Hero() {
             </span>
           </motion.h1>
 
-          {/* User Required Philosophy Quote with 3D entrance */}
-          <motion.p
+          {/* Dual Bilingual Philosophy Quotes (Tamil on Top, English on Bottom) with Neon Effect */}
+          <motion.div
             variants={quoteVariants}
             style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'clamp(1rem, 1.3vw, 1.18rem)',
-              color: 'rgba(255, 255, 255, 0.92)',
-              maxWidth: '820px',
-              lineHeight: 1.8,
-              margin: 0,
-              fontWeight: 400,
-              letterSpacing: '0.01em',
-              textShadow: '0 2px 16px rgba(0, 0, 0, 0.8)',
+              position: 'relative',
+              maxWidth: '980px',
+              width: '100%',
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '18px',
+              textAlign: 'center',
               transformStyle: 'preserve-3d',
             }}
           >
-            "A building is more than bricks and concrete… it's a lifelong dream shaped by years of hard work, sacrifice, and struggle. You've struggled enough to reach that dream. Building it shouldn't be another struggle. Bringing it to life with confidence and peace of mind is our responsibility."
-          </motion.p>
+            {/* Top: Tamil Quote with Neon Glow & Breathing Transition Animation */}
+            <p
+              className="hero-neon-tamil-quote"
+              style={{
+                fontFamily: "'Noto Sans Tamil', 'Mukta Malar', 'Latha', var(--font-body), sans-serif",
+                fontSize: 'clamp(1.05rem, 1.4vw, 1.25rem)',
+                lineHeight: 1.95,
+                margin: 0,
+                fontWeight: 600,
+                letterSpacing: '0.02em',
+              }}
+            >
+              “ஒரு கட்டிடம் என்பது வெறும் செங்கல்லும் சிமெண்டும் அல்ல… பல ஆண்டுகளின் உழைப்பு, எண்ணற்ற தியாகங்கள், சொல்லப்படாத கஷ்டங்கள் இவற்றால் உருவான ஒருவரின் வாழ்நாள் கனவு. அந்தக் கனவை அடைய நீங்கள் கடந்து வந்த பாதை எவ்வளவு கடினமாக இருந்தாலும், அதைக் கட்டியெழுப்பும் பயணம் அப்படியிருக்கக் கூடாது. ஏனென்றால், உங்கள் கனவுக்காக நீங்கள் பட்ட கஷ்டங்கள் போதும்… இனி அந்தக் கனவை நிம்மதியுடனும் நம்பிக்கையுடனும் நனவாக்குவதே எங்கள் பொறுப்பு.”
+            </p>
+
+            {/* Architectural Golden Divider Line with Synchronized Neon Diamond Accent */}
+            <div
+              className="hero-neon-divider"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                width: '100%',
+                maxWidth: '300px',
+                margin: '2px 0',
+              }}
+            >
+              <div style={{ flex: 1, height: '1.5px', background: 'linear-gradient(90deg, transparent, rgba(249, 223, 4, 0.85))' }} />
+              <div
+                className="hero-neon-diamond"
+                style={{
+                  width: '7px',
+                  height: '7px',
+                  backgroundColor: '#F9DF04',
+                  transform: 'rotate(45deg)',
+                }}
+              />
+              <div style={{ flex: 1, height: '1.5px', background: 'linear-gradient(90deg, rgba(249, 223, 4, 0.85), transparent)' }} />
+            </div>
+
+            {/* Bottom: English Quote with Complementary Radiant Neon Glow */}
+            <p
+              className="hero-neon-english-quote"
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(0.94rem, 1.2vw, 1.08rem)',
+                lineHeight: 1.8,
+                margin: 0,
+                fontWeight: 400,
+                fontStyle: 'italic',
+                letterSpacing: '0.015em',
+                maxWidth: '880px',
+              }}
+            >
+              “A building is more than bricks and concrete… It's a lifelong dream shaped by years of hard work, sacrifice, and struggle. You've struggled enough to reach that dream. Building it shouldn't be another struggle. Bringing it to life with confidence and peace of mind is our responsibility.”
+            </p>
+          </motion.div>
         </motion.div>
       </div>
 
 
-      {/* 5. Bottom Center Scroll Cue */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-        style={{
-          position: 'absolute',
-          bottom: '28px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 15,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          color: 'rgba(255, 255, 255, 0.6)',
-          fontSize: '0.68rem',
-          fontWeight: 700,
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          pointerEvents: 'none',
-        }}
-      >
-        <span style={{ fontFamily: 'var(--font-heading)' }}>SCROLL TO DISCOVER</span>
-        <div style={{ animation: 'bounce 1.5s infinite' }}>
-          <ArrowDown size={14} color="#F9DF04" />
-        </div>
-      </motion.div>
+
     </section>
   );
 }

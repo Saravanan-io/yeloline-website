@@ -83,7 +83,7 @@ export default function ProjectDetailView({ project, onBackToProjects, onNavigat
         minHeight: '100vh',
         position: 'relative',
         overflow: 'hidden',
-        padding: '30px 0 80px 0',
+        padding: '88px 0 80px 0',
       }}
     >
       {/* ================= CORNER GOLDEN DYNAMIC WAVES MATCHING REFERENCE ================= */}
@@ -143,7 +143,7 @@ export default function ProjectDetailView({ project, onBackToProjects, onNavigat
       </svg>
 
       <div className="app-container" style={{ position: 'relative', zIndex: 2 }}>
-        {/* ================= 1. BREADCRUMB BAR ================= */}
+        {/* ================= 1. BREADCRUMB & BACK ACTION BAR ================= */}
         <div
           style={{
             display: 'flex',
@@ -151,9 +151,22 @@ export default function ProjectDetailView({ project, onBackToProjects, onNavigat
             justifyContent: 'space-between',
             marginBottom: '28px',
             flexWrap: 'wrap',
-            gap: '12px',
+            gap: '14px',
           }}
         >
+          {/* Top Left Corner: Premium Back to All Sites Button */}
+          <button
+            onClick={onBackToProjects}
+            className="btn-back-sites"
+            aria-label="Back to All Sites Portfolio"
+          >
+            <span className="back-icon-circle">
+              <ArrowLeft size={16} strokeWidth={2.6} />
+            </span>
+            <span>Back to All Sites</span>
+          </button>
+
+          {/* Breadcrumb Trail */}
           <div
             style={{
               display: 'flex',
@@ -197,45 +210,13 @@ export default function ProjectDetailView({ project, onBackToProjects, onNavigat
                 fontSize: '0.88rem',
               }}
             >
-              Projects
+              Sites
             </button>
 
             <ChevronRight size={14} color="#94A3B8" />
 
             <span style={{ color: '#EAB308', fontWeight: 800 }}>{project.title}</span>
           </div>
-
-          <button
-            onClick={onBackToProjects}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              backgroundColor: '#F8FAFC',
-              border: '1.5px solid #E2E8F0',
-              padding: '7px 16px',
-              borderRadius: '9999px',
-              fontSize: '0.82rem',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              color: '#0F172A',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#0F172A';
-              e.currentTarget.style.color = '#FEC603';
-              e.currentTarget.style.borderColor = '#0F172A';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#F8FAFC';
-              e.currentTarget.style.color = '#0F172A';
-              e.currentTarget.style.borderColor = '#E2E8F0';
-            }}
-          >
-            <ArrowLeft size={14} />
-            <span>Back to All 22 Sites</span>
-          </button>
         </div>
 
         {/* ================= 2. MAIN SPLIT SECTION ================= */}
@@ -921,7 +902,7 @@ export default function ProjectDetailView({ project, onBackToProjects, onNavigat
                 cursor: 'pointer',
               }}
             >
-              ← Back to All Projects
+              ← Back to All Sites
             </button>
 
             <button

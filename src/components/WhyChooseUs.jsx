@@ -320,6 +320,161 @@ function ThreeSceneBackground({ mousePos }) {
   );
 }
 
+// ============================================================================
+// DYNAMIC WEB AUDIO API CARD POP-UP & GOLD CHIME ENGINE
+// ============================================================================
+class CardPopAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.lastPopTime = 0;
+    this.lastCardIndex = -1;
+    // Harmonic Pentatonic Frequencies for the 6 Cards:
+    // Card 0: 523.25 Hz (C5)  - 15 Yrs Comprehensive Warranty (Gold)
+    // Card 1: 587.33 Hz (D5)  - 250+ Turnkey Builds (Obsidian Black)
+    // Card 2: 659.25 Hz (E5)  - 500,000+ Sq. Ft. Built Footprint (Hero Gold)
+    // Card 3: 783.99 Hz (G5)  - 10+ Yrs Engineering Track Record (Black)
+    // Card 4: 880.00 Hz (A5)  - 100% Structural Safety Index (Gold)
+    // Card 5: 1046.50 Hz (C6) - 0% Budget Overrun Rate (Black)
+    this.pitches = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+  }
+
+  init() {
+    if (this.ctx) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+      }
+    } catch {
+      // Audio unsupported or blocked
+    }
+  }
+
+  resume() {
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+  }
+
+  /**
+   * Synthesize a tactile, crisp 3D "Card Pop" with an acoustic body & golden shimmer
+   * @param {number} cardIndex - 0..5
+   * @param {boolean} isGold - Whether card has metallic gold styling
+   * @param {number} velocity - Current scroll speed in px/s
+   */
+  playCardPop(cardIndex, isGold = false, velocity = 0) {
+    this.init();
+    this.resume();
+    if (!this.ctx || this.ctx.state !== 'running') return;
+
+    const now = this.ctx.currentTime;
+    // Debounce to at least 85ms between triggers to keep fast scrolls crisp and clean
+    if (now - this.lastPopTime < 0.085) return;
+    this.lastPopTime = now;
+    this.lastCardIndex = cardIndex;
+
+    const basePitch = this.pitches[cardIndex] || 659.25;
+    const absV = Math.abs(velocity);
+    // Subtle volume dynamics based on scroll speed (scaled between 0.20 and 0.38)
+    const popVol = Math.min(0.38, Math.max(0.20, 0.20 + Math.min(absV / 2500, 0.18)));
+
+    const masterGain = this.ctx.createGain();
+    masterGain.gain.setValueAtTime(popVol, now);
+    masterGain.connect(this.ctx.destination);
+
+    // 1. LAYER 1: Tactile "Haptic Pop" Frequency Sweep
+    // A rapid pitch drop creates the recognizable physical card snap / pop sensation
+    const popOsc = this.ctx.createOscillator();
+    const popGain = this.ctx.createGain();
+    popOsc.type = 'sine';
+    popOsc.frequency.setValueAtTime(basePitch * 1.4, now);
+    popOsc.frequency.exponentialRampToValueAtTime(140, now + 0.055);
+
+    popGain.gain.setValueAtTime(0.001, now);
+    popGain.gain.linearRampToValueAtTime(0.8, now + 0.003);
+    popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.058);
+
+    popOsc.connect(popGain);
+    popGain.connect(masterGain);
+    popOsc.start(now);
+    popOsc.stop(now + 0.065);
+
+    // 2. LAYER 2: Pure Musical Resonant Chime (Pentatonic pitch)
+    // Resonates with the card's individual note as it pops up
+    const chimeOsc = this.ctx.createOscillator();
+    const chimeGain = this.ctx.createGain();
+    chimeOsc.type = isGold ? 'triangle' : 'sine';
+    chimeOsc.frequency.setValueAtTime(basePitch, now);
+
+    chimeGain.gain.setValueAtTime(0.001, now);
+    chimeGain.gain.linearRampToValueAtTime(isGold ? 0.48 : 0.36, now + 0.005);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + (isGold ? 0.36 : 0.26));
+
+    chimeOsc.connect(chimeGain);
+    chimeGain.connect(masterGain);
+    chimeOsc.start(now);
+    chimeOsc.stop(now + (isGold ? 0.38 : 0.28));
+
+    // 3. LAYER 3: 24K Gold Harmonic Sparkle (For Gold & Hero Cards)
+    // An octave overtone that adds crystalline, luxurious shimmer to gold cards
+    if (isGold) {
+      const goldOsc = this.ctx.createOscillator();
+      const goldGain = this.ctx.createGain();
+      goldOsc.type = 'sine';
+      goldOsc.frequency.setValueAtTime(basePitch * 2.0, now);
+
+      goldGain.gain.setValueAtTime(0.001, now);
+      goldGain.gain.linearRampToValueAtTime(0.18, now + 0.006);
+      goldGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.30);
+
+      goldOsc.connect(goldGain);
+      goldGain.connect(masterGain);
+      goldOsc.start(now);
+      goldOsc.stop(now + 0.32);
+    }
+
+    // 4. LAYER 4: Acoustic Air Swish (Subtle 3D movement whoosh)
+    // Quick noise puff representing 3D spatial displacement
+    try {
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.045);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.2;
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1400, now);
+      filter.Q.setValueAtTime(2.8, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.001, now);
+      noiseGain.gain.linearRampToValueAtTime(0.12, now + 0.004);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.042);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(masterGain);
+      noise.start(now);
+      noise.stop(now + 0.046);
+    } catch {
+      // Noise buffer fallback
+    }
+  }
+
+  destroy() {
+    if (this.ctx) {
+      try {
+        this.ctx.close();
+      } catch {}
+      this.ctx = null;
+    }
+  }
+}
+
 /**
  * Main WhyChooseUs Component
  * 
@@ -334,9 +489,13 @@ function ThreeSceneBackground({ mousePos }) {
  * - Center card (500,000+ SQ. FT.) elevated as the prominent Hero card
  * - Unified 3D mouse parallax tilt, hover lift, and GSAP scroll scrub
  */
-export default function WhyChooseUs({ onStartProject }) {
+export default function WhyChooseUs({ onStartProject: _onStartProject }) {
   const containerRef = useRef(null);
   const triggerRef = useRef(null);
+
+  // Audio Engine Instance Ref & Track active pop card
+  const audioEngineRef = useRef(null);
+  const lastActiveCardRef = useRef(2);
 
   // Mouse tilt position for dynamic 3D parallax
   const mousePosRef = useRef({ x: 0, y: 0 });
@@ -346,6 +505,34 @@ export default function WhyChooseUs({ onStartProject }) {
   // Virtual scroll position (default center index = 2, the Hero card)
   const [virtualPos, setVirtualPos] = useState(2);
   const [scrollPercent, setScrollPercent] = useState(0.32);
+
+  // Unlock AudioContext on first user gesture
+  useEffect(() => {
+    audioEngineRef.current = new CardPopAudioEngine();
+
+    const unlockAudio = () => {
+      if (audioEngineRef.current) {
+        audioEngineRef.current.init();
+        audioEngineRef.current.resume();
+      }
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('scroll', unlockAudio);
+    };
+
+    window.addEventListener('pointerdown', unlockAudio, { passive: true });
+    window.addEventListener('keydown', unlockAudio, { passive: true });
+    window.addEventListener('scroll', unlockAudio, { passive: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('scroll', unlockAudio);
+      if (audioEngineRef.current) {
+        audioEngineRef.current.destroy();
+      }
+    };
+  }, []);
 
   // The 6 Metric Cards featured in the reference design
   const carouselItems = [
@@ -425,6 +612,18 @@ export default function WhyChooseUs({ onStartProject }) {
         setScrollPercent(progress);
         const pos = progress * (total - 1);
         setVirtualPos(pos);
+
+        // Trigger sound effect when a card pops up to center focus
+        const nearestIndex = Math.max(0, Math.min(total - 1, Math.round(pos)));
+        if (nearestIndex !== lastActiveCardRef.current) {
+          lastActiveCardRef.current = nearestIndex;
+          const targetItem = carouselItems[nearestIndex];
+          const isGold = targetItem.theme === 'gold' || targetItem.theme === 'hero-gold';
+          const velocity = self.getVelocity ? self.getVelocity() : 0;
+          if (audioEngineRef.current) {
+            audioEngineRef.current.playCardPop(nearestIndex, isGold, velocity);
+          }
+        }
       },
     });
 
@@ -480,6 +679,12 @@ export default function WhyChooseUs({ onStartProject }) {
 
   // Programmatic smooth scroll to a specific card
   const scrollToCard = useCallback((targetIndex) => {
+    if (audioEngineRef.current && targetIndex >= 0 && targetIndex < total) {
+      lastActiveCardRef.current = targetIndex;
+      const targetItem = carouselItems[targetIndex];
+      const isGold = targetItem.theme === 'gold' || targetItem.theme === 'hero-gold';
+      audioEngineRef.current.playCardPop(targetIndex, isGold, 500);
+    }
     const trigger = triggerRef.current;
     if (trigger && typeof window !== 'undefined') {
       const targetProgress = targetIndex / (total - 1);
@@ -488,7 +693,17 @@ export default function WhyChooseUs({ onStartProject }) {
     } else {
       setVirtualPos(targetIndex);
     }
-  }, [total]);
+  }, [carouselItems, total]);
+
+  // Subtle tactile preview pop when hovering background cards
+  const handleCardHover = useCallback((idx) => {
+    setHoveredCard(idx);
+    if (idx !== null && idx !== lastActiveCardRef.current && audioEngineRef.current) {
+      const targetItem = carouselItems[idx];
+      const isGold = targetItem?.theme === 'gold' || targetItem?.theme === 'hero-gold';
+      audioEngineRef.current.playCardPop(idx, isGold, 70);
+    }
+  }, [carouselItems]);
 
   // Calculate 3D transformation for each card in the cylindrical arc
   const getCardStyle = (index, currentPos) => {
@@ -670,14 +885,14 @@ export default function WhyChooseUs({ onStartProject }) {
             {carouselItems.map((item, idx) => {
               const IconComponent = item.icon;
               const dynamicStyle = getCardStyle(idx, virtualPos);
-              const isHero = item.theme === 'hero-gold' || Math.abs(idx - virtualPos) < 0.45;
+              const isHero = Math.abs(idx - virtualPos) < 0.45;
               const isGold = item.theme === 'gold' || item.theme === 'hero-gold';
 
               return (
                 <div
                   key={item.id}
                   onClick={() => scrollToCard(idx)}
-                  onMouseEnter={() => setHoveredCard(idx)}
+                  onMouseEnter={() => handleCardHover(idx)}
                   onMouseLeave={() => setHoveredCard(null)}
                   style={{
                     position: 'absolute',

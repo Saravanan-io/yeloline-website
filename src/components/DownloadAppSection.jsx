@@ -306,28 +306,7 @@ export default function DownloadAppSection({
               </motion.button>
             </div>
 
-            {/* 2. Top Pill / Kicker */}
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: 'rgba(254, 198, 3, 0.16)',
-                border: '1.5px solid rgba(254, 198, 3, 0.55)',
-                color: '#000000',
-                padding: '5px 16px',
-                borderRadius: '9999px',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                fontFamily: 'var(--font-heading)',
-                marginBottom: '12px',
-              }}
-            >
-              <Smartphone size={14} color="#000000" />
-              <span>YELOLINE MOBILE CLIENT</span>
-            </div>
+
 
             {/* 3. Top Heading */}
             <h2
@@ -501,83 +480,7 @@ export default function DownloadAppSection({
               </motion.button>
             </div>
 
-            {/* 7. Hashtag Pill: # GET THE YELOLINE APP with spark rays */}
-            <div style={{ position: 'relative', display: 'inline-block', marginBottom: '16px' }}>
-              <motion.div
-                onClick={handleDownloadClick}
-                whileHover={{ scale: 1.04, borderColor: '#000000' }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#FFFFFF',
-                  border: '2.5px solid #FEC603',
-                  borderRadius: '9999px',
-                  padding: '8px 24px',
-                  boxShadow: '0 4px 18px rgba(0, 0, 0, 0.05)',
-                  transition: 'border-color 0.2s ease',
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: 'clamp(0.95rem, 1.6vw, 1.25rem)',
-                    fontWeight: 900,
-                    letterSpacing: '0.02em',
-                    lineHeight: 1,
-                  }}
-                >
-                  <span style={{ color: '#000000' }}># GET THE</span>
-                  <span style={{ color: '#FFB800', marginLeft: '4px', marginRight: '4px' }}>
-                    YELOLINE
-                  </span>
-                  <span style={{ color: '#000000' }}>APP</span>
-                </span>
-              </motion.div>
 
-              {/* Bottom Right Radiating Sparks */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '-14px',
-                  right: '-20px',
-                  width: '30px',
-                  height: '30px',
-                  pointerEvents: 'none',
-                }}
-              >
-                {/* Spark Ray 1 */}
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    left: '6px',
-                    width: '4px',
-                    height: '14px',
-                    backgroundColor: '#FFC700',
-                    borderRadius: '9999px',
-                    transform: 'rotate(-45deg)',
-                    display: 'block',
-                  }}
-                />
-                {/* Spark Ray 2 */}
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '16px',
-                    left: '16px',
-                    width: '4px',
-                    height: '11px',
-                    backgroundColor: '#FFC700',
-                    borderRadius: '9999px',
-                    transform: 'rotate(-20deg)',
-                    display: 'block',
-                  }}
-                />
-              </div>
-            </div>
           </div>
         </div>
       </section>

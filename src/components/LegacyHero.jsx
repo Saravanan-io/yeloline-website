@@ -1,12 +1,100 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowDown, ArrowUpRight, Sparkles } from 'lucide-react';
 import FloatingIsland3D from './FloatingIsland3D';
 import FlyingBirds3D from './FlyingBirds3D';
 
-export default function LegacyHero({ onExploreProjects, onGetQuote }) {
+export default function LegacyHero({ onExploreProjects: _onExploreProjects, onGetQuote: _onGetQuote } = {}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const isSectionActive = useInView(ref, { margin: '-15% 0px -15% 0px' });
+
+  // Section Audio Ambience (Only plays when user is on this section)
+  const audioRef = useRef(null);
+  const fadeIntervalRef = useRef(null);
+
+  // Initialize Audio
+  useEffect(() => {
+    const audio = new Audio('/audio/architectural_ambience.mp3');
+    audio.loop = true;
+    audio.volume = 0;
+    audioRef.current = audio;
+
+    return () => {
+      if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
+      audio.pause();
+      audio.currentTime = 0;
+      audioRef.current = null;
+    };
+  }, []);
+
+  // Play audio only when user is on this section, with smooth volume fade-in and fade-out
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (fadeIntervalRef.current) {
+      clearInterval(fadeIntervalRef.current);
+      fadeIntervalRef.current = null;
+    }
+
+    if (isSectionActive) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            const targetVolume = 0.65;
+            fadeIntervalRef.current = setInterval(() => {
+              if (!audioRef.current) return;
+              if (audio.volume < targetVolume - 0.05) {
+                audio.volume = Math.min(targetVolume, audio.volume + 0.05);
+              } else {
+                audio.volume = targetVolume;
+                clearInterval(fadeIntervalRef.current);
+                fadeIntervalRef.current = null;
+              }
+            }, 60);
+          })
+          .catch(() => {});
+      }
+    } else {
+      // Smooth fade-out before pausing
+      const fadeInterval = setInterval(() => {
+        if (!audioRef.current) {
+          clearInterval(fadeInterval);
+          return;
+        }
+        if (audio.volume > 0.06) {
+          audio.volume = Math.max(0, audio.volume - 0.06);
+        } else {
+          audio.volume = 0;
+          audio.pause();
+          clearInterval(fadeInterval);
+          fadeIntervalRef.current = null;
+        }
+      }, 50);
+      fadeIntervalRef.current = fadeInterval;
+    }
+  }, [isSectionActive]);
+
+  // Handle user interaction to unlock audio playback if autoplay was initially restricted
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      const audio = audioRef.current;
+      if (audio && isSectionActive && audio.paused) {
+        audio.play().catch(() => {});
+      }
+    };
+
+    window.addEventListener('scroll', handleUserInteraction, { passive: true });
+    window.addEventListener('click', handleUserInteraction, { passive: true });
+    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleUserInteraction);
+      window.removeEventListener('click', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+    };
+  }, [isSectionActive]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -95,35 +183,6 @@ export default function LegacyHero({ onExploreProjects, onGetQuote }) {
               gap: '20px',
             }}
           >
-            {/* Top Pill / Badge */}
-            <motion.div variants={itemVariants}>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '6px 16px',
-                  borderRadius: 'var(--radius-full)',
-                  backgroundColor: 'rgba(249, 223, 4, 0.15)',
-                  border: '1px solid rgba(249, 223, 4, 0.35)',
-                }}
-              >
-                <Sparkles size={13} color="#92750a" />
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: '0.76rem',
-                    fontWeight: 800,
-                    letterSpacing: '0.12em',
-                    color: '#0F172A',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  ARCHITECTURAL EXCELLENCE • EST. 2014
-                </span>
-              </div>
-            </motion.div>
-
             {/* Bold Headline */}
             <motion.div variants={itemVariants}>
               <h2
@@ -143,127 +202,26 @@ export default function LegacyHero({ onExploreProjects, onGetQuote }) {
               </h2>
             </motion.div>
 
-            {/* Bullet Points with Gold Dots */}
-            <motion.div 
-              variants={itemVariants}
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '4px' }}
-            >
-              {[
-                'Turnkey engineering from geotechnical soil testing to bespoke interior handover',
-                'Monolithic Seismic Zone-IV high-yield reinforced concrete structural skeleton',
-                '100% Fixed-Price line-item BOQ with zero mid-construction escalation',
-                '15-Year legally enforceable structural non-settlement & waterproofing warranty',
-              ].map((bullet, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '12px',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 'clamp(0.88rem, 1vw, 0.96rem)',
-                    color: '#334155',
-                    lineHeight: 1.5,
-                    fontWeight: 450,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '7px',
-                      height: '7px',
-                      borderRadius: '50%',
-                      backgroundColor: '#F9DF04',
-                      boxShadow: '0 0 10px rgba(249, 223, 4, 0.6)',
-                      marginTop: '7px',
-                      flexShrink: 0,
-                    }}
-                  />
-                  <span>{bullet}</span>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Reference Modern Pill Buttons */}
-            <motion.div
-              variants={itemVariants}
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                gap: '14px',
-                marginTop: '10px',
-              }}
-            >
-              <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onExploreProjects}
-                className="btn-yellow-ref"
-                id="hero-primary-cta"
+            {/* Mission Statement Copy */}
+            <motion.div variants={itemVariants}>
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'clamp(1.04rem, 1.45vw, 1.25rem)',
+                  lineHeight: 1.8,
+                  color: '#334155',
+                  fontWeight: 450,
+                  maxWidth: '560px',
+                  margin: '8px 0 0 0',
+                  letterSpacing: '-0.01em',
+                }}
               >
-                <span>Explore Portfolio</span>
-                <ArrowDown size={14} />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onGetQuote}
-                className="btn-black-ref"
-                id="hero-secondary-cta"
-              >
-                <span>Book Consultation</span>
-                <ArrowUpRight size={14} />
-              </motion.button>
-            </motion.div>
-
-            {/* Trust Metrics Bar */}
-            <motion.div
-              variants={itemVariants}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-                gap: '18px',
-                paddingTop: '24px',
-                marginTop: '8px',
-                borderTop: '2px solid rgba(15, 23, 42, 0.08)',
-                maxWidth: '560px',
-              }}
-            >
-              {[
-                { number: '250+', label: 'Turnkey Builds' },
-                { number: '100%', label: 'Seismic Safety' },
-                { number: '15 Yrs', label: 'Written Warranty' },
-                { number: '0%', label: 'Price Escalation' },
-              ].map((stat, i) => (
-                <div key={i}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: 'clamp(1.4rem, 1.8vw, 1.65rem)',
-                      fontWeight: 900,
-                      color: '#0F172A',
-                      lineHeight: 1,
-                      letterSpacing: '-0.02em',
-                    }}
-                  >
-                    {stat.number}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '0.74rem',
-                      color: '#64748B',
-                      marginTop: '5px',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+                A home is never just a structure on a site. It is the place where
+                a family expects safety, comfort and peace. Our responsibility
+                is to convert that expectation into clear planning, disciplined
+                execution and a construction journey the client can trust at
+                every stage.
+              </p>
             </motion.div>
           </motion.div>
 

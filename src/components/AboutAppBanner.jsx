@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smartphone, X, ExternalLink, CheckCircle2, QrCode } from 'lucide-react';
+import { X, ExternalLink, CheckCircle2, QrCode } from 'lucide-react';
 
 export default function AboutAppBanner() {
   const [downloadModal, setDownloadModal] = useState(false);
@@ -445,28 +445,7 @@ export default function AboutAppBanner() {
               padding: '10px 0',
             }}
           >
-            {/* Top Tag: Smartphone + YELOLINE MOBILE CLIENT */}
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '7px 20px',
-                borderRadius: '9999px',
-                backgroundColor: '#FFFFFF',
-                border: '1.5px solid #0F172A',
-                color: '#0F172A',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                marginBottom: '18px',
-                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
-              }}
-            >
-              <Smartphone size={15} strokeWidth={2.5} color="#0F172A" />
-              <span>YELOLINE MOBILE CLIENT</span>
-            </div>
+
 
             {/* Main Headline: Download Our */}
             <h2
@@ -661,27 +640,7 @@ export default function AboutAppBanner() {
               </div>
             </motion.button>
 
-            {/* Bottom Hashtag Pill: # GET THE YELOLINE APP */}
-            <div
-              style={{
-                border: '2px solid #FEC603',
-                borderRadius: '9999px',
-                backgroundColor: '#FFFFFF',
-                padding: '8px 28px',
-                fontSize: '0.88rem',
-                fontWeight: 900,
-                color: '#0F172A',
-                letterSpacing: '0.06em',
-                boxShadow: '0 4px 14px rgba(254, 198, 3, 0.22)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-              }}
-            >
-              <span># GET THE</span>
-              <span style={{ color: '#FEC603' }}>YELOLINE</span>
-              <span>APP</span>
-            </div>
+
           </div>
         </div>
       </div>

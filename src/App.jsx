@@ -17,6 +17,7 @@ import AboutYeloline from './components/AboutYeloline';
 import ProjectDetailView from './components/ProjectDetailView';
 import DownloadAppSection from './components/DownloadAppSection';
 import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
   const [activePage, setActivePage] = useState(() => {
@@ -250,6 +251,9 @@ export default function App() {
 
       {/* Footer */}
       <Footer onNavigate={navigateTo} />
+
+      {/* Floating WhatsApp Quick Contact Button */}
+      <WhatsAppButton />
     </div>
   );
 }
