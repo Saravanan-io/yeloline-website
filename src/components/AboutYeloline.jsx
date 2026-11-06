@@ -12,7 +12,29 @@ import {
   ArrowUpRight,
   Bell,
   BellOff,
+  Quote,
+  ShieldCheck,
+  HardHat,
 } from 'lucide-react';
+
+// Yellow Double Quotation Mark SVG (Matching Reference Graphic)
+function YellowQuoteMark({ rotate = false }) {
+  return (
+    <svg
+      width="22"
+      height="18"
+      viewBox="0 0 24 18"
+      fill="#F9DF04"
+      style={{
+        display: 'inline-block',
+        flexShrink: 0,
+        transform: rotate ? 'rotate(180deg)' : 'none',
+      }}
+    >
+      <path d="M0 10.5C0 4.7 3.5 1 8.5 0l1.2 2.8C6.6 3.4 5 5.5 4.8 7.8H9V18H0V10.5zm13.5 0C13.5 4.7 17 1 22 0l1.2 2.8c-3.1.6-4.7 2.7-4.9 5H22V18h-8.5V10.5z" />
+    </svg>
+  );
+}
 
 // Realistic Black Metal Binder Clip (Bulldog Clip) clamping onto the hanging circles
 function BinderClip() {
@@ -461,6 +483,29 @@ function Cinematic3DGoldLogo() {
   );
 }
 
+const teamMembers = [
+  {
+    name: 'P. Surya Prakash',
+    degree: 'B.E. Civil',
+    role: 'Managing Partner',
+    image: '/images/team/surya_prakash.png',
+    quote:
+      'A home is never just a structure on a site. It is the place where a family expects safety, comfort and peace. Our responsibility is to convert that expectation into clear planning, disciplined execution and a construction journey the client can trust at every stage.',
+    leadershipFocus:
+      'Trust, engineering quality, transparent coordination and long-term client peace of mind.',
+  },
+  {
+    name: 'S. Balachandran',
+    degree: 'B.E. Civil',
+    role: 'Managing Partner',
+    image: '/images/team/balachandran.png',
+    quote:
+      'Good construction is not measured only on the day of handover. It should continue to give confidence, value and comfort for years. At Yeloline, we focus on practical engineering, honest coordination and work quality that respects the client’s dream.',
+    leadershipFocus:
+      'Trust, engineering quality, transparent coordination and long-term client peace of mind.',
+  },
+];
+
 export default function AboutYeloline({ onContact }) {
   const heroRef = useRef(null);
   const approachRef = useRef(null);
@@ -469,7 +514,7 @@ export default function AboutYeloline({ onContact }) {
   const isHeroInView = useInView(heroRef, { once: true, margin: '-60px' });
   const isApproachInView = useInView(approachRef, { once: true, margin: '-60px' });
   const isApproachSoundActive = useInView(approachRef, { margin: '-60px' });
-  const isTeamInView = useInView(teamRef, { once: true, margin: '-60px' });
+  const isTeamInView = useInView(teamRef, { once: false, amount: 0.15 });
 
   // Audio Context & Bell Sound Ref for circle collisions
   const audioCtxRef = useRef(null);
@@ -1290,56 +1335,481 @@ export default function AboutYeloline({ onContact }) {
       </section>
 
       {/* ==================================================================== */}
-      {/* SECTION 4: OUR TEAM                                                  */}
+      {/* SECTION 4: OUR TEAM (Editorial Reference Design)                     */}
       {/* ==================================================================== */}
       <section
         id="our-team"
         ref={teamRef}
         style={{
-          padding: '90px 0 100px 0',
+          padding: '100px 0 110px 0',
           position: 'relative',
-          backgroundColor: '#F8FAFC',
+          backgroundColor: '#FFFFFF',
           borderTop: '1px solid #E2E8F0',
           overflow: 'hidden',
         }}
       >
+        {/* Subtle Architectural Villa Watermark on Top Right */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={isTeamInView ? { opacity: 0.18, x: 0 } : { opacity: 0, x: 50 }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: 'min(50vw, 560px)',
+            pointerEvents: 'none',
+            zIndex: 1,
+            overflow: 'hidden',
+          }}
+        >
+          <img
+            src="/images/why_choose_villa_transparent.png"
+            alt=""
+            aria-hidden="true"
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              filter: 'grayscale(100%) contrast(110%)',
+              maskImage: 'linear-gradient(to bottom left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 85%)',
+              WebkitMaskImage: 'linear-gradient(to bottom left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 85%)',
+            }}
+          />
+        </motion.div>
+
         <div className="app-container" style={{ position: 'relative', zIndex: 2 }}>
           {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={isTeamInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            transition={{ duration: 0.55 }}
-            style={{ maxWidth: '840px', marginBottom: '36px' }}
+            initial={{ opacity: 0, y: 28 }}
+            animate={isTeamInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{ maxWidth: '640px', marginBottom: '52px' }}
           >
-
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(2rem, 3.8vw, 3rem)',
+                fontSize: 'clamp(2.4rem, 4.4vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#0F172A',
-                letterSpacing: '-0.02em',
-                marginBottom: '12px',
-                lineHeight: 1.18,
+                letterSpacing: '-0.025em',
+                marginBottom: '14px',
+                lineHeight: 1.12,
               }}
             >
-              Our Team
+              Our{' '}
+              <span style={{ position: 'relative', display: 'inline-block', color: '#F9DF04' }}>
+                Team
+                {/* Curved Underline Brush Stroke */}
+                <svg
+                  width="100%"
+                  height="10"
+                  viewBox="0 0 120 10"
+                  fill="none"
+                  style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    left: 0,
+                    width: '100%',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <motion.path
+                    d="M3 7C40 2 85 2 117 7"
+                    stroke="#F9DF04"
+                    strokeWidth="3.6"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={isTeamInView ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+                    transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                </svg>
+              </span>
             </h2>
+
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(0.95rem, 1.4vw, 1.05rem)',
+                color: '#475569',
+                lineHeight: 1.6,
+                margin: 0,
+                fontWeight: 500,
+              }}
+            >
+              Civil engineers and managing partners directing every Yeloline project with technical precision, disciplined execution, and long-term client trust.
+            </p>
           </motion.div>
 
-          {/* Blank Canvas Area - strictly no dummy content per request */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={isTeamInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          {/* Two Profile Columns Grid */}
+          <div
             style={{
-              minHeight: '260px',
-              borderRadius: '20px',
-              border: '2px dashed #CBD5E1',
-              backgroundColor: '#FFFFFF',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.02)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 480px), 1fr))',
+              gap: '48px 40px',
+              alignItems: 'start',
             }}
-          />
+          >
+            {teamMembers.map((member, idx) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 35 }}
+                animate={isTeamInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
+                transition={{ duration: 0.8, delay: 0.15 + idx * 0.18, ease: [0.16, 1, 0.3, 1] }}
+                className="team-profile-row"
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '24px',
+                }}
+              >
+                {/* Avatar with Sharp Angular Yellow Polygon Behind */}
+                <div
+                  className="team-avatar-wrapper"
+                  style={{
+                    position: 'relative',
+                    width: '200px',
+                    height: '200px',
+                    flexShrink: 0,
+                  }}
+                >
+                  {/* Yellow Geometric Angular Shard / Wing */}
+                  <motion.svg
+                    className="team-avatar-polygon"
+                    viewBox="0 0 250 250"
+                    fill="none"
+                    initial={{ scale: 0.72, rotate: idx === 0 ? -14 : 14, opacity: 0 }}
+                    animate={
+                      isTeamInView
+                        ? { scale: 1, rotate: 0, opacity: 1 }
+                        : { scale: 0.72, rotate: idx === 0 ? -14 : 14, opacity: 0 }
+                    }
+                    transition={{
+                      duration: 0.9,
+                      delay: 0.22 + idx * 0.18,
+                      ease: [0.34, 1.25, 0.64, 1],
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: '-60px',
+                      left: '-60px',
+                      width: '320px',
+                      height: '320px',
+                      zIndex: 0,
+                      pointerEvents: 'none',
+                      filter: 'drop-shadow(0 12px 24px rgba(249, 223, 4, 0.45))',
+                    }}
+                  >
+                    <defs>
+                      <linearGradient id={`yellowWing-${idx}`} x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#F9DF04" />
+                        <stop offset="70%" stopColor="#FEC603" />
+                        <stop offset="100%" stopColor="#F59E0B" />
+                      </linearGradient>
+                    </defs>
+                    <polygon
+                      points="180,6 8,162 174,196 194,92"
+                      fill={`url(#yellowWing-${idx})`}
+                    />
+                  </motion.svg>
+
+                  {/* Circular Portrait Image */}
+                  <motion.div
+                    initial={{ scale: 0.85, opacity: 0 }}
+                    animate={isTeamInView ? { scale: 1, opacity: 1 } : { scale: 0.85, opacity: 0 }}
+                    transition={{
+                      duration: 0.75,
+                      delay: 0.18 + idx * 0.18,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    whileHover={{ scale: 1.03 }}
+                    style={{
+                      position: 'relative',
+                      zIndex: 1,
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      backgroundColor: '#F1F5F9',
+                      border: '5px solid #FFFFFF',
+                      boxShadow: '0 10px 28px -4px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06)',
+                      transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  >
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                      }}
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Profile Details & Quote */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={isTeamInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+                  transition={{
+                    duration: 0.75,
+                    delay: 0.26 + idx * 0.18,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  style={{ flex: 1, minWidth: 0, paddingTop: '4px' }}
+                >
+                  {/* Name */}
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 'clamp(1.4rem, 2.2vw, 1.7rem)',
+                      fontWeight: 800,
+                      color: '#0F172A',
+                      letterSpacing: '-0.02em',
+                      lineHeight: 1.2,
+                      margin: 0,
+                    }}
+                  >
+                    {member.name}
+                  </h3>
+
+                  {/* Badges Row */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      flexWrap: 'wrap',
+                      marginTop: '10px',
+                      marginBottom: '18px',
+                    }}
+                  >
+                    {/* Professional Degree Tag */}
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '3px 10px',
+                        borderRadius: '6px',
+                        backgroundColor: '#0F172A',
+                        color: '#FFFFFF',
+                        fontSize: '0.78rem',
+                        fontWeight: 800,
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        boxShadow: '0 2px 6px rgba(15, 23, 42, 0.1)',
+                      }}
+                    >
+                      {member.degree}
+                    </span>
+
+                    {/* Managing Partner with Yellow Dot */}
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        color: '#334155',
+                        fontSize: '0.9rem',
+                        fontWeight: 700,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: '#F9DF04',
+                        }}
+                      />
+                      {member.role}
+                    </span>
+                  </div>
+
+                  {/* Quote with Yellow Double Quotes */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                    <span style={{ color: '#F9DF04', flexShrink: 0, marginTop: '2px' }}>
+                      <YellowQuoteMark />
+                    </span>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 'clamp(0.88rem, 1.2vw, 0.96rem)',
+                        lineHeight: 1.68,
+                        color: '#334155',
+                        fontStyle: 'italic',
+                        fontWeight: 450,
+                        margin: 0,
+                      }}
+                    >
+                      {member.quote}
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: '8px',
+                          verticalAlign: 'bottom',
+                          transform: 'translateY(2px)',
+                        }}
+                      >
+                        <YellowQuoteMark rotate={true} />
+                      </span>
+                    </p>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Unified Slanted Leadership Focus Ribbon */}
+          <motion.div
+            initial={{ opacity: 0, y: 32, scale: 0.98 }}
+            animate={isTeamInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.98 }}
+            transition={{ duration: 0.85, delay: 0.42, ease: [0.16, 1, 0.3, 1] }}
+            className="leadership-focus-ribbon"
+            style={{
+              display: 'flex',
+              alignItems: 'stretch',
+              marginTop: '56px',
+              position: 'relative',
+              zIndex: 2,
+              filter: 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.05))',
+            }}
+          >
+            {/* Left Yellow Slanted Tag */}
+            <motion.div
+              className="leadership-focus-badge"
+              initial={{ x: -25, opacity: 0 }}
+              animate={isTeamInView ? { x: 0, opacity: 1 } : { x: -25, opacity: 0 }}
+              transition={{ duration: 0.75, delay: 0.48, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                background: 'linear-gradient(135deg, #F9DF04 0%, #FEC603 100%)',
+                clipPath: 'polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%)',
+                padding: '14px 34px 14px 28px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '12px',
+                flexShrink: 0,
+                marginLeft: '-4px',
+              }}
+            >
+              <HardHat size={26} strokeWidth={2.4} color="#000000" />
+              <span
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '0.94rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.06em',
+                  color: '#000000',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Leadership Focus
+              </span>
+            </motion.div>
+
+            {/* Right Light Grey Slanted Band */}
+            <motion.div
+              className="leadership-focus-content"
+              initial={{ x: 25, opacity: 0 }}
+              animate={isTeamInView ? { x: 0, opacity: 1 } : { x: 25, opacity: 0 }}
+              transition={{ duration: 0.75, delay: 0.52, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                flex: 1,
+                background: 'linear-gradient(90deg, #F1F5F9 0%, #F8FAFC 85%, #FFFFFF 100%)',
+                clipPath: 'polygon(0% 0%, calc(100% - 20px) 0%, 100% 100%, 0% 100%)',
+                borderTop: '1px solid #E2E8F0',
+                borderBottom: '1px solid #E2E8F0',
+                borderRight: '1px solid #E2E8F0',
+                padding: '14px 28px 14px 24px',
+                display: 'flex',
+                alignItems: 'center',
+                marginLeft: '-14px',
+                minWidth: 0,
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'clamp(0.88rem, 1.3vw, 0.95rem)',
+                  fontWeight: 600,
+                  color: '#1E293B',
+                  margin: 0,
+                  lineHeight: 1.5,
+                }}
+              >
+                Trust, engineering quality, transparent coordination and long-term client peace of mind.
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* Embedded Mobile Responsive Style for Team Section */}
+          <style>{`
+            .team-avatar-wrapper {
+              width: 200px;
+              height: 200px;
+            }
+            .team-avatar-polygon {
+              top: -60px;
+              left: -60px;
+              width: 320px;
+              height: 320px;
+            }
+            @media (max-width: 1100px) {
+              .team-avatar-wrapper {
+                width: 175px !important;
+                height: 175px !important;
+              }
+              .team-avatar-polygon {
+                top: -52px !important;
+                left: -52px !important;
+                width: 280px !important;
+                height: 280px !important;
+              }
+            }
+            @media (max-width: 768px) {
+              .leadership-focus-ribbon {
+                flex-direction: column !important;
+              }
+              .leadership-focus-badge {
+                clip-path: none !important;
+                border-radius: 14px 14px 0 0 !important;
+                margin-left: 0 !important;
+                justifyContent: center !important;
+              }
+              .leadership-focus-content {
+                clip-path: none !important;
+                border-radius: 0 0 14px 14px !important;
+                margin-left: 0 !important;
+                border-left: 1px solid #E2E8F0 !important;
+                padding: 16px 20px !important;
+              }
+            }
+            @media (max-width: 580px) {
+              .team-avatar-wrapper {
+                width: 160px !important;
+                height: 160px !important;
+              }
+              .team-avatar-polygon {
+                top: -48px !important;
+                left: -48px !important;
+                width: 256px !important;
+                height: 256px !important;
+              }
+              .team-profile-row {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+              }
+              .team-profile-row > div:last-child {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+              }
+            }
+          `}</style>
 
           {/* Bottom Interactive Call to Action Banner */}
           <motion.div

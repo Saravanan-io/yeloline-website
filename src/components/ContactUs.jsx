@@ -1,23 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { 
-  HardHat, 
-  TrendingUp, 
-  FileCheck2, 
-  Users, 
-  CheckCircle2, 
-  Download, 
-  Sparkles,
-  Smartphone,
-  ExternalLink,
-  ArrowUpRight,
-  X
-} from 'lucide-react';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 
 export default function ContactUs() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
-  const [downloadModal, setDownloadModal] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -442,7 +429,7 @@ export default function ContactUs() {
           </motion.div>
         </div>
 
-        {/* Full-Width Maximum-Width Google Play Store Hero Banner */}
+        {/* Full-Width Sleek Google Play Store Hero Button */}
         <motion.div
           variants={itemVariants}
           style={{
@@ -451,34 +438,38 @@ export default function ContactUs() {
             marginTop: '32px',
           }}
         >
-          {/* Full Width Eye-Catching Google Play Button */}
-          <motion.button
-            type="button"
+          {/* Eye-Catching Interactive Google Play Button */}
+          <motion.a
+            href="https://play.google.com/store/apps/details?id=com.yeloline.construction"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="button"
             whileHover={{ scale: 1.015, y: -3 }}
             whileTap={{ scale: 0.985 }}
-            onClick={() => setDownloadModal(true)}
-            aria-label="Get it on Google Play"
+            aria-label="Get Yeloline Mobile App on Google Play"
             style={{
               width: '100%',
               background: 'linear-gradient(135deg, #090D16 0%, #111827 50%, #000000 100%)',
               color: '#FFFFFF',
-              borderRadius: '24px',
-              padding: '20px 32px',
+              borderRadius: '9999px',
+              padding: '18px 36px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '20px',
+              gap: '24px',
               border: '2px solid rgba(254, 198, 3, 0.85)',
               boxShadow: '0 18px 45px rgba(0, 0, 0, 0.28), 0 0 32px rgba(254, 198, 3, 0.28)',
               cursor: 'pointer',
+              textDecoration: 'none',
               transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
               position: 'relative',
               overflow: 'hidden',
               flexWrap: 'wrap',
+              boxSizing: 'border-box',
             }}
           >
             {/* Left side: Logo + Text */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
               {/* Official Google Play 4-Color Logo */}
               <svg width="40" height="44" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1.3 1.2C1.1 1.6 1 2.2 1 2.9V27.1C1 27.8 1.1 28.4 1.3 28.8L1.4 28.9L15.3 15V14.8L1.4 1.1L1.3 1.2Z" fill="url(#gpBlue)" />
@@ -597,7 +588,7 @@ export default function ContactUs() {
               <span>INSTALL NOW</span>
               <ArrowUpRight size={17} color="#000000" />
             </div>
-          </motion.button>
+          </motion.a>
 
           {/* Trust Badge Subtitle */}
           <div
@@ -622,124 +613,6 @@ export default function ContactUs() {
           </div>
         </motion.div>
       </motion.div>
-
-      {/* Interactive Download Feedback Modal */}
-      <AnimatePresence>
-        {downloadModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setDownloadModal(false)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              backgroundColor: 'rgba(15, 23, 42, 0.65)',
-              backdropFilter: 'blur(8px)',
-              zIndex: 999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '20px',
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '24px',
-                padding: '36px',
-                maxWidth: '440px',
-                width: '100%',
-                textAlign: 'center',
-                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.25)',
-                position: 'relative',
-              }}
-            >
-              <button
-                onClick={() => setDownloadModal(false)}
-                style={{
-                  position: 'absolute',
-                  top: '18px',
-                  right: '18px',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#64748B',
-                }}
-              >
-                <X size={20} />
-              </button>
-
-              <div
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(249, 223, 4, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 18px',
-                }}
-              >
-                <Smartphone size={32} color="#000000" />
-              </div>
-
-              <h3
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1.5rem',
-                  fontWeight: 900,
-                  color: '#0F172A',
-                  margin: '0 0 8px 0',
-                }}
-              >
-                Download Yeloline App
-              </h3>
-
-              <p
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.92rem',
-                  color: '#64748B',
-                  lineHeight: 1.55,
-                  marginBottom: '24px',
-                }}
-              >
-                The Yeloline Construction companion app is ready for download. Manage blueprints, track construction milestones, and access line-item BOQ estimates.
-              </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <a
-                  href="#download-playstore"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert('Redirecting to Google Play Store listing: Yeloline Construction (com.yeloline.construction)');
-                    setDownloadModal(false);
-                  }}
-                  className="btn-yellow-ref"
-                  style={{ justifyContent: 'center', padding: '12px' }}
-                >
-                  <Download size={16} />
-                  <span>Download APK / Play Store</span>
-                </a>
-
-                <button
-                  onClick={() => setDownloadModal(false)}
-                  className="btn-black-ref"
-                  style={{ justifyContent: 'center', padding: '12px' }}
-                >
-                  <span>Close</span>
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }

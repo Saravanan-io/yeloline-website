@@ -25,3 +25,10 @@ dist-ssr
 
 # Temporary scratch files
 scratch/
+
+# Archives & build packages
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+

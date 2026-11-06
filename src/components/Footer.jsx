@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import {
   ArrowUp,
@@ -9,11 +9,25 @@ import {
   Wrench,
   MessageSquareQuote,
 } from 'lucide-react';
+import Footer3DBackground from './Footer3DBackground';
 import './Footer.css';
 
 export default function Footer({ onNavigate }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-40px' });
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const isInView = useInView(ref, { once: false, margin: '80px' });
+
+  const handleMouseMove = useCallback((e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    mousePosRef.current = { x, y };
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    mousePosRef.current = { x: 0, y: 0 };
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -48,9 +62,13 @@ export default function Footer({ onNavigate }) {
   return (
     <footer ref={ref} className="yeloline-footer" aria-label="Website Footer">
       {/* -------------------------------------------------------------------- */}
-      {/* Top Section: Architectural Wave + 3 Columns Layout                   */}
+      {/* Top Section: Architectural Wave + 3D Background + 3 Columns Layout   */}
       {/* -------------------------------------------------------------------- */}
-      <div className="yeloline-footer-top">
+      <div
+        className="yeloline-footer-top"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         {/* Background Wave Graphic (Confined to left ~50% so right columns stay on pure white) */}
         <div className="yeloline-footer-wave-bg" aria-hidden="true">
           <svg
@@ -112,6 +130,9 @@ export default function Footer({ onNavigate }) {
             />
           </svg>
         </div>
+
+        {/* Real-time Three.js 3D Kinetic Architectural Background */}
+        <Footer3DBackground mousePos={mousePosRef} isVisible={isInView} />
 
         {/* Foreground Content Grid */}
         <motion.div

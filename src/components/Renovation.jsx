@@ -583,7 +583,6 @@ export default function Renovation({ onGetQuote: _onGetQuote }) {
                 outline: 'none',
               }}
             >
-              <source src="/videos/14acf651-4c41-4ade-9024-cef3f42288de.mp4" type="video/mp4" />
               <source src="/videos/renovan_showcase.mp4" type="video/mp4" />
             </video>
 

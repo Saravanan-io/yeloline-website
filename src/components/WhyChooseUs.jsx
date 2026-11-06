@@ -3,11 +3,10 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  ShieldCheck,
-  Layers,
-  Building2,
-  Award,
+  History,
   CheckCircle2,
+  Wrench,
+  Smile,
   Mouse
 } from 'lucide-react';
 
@@ -328,14 +327,12 @@ class CardPopAudioEngine {
     this.ctx = null;
     this.lastPopTime = 0;
     this.lastCardIndex = -1;
-    // Harmonic Pentatonic Frequencies for the 6 Cards:
-    // Card 0: 523.25 Hz (C5)  - 15 Yrs Comprehensive Warranty (Gold)
-    // Card 1: 587.33 Hz (D5)  - 250+ Turnkey Builds (Obsidian Black)
-    // Card 2: 659.25 Hz (E5)  - 500,000+ Sq. Ft. Built Footprint (Hero Gold)
-    // Card 3: 783.99 Hz (G5)  - 10+ Yrs Engineering Track Record (Black)
-    // Card 4: 880.00 Hz (A5)  - 100% Structural Safety Index (Gold)
-    // Card 5: 1046.50 Hz (C6) - 0% Budget Overrun Rate (Black)
-    this.pitches = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+    // Harmonic Pentatonic Frequencies for the 4 Cards:
+    // Card 0: 523.25 Hz (C5)  - 7+ Years Experience (Gold)
+    // Card 1: 659.25 Hz (E5)  - 30+ Projects Completed (Obsidian Black)
+    // Card 2: 783.99 Hz (G5)  - 8+ Ongoing Projects (Hero Gold)
+    // Card 3: 1046.50 Hz (C6) - 98% Client Satisfaction (Black)
+    this.pitches = [523.25, 659.25, 783.99, 1046.50];
   }
 
   init() {
@@ -534,59 +531,39 @@ export default function WhyChooseUs({ onStartProject: _onStartProject }) {
     };
   }, []);
 
-  // The 6 Metric Cards featured in the reference design
+  // The 4 Metric Cards featured in the reference design
   const carouselItems = [
     {
-      id: 'warranty',
+      id: 'experience',
       theme: 'gold',
-      icon: ShieldCheck,
-      stat: '15 Yrs',
-      title: 'COMPREHENSIVE WARRANTY',
-      desc: 'Written legal guarantee on slabs & waterproofing.',
+      icon: History,
+      stat: '7+',
+      title: 'YEARS EXPERIENCE',
+      desc: 'Dedicated architectural engineering & turnkey construction excellence.',
     },
     {
-      id: 'builds',
+      id: 'projects_completed',
       theme: 'black',
-      icon: Layers,
-      stat: '250+',
-      title: 'TURNKEY BUILDS DELIVERED',
-      desc: 'Bespoke residential estates & commercial landmarks.',
-    },
-    {
-      id: 'footprint',
-      theme: 'hero-gold',
-      icon: Building2,
-      stat: '500,000+',
-      title: 'SQ. FT. BUILT FOOTPRINT',
-      desc: 'Engineered with Seismic Zone-IV monolithic RCC.',
-    },
-    {
-      id: 'track_record',
-      theme: 'black',
-      icon: Award,
-      stat: '10+ Yrs',
-      title: 'ENGINEERING TRACK RECORD',
-      desc: 'Pioneering structural excellence since 2014.',
-    },
-    {
-      id: 'safety',
-      theme: 'gold',
       icon: CheckCircle2,
-      stat: '100%',
-      title: 'STRUCTURAL SAFETY INDEX',
-      desc: 'Zero structural failures across a decade of builds.',
+      stat: '30+',
+      title: 'PROJECTS COMPLETED',
+      desc: 'Bespoke luxury residences, villas & commercial landmarks delivered.',
     },
     {
-      id: 'overrun',
+      id: 'ongoing_projects',
+      theme: 'hero-gold',
+      icon: Wrench,
+      stat: '8+',
+      title: 'ONGOING PROJECTS',
+      desc: 'Active construction sites engineered with disciplined precision & safety.',
+    },
+    {
+      id: 'client_satisfaction',
       theme: 'black',
-      icon: () => (
-        <span style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: 'var(--font-heading)', lineHeight: 1 }}>
-          ₹
-        </span>
-      ),
-      stat: '0%',
-      title: 'BUDGET OVERRUN RATE',
-      desc: 'Strict contractual line-item price protection.',
+      icon: Smile,
+      stat: '98%',
+      title: 'CLIENT SATISFACTION',
+      desc: 'Direct homeowner trust with transparent fixed-price BOQ & zero hidden costs.',
     },
   ];
 
@@ -603,7 +580,7 @@ export default function WhyChooseUs({ onStartProject: _onStartProject }) {
     triggerRef.current = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
-      end: '+=2200',
+      end: '+=1800',
       pin: true,
       scrub: 0.35,
       anticipatePin: 1,

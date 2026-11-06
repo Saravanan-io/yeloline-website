@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Smartphone, X, Check } from 'lucide-react';
 
@@ -10,6 +10,86 @@ export default function DownloadAppSection({
 }) {
   const [showModal, setShowModal] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  // Refs for 3D Orbital Animation along the glowing neon ring (Image 2 effect)
+  const phoneContainerRef = useRef(null);
+  const cardRefs = useRef([]);
+  const isHoveredOrbitRef = useRef(false);
+
+  // 3D Orbital Revolution Loop: Cards travel along the tilted golden glowing ring
+  useEffect(() => {
+    let animId;
+    let angle = 0;
+    let lastTime = performance.now();
+
+    const loop = (now) => {
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      // Orbit speed: 0.48 rad/sec (~13 seconds per full 360° orbit)
+      // When hovered, slows down smoothly so the user can easily read/inspect each badge
+      const targetSpeed = isHoveredOrbitRef.current ? 0.08 : 0.48;
+      angle += targetSpeed * dt;
+
+      const container = phoneContainerRef.current;
+      const w = container ? container.offsetWidth : 420;
+      const h = container ? container.offsetHeight : 520;
+
+      // Ellipse parameters measured precisely from the glowing ring on the 3D phone mockup
+      const rx = w * 0.475;
+      const ry = h * 0.155;
+      const cx = w * 0.50;
+      const cy = h * 0.47;
+      const tiltRad = -12.5 * (Math.PI / 180);
+      const cosTilt = Math.cos(tiltRad);
+      const sinTilt = Math.sin(tiltRad);
+
+      for (let i = 0; i < 4; i++) {
+        const el = cardRefs.current[i];
+        if (!el) continue;
+
+        // 4 cards spaced evenly by 90 degrees (π/2)
+        const phi = angle + i * (Math.PI / 2);
+        const u = rx * Math.cos(phi);
+        const v = ry * Math.sin(phi);
+
+        // Apply -12.5° elliptical tilt rotation
+        const x = cx + (u * cosTilt - v * sinTilt);
+        const y = cy + (u * sinTilt + v * cosTilt);
+
+        // 3D Depth Perception:
+        // When v >= 0, the card is in FRONT of the phone (bottom-half of tilted ellipse)
+        // When v < 0, the card is BEHIND the phone (top-half of tilted ellipse)
+        const isFront = v >= 0;
+        const depthNorm = (v / ry + 1) / 2; // 0.0 (furthest back) to 1.0 (nearest front)
+
+        const baseScale = w < 380 ? 0.72 : 0.82;
+        const scale = baseScale + 0.32 * depthNorm; // ~0.82 behind -> 1.14 in front
+        const opacity = 0.65 + 0.35 * depthNorm; // 0.65 behind -> 1.00 in front
+        const zIndex = isFront ? 10 : 2; // Phone is at zIndex: 4
+
+        el.style.left = `${x.toFixed(1)}px`;
+        el.style.top = `${y.toFixed(1)}px`;
+        el.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(3)})`;
+        el.style.opacity = opacity.toFixed(3);
+        el.style.zIndex = zIndex;
+
+        if (!isFront) {
+          el.style.filter = 'blur(0.6px) brightness(0.92)';
+          el.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.08)';
+        } else {
+          el.style.filter = 'none';
+          el.style.boxShadow =
+            '0 18px 38px rgba(0, 0, 0, 0.18), 0 4px 10px rgba(0, 0, 0, 0.06)';
+        }
+      }
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, []);
 
   const handleDownloadClick = () => {
     setShowModal(true);
@@ -145,50 +225,188 @@ export default function DownloadAppSection({
             paddingBottom: '20px',
           }}
         >
-          {/* LEFT COLUMN: Hand Holding Phone Cutout Image */}
+          {/* LEFT COLUMN: 3D Phone Mockup with 4 Orbiting Squircle Badges */}
           <div
             style={{
               position: 'relative',
               height: '100%',
-              minHeight: '440px',
+              minHeight: '480px',
               display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'flex-start',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10px',
             }}
           >
-            <motion.div
-              initial={{ opacity: 0, y: 40, rotate: -2 }}
-              animate={{ opacity: 1, y: 0, rotate: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            {/* Dedicated Orbit Stage Container */}
+            <div
+              ref={phoneContainerRef}
+              onMouseEnter={() => {
+                isHoveredOrbitRef.current = true;
+              }}
+              onMouseLeave={() => {
+                isHoveredOrbitRef.current = false;
+              }}
               style={{
                 position: 'relative',
-                display: 'inline-block',
                 width: '100%',
-                maxWidth: '460px',
+                maxWidth: '430px',
+                height: '520px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
+              {/* Central 3D Gold Phone Mockup on Marble Pedestal (Pinned at zIndex: 4) */}
               <motion.img
-                src="/images/yeloline_app_hand_phone.png"
-                alt="Yeloline Mobile App on Smartphone"
+                src="/images/yeloline-app-mockup.png"
+                alt="Yeloline Construction Mobile App"
                 animate={{
-                  y: [0, -8, 0],
+                  y: [0, -6, 0],
                 }}
                 transition={{
-                  duration: 4.5,
+                  duration: 5,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 }}
                 style={{
+                  position: 'relative',
+                  zIndex: 4,
                   width: '100%',
                   height: 'auto',
-                  maxHeight: 'clamp(400px, 48vw, 560px)',
+                  maxHeight: '520px',
                   objectFit: 'contain',
-                  objectPosition: 'bottom left',
-                  display: 'block',
-                  filter: 'drop-shadow(0 20px 35px rgba(0, 0, 0, 0.22))',
+                  filter: 'drop-shadow(0 24px 48px rgba(0, 0, 0, 0.18))',
+                  pointerEvents: 'none',
+                  userSelect: 'none',
                 }}
               />
-            </motion.div>
+
+              {/* 1. BADGE 0: Safety Hard Hat 🪖 */}
+              <div
+                ref={(el) => (cardRefs.current[0] = el)}
+                onClick={handleDownloadClick}
+                title="Safety & Quality Audits"
+                style={{
+                  position: 'absolute',
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%)',
+                  border: '1.2px solid rgba(255, 255, 255, 0.95)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  willChange: 'transform, left, top',
+                  cursor: 'pointer',
+                  transition: 'box-shadow 0.25s ease',
+                }}
+              >
+                <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
+                  <path
+                    d="M7 21C7 15 11 10 16 10C21 10 25 15 25 21H7Z"
+                    fill="#FEC603"
+                    stroke="#D97706"
+                    strokeWidth="1.5"
+                  />
+                  <path d="M14 10V21" stroke="#D97706" strokeWidth="1.5" />
+                  <path d="M18 10V21" stroke="#D97706" strokeWidth="1.5" />
+                  <rect x="4" y="20" width="24" height="4" rx="2" fill="#F59E0B" />
+                </svg>
+              </div>
+
+              {/* 2. BADGE 1: 2D Blueprint / Floor Plan 📐 */}
+              <div
+                ref={(el) => (cardRefs.current[1] = el)}
+                onClick={handleDownloadClick}
+                title="3D Elevation & Blueprints"
+                style={{
+                  position: 'absolute',
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%)',
+                  border: '1.2px solid rgba(255, 255, 255, 0.95)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  willChange: 'transform, left, top',
+                  cursor: 'pointer',
+                  transition: 'box-shadow 0.25s ease',
+                }}
+              >
+                <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
+                  <rect x="5" y="5" width="22" height="22" rx="2" stroke="#1E293B" strokeWidth="1.8" />
+                  <path d="M5 14H18V27" stroke="#1E293B" strokeWidth="1.8" />
+                  <path d="M18 19H27" stroke="#1E293B" strokeWidth="1.8" />
+                  <path d="M11 5V14" stroke="#64748B" strokeWidth="1.2" strokeDasharray="2 2" />
+                  <rect x="8" y="8" width="4" height="3" fill="#FEC603" opacity="0.8" />
+                </svg>
+              </div>
+
+              {/* 3. BADGE 2: Progress Analytics & Material Logs 📈 */}
+              <div
+                ref={(el) => (cardRefs.current[2] = el)}
+                onClick={handleDownloadClick}
+                title="Real-time Milestone Progress"
+                style={{
+                  position: 'absolute',
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%)',
+                  border: '1.2px solid rgba(255, 255, 255, 0.95)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  willChange: 'transform, left, top',
+                  cursor: 'pointer',
+                  transition: 'box-shadow 0.25s ease',
+                }}
+              >
+                <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
+                  <line x1="6" y1="26" x2="26" y2="26" stroke="#0F172A" strokeWidth="1.8" />
+                  <rect x="8" y="16" width="4" height="10" rx="1" fill="#94A3B8" />
+                  <rect x="14" y="12" width="4" height="14" rx="1" fill="#475569" />
+                  <rect x="20" y="8" width="4" height="18" rx="1" fill="#FEC603" />
+                  <path d="M9 13L16 9L23 5" stroke="#0F172A" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M19 5H23V9" stroke="#0F172A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              {/* 4. BADGE 3: Construction Tower Crane 🏗️ */}
+              <div
+                ref={(el) => (cardRefs.current[3] = el)}
+                onClick={handleDownloadClick}
+                title="On-site Machinery & Execution"
+                style={{
+                  position: 'absolute',
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%)',
+                  border: '1.2px solid rgba(255, 255, 255, 0.95)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  willChange: 'transform, left, top',
+                  cursor: 'pointer',
+                  transition: 'box-shadow 0.25s ease',
+                }}
+              >
+                <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
+                  <line x1="12" y1="8" x2="12" y2="26" stroke="#0F172A" strokeWidth="2" />
+                  <line x1="16" y1="8" x2="16" y2="26" stroke="#0F172A" strokeWidth="2" />
+                  <line x1="12" y1="12" x2="16" y2="16" stroke="#FEC603" strokeWidth="1.2" />
+                  <line x1="16" y1="12" x2="12" y2="16" stroke="#FEC603" strokeWidth="1.2" />
+                  <line x1="12" y1="18" x2="16" y2="22" stroke="#FEC603" strokeWidth="1.2" />
+                  <line x1="16" y1="18" x2="12" y2="22" stroke="#FEC603" strokeWidth="1.2" />
+                  <line x1="4" y1="8" x2="28" y2="8" stroke="#0F172A" strokeWidth="2.5" />
+                  <rect x="4" y="6" width="4" height="5" fill="#FEC603" />
+                  <line x1="24" y1="8" x2="24" y2="18" stroke="#475569" strokeWidth="1.2" strokeDasharray="2 2" />
+                  <circle cx="24" cy="19" r="1.5" fill="#0F172A" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* RIGHT COLUMN: DOWNLOAD OUR MOBILE APP LOCKUP */}
