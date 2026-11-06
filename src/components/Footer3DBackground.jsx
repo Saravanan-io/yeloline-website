@@ -224,10 +224,10 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
       metalness: 0.1,
     });
 
-    // Master Wing Plane Geometry
+    // Master Wing Plane Geometry (Dainty, delicate small wings)
     // Texture root is at (U = 0.898, V = 0.508)
-    const wingW = 2.2;
-    const wingH = 2.2;
+    const wingW = 0.85;
+    const wingH = 0.85;
     const masterWingGeo = new THREE.PlaneGeometry(wingW, wingH);
     // Shift geometry so the hinge root sits exactly at (0, 0, 0)
     masterWingGeo.translate(-wingW * 0.398, wingH * 0.008, 0);
@@ -280,7 +280,7 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
 
       // Left Wing Pivot (Flaps around Y axis)
       const leftWingPivot = new THREE.Group();
-      leftWingPivot.position.set(-0.04, 0.1, 0.02);
+      leftWingPivot.position.set(-0.025, 0.06, 0.01);
 
       const leftWingMesh = new THREE.Mesh(masterWingGeo, wingMat);
       leftWingPivot.add(leftWingMesh);
@@ -288,7 +288,7 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
 
       // Right Wing Pivot (Mirrored scale along X, flaps symmetrically)
       const rightWingPivot = new THREE.Group();
-      rightWingPivot.position.set(0.04, 0.1, 0.02);
+      rightWingPivot.position.set(0.025, 0.06, 0.01);
       rightWingPivot.scale.set(-1, 1, 1);
 
       const rightWingMesh = new THREE.Mesh(masterWingGeo, wingMat);
@@ -306,13 +306,13 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
       };
     };
 
-    // 5. Spawn Multiple 3D Butterflies across the Footer
+    // 5. Spawn Multiple Small 3D Butterflies across the Footer
     const butterflies = [];
-    const butterflyCount = 10;
+    const butterflyCount = 14;
 
     for (let i = 0; i < butterflyCount; i++) {
-      // Natural variation in size: large prominent ones to delicate background flutters
-      const scale = 0.55 + Math.random() * 0.65;
+      // Small, delicate sizes (scaled gracefully for background ambiance)
+      const scale = 0.28 + Math.random() * 0.28;
       const bObj = createButterfly(scale);
 
       butterflies.push({
@@ -323,7 +323,7 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
         z: (Math.random() - 0.5) * 5.0 - 0.5,
         // Flight path physics & rhythm
         speed: 0.016 + Math.random() * 0.024,
-        flapSpeed: 14 + Math.random() * 8, // Flap frequency
+        flapSpeed: 16 + Math.random() * 10, // Quicker, lighter flutter for small butterflies
         flapPhase: Math.random() * Math.PI * 2,
         bobSpeed: 3 + Math.random() * 2,
         waveXFreq: 0.6 + Math.random() * 0.8,
@@ -339,7 +339,7 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
     }
 
     // 6. Glowing Stardust Particle Trails (Like the Reference Video!)
-    // 25 trailing stardust particles per butterfly
+    // 24 trailing stardust particles per butterfly
     const particlesPerButterfly = 24;
     const totalTrailParticles = butterflyCount * particlesPerButterfly;
 
@@ -368,9 +368,9 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
           bIdx: b,
           life: 0,
           maxLife: 40 + Math.random() * 30,
-          vx: (Math.random() - 0.5) * 0.012,
-          vy: -0.014 - Math.random() * 0.018, // Gently float downwards
-          vz: (Math.random() - 0.5) * 0.012,
+          vx: (Math.random() - 0.5) * 0.01,
+          vy: -0.012 - Math.random() * 0.015, // Gently float downwards
+          vz: (Math.random() - 0.5) * 0.01,
           wobbleSpeed: 2 + Math.random() * 3,
         });
       }
@@ -381,7 +381,7 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
     trailGeometry.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
 
     const trailMaterial = new THREE.PointsMaterial({
-      size: 0.48,
+      size: 0.28,
       map: stardustTexture,
       transparent: true,
       opacity: 0.85,
@@ -416,7 +416,7 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
     sparkleGeometry.setAttribute('position', new THREE.BufferAttribute(sparklePositions, 3));
 
     const sparkleMaterial = new THREE.PointsMaterial({
-      size: 0.38,
+      size: 0.22,
       map: stardustTexture,
       color: 0xf9df04,
       transparent: true,
@@ -520,9 +520,9 @@ export default function Footer3DBackground({ mousePos, isVisible = true }) {
             if (pData.life <= 0) {
               pData.life = pData.maxLife;
               // Tail emitter position
-              trailPositions[pIdx * 3] = b.x + (Math.random() - 0.5) * 0.08;
-              trailPositions[pIdx * 3 + 1] = currentY - 0.22 * b.scale;
-              trailPositions[pIdx * 3 + 2] = b.z + (Math.random() - 0.5) * 0.08;
+              trailPositions[pIdx * 3] = b.x + (Math.random() - 0.5) * 0.04;
+              trailPositions[pIdx * 3 + 1] = currentY - 0.1 * b.scale;
+              trailPositions[pIdx * 3 + 2] = b.z + (Math.random() - 0.5) * 0.04;
               break;
             }
           }
